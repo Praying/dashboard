@@ -17,7 +17,7 @@
         <h2>{{ t('run.liveTrading') }}</h2>
         <p class="intro-description">{{ t('run.development') }}</p>
         <div class="features-section">
-          <p class="features-title">{{ t('run.features') }}</p>
+          <p class="features-title">{{ t('run.feature') }}</p>
           <div class="features-grid">
             <div class="feature-item">
               <el-icon><Monitor /></el-icon>

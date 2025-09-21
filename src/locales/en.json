@@ -51,7 +51,7 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "description": "Welcome to PB GUI - Overview of your trading activities",
+    "description": "Welcome to PB Admin - Overview of your trading activities",
     "totalBacktests": "Total Backtests",
     "completed": "Completed",
     "running": "Running",
@@ -125,7 +125,7 @@
     "createBacktest": "Create Backtest",
     "createDescription": "Configure a new backtest",
     "name": "Name",
-    "exchanges": "Exchanges",
+    "exchange": "Exchanges",
     "startDate": "Start Date",
     "endDate": "End Date",
     "basicInfo": "Basic Info",
@@ -151,7 +151,9 @@
       "binance": "Binance",
       "coinbase": "Coinbase",
       "kraken": "Kraken",
-      "bitfinex": "Bitfinex"
+      "bitfinex": "Bitfinex",
+      "bybit": "Bybit",
+      "okx": "OKX"
     },
     "strategies": {
       "grid": "Grid Strategy",
@@ -368,7 +370,7 @@
     "description": "Optimize trading strategy parameters using advanced algorithms",
     "underConstruction": "Under Construction",
     "development": "Strategy optimization feature is under development. Coming soon!",
-    "features": "Coming features:",
+    "feature": "Coming features:",
     "goBacktests": "Back to Backtests",
     "features": {
       "geneticAlgorithms": "Genetic Algorithm Optimization",
@@ -383,7 +385,7 @@
     "description": "Run your trading strategies in real markets",
     "liveTrading": "Live Trading Feature",
     "development": "Live trading feature is under development. Coming soon!",
-    "features": "Coming features:",
+    "feature": "Coming features:",
     "goBacktests": "Back to Backtests",
     "features": {
       "realTimeTrading": "Real-time Market Trading",

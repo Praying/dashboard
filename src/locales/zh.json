@@ -51,7 +51,7 @@
   },
   "dashboard": {
     "title": "仪表板",
-    "description": "欢迎使用 PB GUI - 您的交易活动概览",
+    "description": "欢迎使用 PB Admin - 您的交易活动概览",
     "totalBacktests": "总回测数",
     "completed": "已完成",
     "running": "运行中",
@@ -125,7 +125,7 @@
     "createBacktest": "创建回测",
     "createDescription": "配置新回测",
     "name": "名称",
-    "exchanges": "交易所",
+    "exchange": "交易所",
     "startDate": "开始日期",
     "endDate": "结束日期",
     "basicInfo": "基本信息",
@@ -151,7 +151,9 @@
       "binance": "币安",
       "coinbase": "Coinbase",
       "kraken": "Kraken",
-      "bitfinex": "Bitfinex"
+      "bitfinex": "Bitfinex",
+      "bybit": "Bybit",
+      "okx": "OKX"
     },
     "strategies": {
       "grid": "网格策略",
@@ -218,10 +220,6 @@
     "table": {
       "id": "ID",
       "status": "状态"
-    },
-    "messages": {
-      "addedToQueue": "回测已添加到队列",
-      "addFailed": "添加回测失败"
     },
     "status": {
       "running": "运行中",
@@ -377,7 +375,7 @@
     "description": "使用高级算法优化交易策略参数",
     "underConstruction": "功能开发中",
     "development": "策略优化功能正在开发中，敬请期待！",
-    "features": "即将推出的功能：",
+    "feature": "即将推出的功能：",
     "goBacktests": "返回回测",
     "features": {
       "geneticAlgorithms": "遗传算法优化",
@@ -388,11 +386,11 @@
     }
   },
   "run": {
-    "title": "实时交易",
+    "title": "实盘交易",
     "description": "在真实市场中运行您的交易策略",
     "liveTrading": "实时交易功能",
     "development": "实时交易功能正在开发中，敬请期待！",
-    "features": "即将推出的功能：",
+    "feature": "即将推出的功能：",
     "goBacktests": "返回回测",
     "features": {
       "realTimeTrading": "实时市场数据交易",

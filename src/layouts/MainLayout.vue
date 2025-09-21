@@ -4,7 +4,7 @@
       <!-- Sidebar -->
       <el-aside class="app-sidebar" width="240px">
         <div class="sidebar-header">
-          <div class="logo">PassivBot</div>
+          <div class="logo">PB Admin</div>
         </div>
         <el-menu
           :default-active="activeMenu"
@@ -267,10 +267,11 @@ onMounted(() => {
   box-sizing: border-box;
   flex: 1;
   overflow-y: auto;
+  padding: 10px;
 }
 
 
 .page-content {
-  padding: 24px;
+  padding: 10px;
 }
 </style>

@@ -53,7 +53,7 @@
         />
         <el-table-column
           prop="exchanges"
-          :label="$t('backtest.exchanges')"
+          :label="$t('backtest.exchange')"
           min-width="120"
         >
           <template #default="{ row }">
