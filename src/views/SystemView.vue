@@ -1,8 +1,8 @@
 <template>
   <div class="system-view">
     <PageHeader
-      title="System Settings"
-      description="Configure system preferences and monitor performance"
+      :title="t('system.title')"
+      :description="t('system.description')"
     />
 
     <el-row :gutter="20">
@@ -11,24 +11,24 @@
         <el-card class="settings-card">
           <template #header>
             <div class="card-header">
-              <span>General Settings</span>
+              <span>{{ t('system.generalSettings') }}</span>
               <el-button type="primary" @click="saveSettings" :loading="saving">
-                Save Changes
+                {{ t('system.saveChanges') }}
               </el-button>
             </div>
           </template>
 
-          <el-form :model="settings" label-width="200px">
-            <el-form-item label="Default Exchange">
+          <el-form :model="settings" :label-width="formLabelWidth">
+            <el-form-item :label="t('system.settings.defaultExchange')">
               <el-select v-model="settings.defaultExchange" style="width: 300px">
-                <el-option label="Binance" value="binance" />
-                <el-option label="Coinbase" value="coinbase" />
-                <el-option label="Kraken" value="kraken" />
-                <el-option label="Bitfinex" value="bitfinex" />
+                <el-option :label="t('system.exchanges.binance')" value="binance" />
+                <el-option :label="t('system.exchanges.coinbase')" value="coinbase" />
+                <el-option :label="t('system.exchanges.kraken')" value="kraken" />
+                <el-option :label="t('system.exchanges.bitfinex')" value="bitfinex" />
               </el-select>
             </el-form-item>
 
-            <el-form-item label="Default Timeframe">
+            <el-form-item :label="t('system.settings.defaultTimeframe')">
               <el-select v-model="settings.defaultTimeframe" style="width: 300px">
                 <el-option label="1m" value="1m" />
                 <el-option label="5m" value="5m" />
@@ -39,7 +39,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="Auto-refresh Interval">
+            <el-form-item :label="t('system.settings.refreshInterval')">
               <el-input-number
                 v-model="settings.refreshInterval"
                 :min="5"
@@ -47,18 +47,18 @@
                 :step="5"
                 style="width: 300px"
               />
-              <span style="margin-left: 8px; color: #909399;">seconds</span>
+              <span style="margin-left: 8px; color: #909399;">{{ t('common.seconds') }}</span>
             </el-form-item>
 
-            <el-form-item label="Dark Mode">
+            <el-form-item :label="t('system.settings.darkMode')">
               <el-switch v-model="settings.darkMode" @change="toggleDarkMode" />
             </el-form-item>
 
-            <el-form-item label="Email Notifications">
+            <el-form-item :label="t('system.settings.emailNotifications')">
               <el-switch v-model="settings.emailNotifications" />
             </el-form-item>
 
-            <el-form-item label="Data Directory">
+            <el-form-item :label="t('system.settings.dataDirectory')">
               <el-input v-model="settings.dataDirectory" style="width: 300px">
                 <template #append>
                   <el-button icon="Folder" @click="browseDirectory" />
@@ -66,7 +66,7 @@
               </el-input>
             </el-form-item>
 
-            <el-form-item label="Log Level">
+            <el-form-item :label="t('system.settings.logLevel')">
               <el-select v-model="settings.logLevel" style="width: 300px">
                 <el-option label="DEBUG" value="debug" />
                 <el-option label="INFO" value="info" />
@@ -78,13 +78,13 @@
         </el-card>
 
         <!-- Advanced Settings -->
-        <el-card class="settings-card" style="margin-top: 20px;">
+        <el-card class="settings-card advanced-config" style="margin-top: 20px;">
           <template #header>
-            <span>Advanced Settings</span>
+            <span>{{ t('system.advancedSettings') }}</span>
           </template>
 
-          <el-form :model="settings" label-width="200px">
-            <el-form-item label="Max Concurrent Backtests">
+          <el-form :model="settings" :label-width="formLabelWidth">
+            <el-form-item :label="t('system.settings.maxConcurrentBacktests')">
               <el-input-number
                 v-model="settings.maxConcurrentBacktests"
                 :min="1"
@@ -93,7 +93,7 @@
               />
             </el-form-item>
 
-            <el-form-item label="Backtest Timeout (minutes)">
+            <el-form-item :label="t('system.settings.backtestTimeout')">
               <el-input-number
                 v-model="settings.backtestTimeout"
                 :min="30"
@@ -103,11 +103,11 @@
               />
             </el-form-item>
 
-            <el-form-item label="Database Connection">
-              <el-input v-model="settings.databaseUrl" placeholder="Database connection string" style="width: 300px" />
+            <el-form-item :label="t('system.settings.databaseConnection')">
+              <el-input v-model="settings.databaseUrl" :placeholder="t('system.settings.databasePlaceholder')" style="width: 300px" />
             </el-form-item>
 
-            <el-form-item label="Cache Size (MB)">
+            <el-form-item :label="t('system.settings.cacheSize')">
               <el-input-number
                 v-model="settings.cacheSize"
                 :min="64"
@@ -124,43 +124,45 @@
         <!-- System Status -->
         <el-card class="status-card">
           <template #header>
-            <span>System Status</span>
-            <el-button size="small" @click="refreshStatus">
-              <el-icon><Refresh /></el-icon>
-            </el-button>
+            <div class="card-header">
+              <span>{{ t('system.status.title') }}</span>
+              <el-button type="primary" circle @click="refreshStatus">
+                <el-icon><Refresh /></el-icon>
+              </el-button>
+            </div>
           </template>
 
           <div class="status-item">
-            <span class="status-label">CPU Usage</span>
+            <span class="status-label">{{ t('system.status.cpuUsage') }}</span>
             <el-progress :percentage="systemStatus.cpu" :color="getStatusColor(systemStatus.cpu)" />
           </div>
 
           <div class="status-item">
-            <span class="status-label">Memory Usage</span>
+            <span class="status-label">{{ t('system.status.memoryUsage') }}</span>
             <el-progress :percentage="systemStatus.memory" :color="getStatusColor(systemStatus.memory)" />
           </div>
 
           <div class="status-item">
-            <span class="status-label">Disk Usage</span>
+            <span class="status-label">{{ t('system.status.diskUsage') }}</span>
             <el-progress :percentage="systemStatus.disk" :color="getStatusColor(systemStatus.disk)" />
           </div>
 
           <div class="status-item">
-            <span class="status-label">Database</span>
+            <span class="status-label">{{ t('system.status.database') }}</span>
             <el-tag :type="systemStatus.database.status === 'connected' ? 'success' : 'danger'">
-              {{ systemStatus.database.status }}
+              {{ getStatusText(systemStatus.database.status) }}
             </el-tag>
           </div>
 
           <div class="status-item">
-            <span class="status-label">API Server</span>
+            <span class="status-label">{{ t('system.status.apiServer') }}</span>
             <el-tag :type="systemStatus.api.status === 'online' ? 'success' : 'danger'">
-              {{ systemStatus.api.status }}
+              {{ getStatusText(systemStatus.api.status) }}
             </el-tag>
           </div>
 
           <div class="status-item">
-            <span class="status-label">Last Update</span>
+            <span class="status-label">{{ t('system.status.lastUpdate') }}</span>
             <span class="status-time">{{ formatDate(systemStatus.lastUpdate) }}</span>
           </div>
         </el-card>
@@ -168,33 +170,43 @@
         <!-- Quick Actions -->
         <el-card class="actions-card" style="margin-top: 20px;">
           <template #header>
-            <span>Quick Actions</span>
+            <span>{{ t('system.actions.title') }}</span>
           </template>
 
           <div class="action-buttons">
-            <el-button @click="exportData" style="width: 100%; margin-bottom: 8px;">
-              <el-icon><Download /></el-icon>
-              Export Data
+            <el-button @click="exportData">
+              <span class="button-content">
+                <el-icon><Download /></el-icon>
+                {{ t('system.actions.exportData') }}
+              </span>
             </el-button>
 
-            <el-button @click="importData" style="width: 100%; margin-bottom: 8px;">
-              <el-icon><Upload /></el-icon>
-              Import Data
+            <el-button @click="importData">
+              <span class="button-content">
+                <el-icon><Upload /></el-icon>
+                {{ t('system.actions.importData') }}
+              </span>
             </el-button>
 
-            <el-button @click="clearCache" style="width: 100%; margin-bottom: 8px;">
-              <el-icon><Delete /></el-icon>
-              Clear Cache
+            <el-button @click="clearCache">
+              <span class="button-content">
+                <el-icon><Delete /></el-icon>
+                {{ t('system.actions.clearCache') }}
+              </span>
             </el-button>
 
-            <el-button @click="viewLogs" style="width: 100%; margin-bottom: 8px;">
-              <el-icon><Document /></el-icon>
-              View Logs
+            <el-button @click="viewLogs">
+              <span class="button-content">
+                <el-icon><Document /></el-icon>
+                {{ t('system.actions.viewLogs') }}
+              </span>
             </el-button>
 
-            <el-button type="danger" @click="restartSystem" style="width: 100%;">
-              <el-icon><Refresh /></el-icon>
-              Restart System
+            <el-button type="danger" @click="restartSystem">
+              <span class="button-content">
+                <el-icon><Refresh /></el-icon>
+                {{ t('system.actions.restartSystem') }}
+              </span>
             </el-button>
           </div>
         </el-card>
@@ -204,8 +216,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import PageHeader from '@/components/PageHeader.vue'
 import { formatDate } from '@/utils/date'
 import {
@@ -215,6 +228,13 @@ import {
   Delete,
   Document
 } from '@element-plus/icons-vue'
+
+const { t } = useI18n()
+
+// 动态计算表单标签宽度，根据当前语言调整
+const formLabelWidth = computed(() => {
+  return t('common.locale') === 'zh' ? '200px' : '220px'
+})
 
 const settings = reactive({
   defaultExchange: 'binance',
@@ -256,21 +276,21 @@ const saveSettings = async () => {
   try {
     // Simulate API call to save settings
     await new Promise(resolve => setTimeout(resolve, 1000))
-    ElMessage.success('Settings saved successfully')
+    ElMessage.success(t('system.messages.saveSuccess'))
   } catch (error) {
-    ElMessage.error('Failed to save settings')
+    ElMessage.error(t('system.messages.saveFailed'))
   } finally {
     saving.value = false
   }
 }
 
 const toggleDarkMode = (enabled: boolean) => {
-  ElMessage.info(`Dark mode ${enabled ? 'enabled' : 'disabled'}`)
+  ElMessage.info(`${t('system.darkMode')} ${enabled ? t('system.enabled') : t('system.disabled')}`)
   // Implement dark mode toggle logic
 }
 
 const browseDirectory = () => {
-  ElMessage.info('Directory browser would open here')
+  ElMessage.info(t('system.messages.directoryBrowser'))
   // Implement directory browser dialog
 }
 
@@ -280,24 +300,24 @@ const refreshStatus = () => {
   systemStatus.memory = Math.floor(Math.random() * 100)
   systemStatus.disk = Math.floor(Math.random() * 100)
   systemStatus.lastUpdate = new Date().toISOString()
-  ElMessage.success('System status refreshed')
+  ElMessage.success(t('system.messages.statusRefreshed'))
 }
 
 const exportData = async () => {
   try {
     await ElMessageBox.confirm(
-      'This will export all your settings and data. Continue?',
-      'Export Data',
+      t('system.messages.exportConfirm'),
+      t('system.actions.exportData'),
       {
-        confirmButtonText: 'Export',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: t('system.actions.export'),
+        cancelButtonText: t('common.cancel'),
         type: 'info',
       }
     )
-    ElMessage.success('Data export completed successfully')
+    ElMessage.success(t('system.messages.exportSuccess'))
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error('Failed to export data')
+      ElMessage.error(t('system.messages.exportFailed'))
     }
   }
 }
@@ -305,18 +325,18 @@ const exportData = async () => {
 const importData = async () => {
   try {
     await ElMessageBox.confirm(
-      'This will overwrite your current settings and data with imported data. Continue?',
-      'Import Data',
+      t('system.messages.importConfirm'),
+      t('system.actions.importData'),
       {
-        confirmButtonText: 'Import',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: t('system.actions.import'),
+        cancelButtonText: t('common.cancel'),
         type: 'warning',
       }
     )
-    ElMessage.success('Data imported successfully')
+    ElMessage.success(t('system.messages.importSuccess'))
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error('Failed to import data')
+      ElMessage.error(t('system.messages.importFailed'))
     }
   }
 }
@@ -324,52 +344,62 @@ const importData = async () => {
 const clearCache = async () => {
   try {
     await ElMessageBox.confirm(
-      'Clearing cache will delete temporary data. This may improve performance but some cached results will be lost. Continue?',
-      'Clear Cache',
+      t('system.messages.clearCacheConfirm'),
+      t('system.actions.clearCache'),
       {
-        confirmButtonText: 'Clear',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: t('system.actions.clear'),
+        cancelButtonText: t('common.cancel'),
         type: 'warning',
       }
     )
-    ElMessage.success('Cache cleared successfully')
+    ElMessage.success(t('system.messages.clearCacheSuccess'))
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error('Failed to clear cache')
+      ElMessage.error(t('system.messages.clearCacheFailed'))
     }
   }
 }
 
 const viewLogs = () => {
-  ElMessage.info('Logs viewer would open here')
+  ElMessage.info(t('system.messages.logsViewer'))
   // Implement logs viewer dialog
 }
 
 const restartSystem = async () => {
   try {
     await ElMessageBox.confirm(
-      'Restarting the system will interrupt all running processes. This action cannot be undone. Continue?',
-      'Restart System',
+      t('system.messages.restartConfirm'),
+      t('system.actions.restartSystem'),
       {
-        confirmButtonText: 'Restart',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: t('system.actions.restart'),
+        cancelButtonText: t('common.cancel'),
         type: 'warning',
         inputPattern: new RegExp('^RESTART$'),
-        inputPlaceholder: 'Type RESTART to confirm',
+        inputPlaceholder: t('system.messages.restartPlaceholder'),
         inputValidator: (value: string) => {
           if (value !== 'RESTART') {
-            return 'Please type RESTART to confirm'
+            return t('system.messages.restartValidationError')
           }
           return true
         },
         showInput: true
       }
     )
-    ElMessage.success('System restart initiated')
+    ElMessage.success(t('system.messages.restartSuccess'))
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error('Failed to restart system')
+      ElMessage.error(t('system.messages.restartFailed'))
     }
+  }
+}
+
+const getStatusText = (status: string) => {
+  switch (status) {
+    case 'connected': return t('system.status.connected')
+    case 'online': return t('system.status.online')
+    case 'offline': return t('system.status.offline')
+    case 'disconnected': return t('system.status.disconnected')
+    default: return status
   }
 }
 
@@ -380,17 +410,54 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .system-view {
+  .el-card {
+    border-radius: 8px;
+    border: 1px solid #f0f2f5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+
+    &:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .el-card__header {
+      font-weight: 600;
+      color: #303133;
+      border-bottom: 1px solid #f0f2f5;
+    }
+  }
+
   .settings-card {
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
+
+    .el-form {
+      .el-form-item {
+        margin-bottom: 24px;
+      }
+    }
+  }
+
+  .advanced-config {
+    background-color: #fafbfc;
+
+    .el-card__header {
+      background-color: #f0f7ff;
+      font-weight: 600;
+    }
   }
 
   .status-card {
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
     .status-item {
-      margin-bottom: 16px;
+      margin-bottom: 20px;
 
       .status-label {
         display: block;
@@ -410,7 +477,26 @@ onMounted(() => {
     .action-buttons {
       display: flex;
       flex-direction: column;
-      gap: 0;
+      gap: 12px;
+
+      .el-button {
+        width: 100%;
+        margin: 0;
+        border-radius: 6px;
+        padding: 10px 16px;
+        justify-content: flex-start;
+
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+      }
+
+      .button-content {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
     }
   }
 }

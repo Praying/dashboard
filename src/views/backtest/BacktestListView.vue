@@ -1,13 +1,13 @@
 <template>
   <div class="backtest-list-view">
     <PageHeader
-      title="Backtests"
-      description="Manage your backtest configurations"
+      :title="$t('backtest.title')"
+      :description="$t('backtest.description')"
     >
       <template #actions>
         <el-button type="primary" @click="$router.push('/backtest/create')">
           <el-icon><Plus /></el-icon>
-          New Backtest
+          {{ $t('backtest.newBacktest') }}
         </el-button>
       </template>
     </PageHeader>
@@ -18,21 +18,21 @@
         <el-col :span="6">
           <el-input
             v-model="searchQuery"
-            placeholder="Search backtests..."
+            :placeholder="$t('backtest.searchBacktests')"
             :prefix-icon="Search"
             clearable
           />
         </el-col>
         <el-col :span="4">
-          <el-select v-model="statusFilter" placeholder="Status" clearable>
-            <el-option label="All" value="" />
-            <el-option label="Running" value="running" />
-            <el-option label="Completed" value="completed" />
-            <el-option label="Failed" value="failed" />
+          <el-select v-model="statusFilter" :placeholder="$t('common.status')" clearable>
+            <el-option :label="$t('backtest.status.all')" value="" />
+            <el-option :label="$t('backtest.status.running')" value="running" />
+            <el-option :label="$t('backtest.status.completed')" value="completed" />
+            <el-option :label="$t('backtest.status.failed')" value="failed" />
           </el-select>
         </el-col>
         <el-col :span="4">
-          <el-button @click="resetFilters">Reset</el-button>
+          <el-button @click="resetFilters">{{ $t('common.reset') }}</el-button>
         </el-col>
       </el-row>
     </el-card>
@@ -47,13 +47,13 @@
       >
         <el-table-column
           prop="name"
-          label="Name"
+          :label="$t('backtest.name')"
           sortable="custom"
           min-width="150"
         />
         <el-table-column
           prop="exchanges"
-          label="Exchanges"
+          :label="$t('backtest.exchanges')"
           min-width="120"
         >
           <template #default="{ row }">
@@ -64,19 +64,19 @@
         </el-table-column>
         <el-table-column
           prop="start_date"
-          label="Start Date"
+          :label="$t('backtest.startDate')"
           sortable="custom"
           width="120"
         />
         <el-table-column
           prop="end_date"
-          label="End Date"
+          :label="$t('backtest.endDate')"
           sortable="custom"
           width="120"
         />
         <el-table-column
           prop="last_modified"
-          label="Last Modified"
+          :label="$t('dashboard.lastModified')"
           sortable="custom"
           width="180"
         >
@@ -85,7 +85,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="Actions"
+          :label="$t('common.actions')"
           width="200"
           fixed="right"
         >
@@ -94,7 +94,7 @@
               <el-button
                 size="small"
                 @click="editBacktest(row.name)"
-                title="Edit"
+                :title="$t('common.edit')"
               >
                 <el-icon><Edit /></el-icon>
               </el-button>
@@ -102,7 +102,7 @@
                 size="small"
                 type="primary"
                 @click="viewResults(row.name)"
-                title="View Results"
+                :title="$t('backtest.viewResults')"
               >
                 <el-icon><DataLine /></el-icon>
               </el-button>
@@ -110,7 +110,7 @@
                 size="small"
                 type="success"
                 @click="runBacktest(row.name)"
-                title="Run Backtest"
+                :title="$t('backtest.runBacktest')"
               >
                 <el-icon><VideoPlay /></el-icon>
               </el-button>
@@ -118,7 +118,7 @@
                 size="small"
                 type="danger"
                 @click="deleteBacktest(row.name)"
-                title="Delete"
+                :title="$t('common.delete')"
               >
                 <el-icon><Delete /></el-icon>
               </el-button>
@@ -129,9 +129,9 @@
 
       <!-- Empty State -->
       <div v-if="filteredBacktests.length === 0 && !backtestStore.loading.backtests" class="empty-state">
-        <el-empty description="No backtests found">
+        <el-empty :description="$t('backtest.noBacktestsFound')">
           <el-button type="primary" @click="$router.push('/backtest/create')">
-            Create your first backtest
+            {{ $t('backtest.createFirstBacktest') }}
           </el-button>
         </el-empty>
       </div>
@@ -143,6 +143,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox, ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { useBacktestStore } from '@/store/backtest'
 import PageHeader from '@/components/PageHeader.vue'
 import { formatDate } from '@/utils/date'
@@ -154,6 +155,8 @@ import {
   VideoPlay,
   Delete
 } from '@element-plus/icons-vue'
+
+const { t } = useI18n()
 
 const router = useRouter()
 const backtestStore = useBacktestStore()
@@ -221,29 +224,29 @@ const viewResults = (name: string) => {
 const runBacktest = async (name: string) => {
   try {
     await backtestStore.addToQueue(name)
-    ElMessage.success('Backtest added to queue')
+    ElMessage.success(t('backtest.messages.addedToQueue'))
   } catch (error) {
-    ElMessage.error('Failed to add backtest to queue')
+    ElMessage.error(t('backtest.messages.addToQueueError'))
   }
 }
 
 const deleteBacktest = async (name: string) => {
   try {
     await ElMessageBox.confirm(
-      `Are you sure you want to delete the backtest "${name}"?`,
-      'Confirm Delete',
+      t('backtest.messages.confirmDelete', { name }),
+      t('backtest.messages.confirmDeleteTitle'),
       {
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: t('common.delete'),
+        cancelButtonText: t('common.cancel'),
         type: 'warning',
       }
     )
 
     await backtestStore.deleteBacktest(name)
-    ElMessage.success('Backtest deleted successfully')
+    ElMessage.success(t('backtest.messages.deleteSuccess'))
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error('Failed to delete backtest')
+      ElMessage.error(t('backtest.messages.deleteError'))
     }
   }
 }
@@ -260,6 +263,15 @@ backtestStore.fetchBacktests()
 
   .exchange-tag {
     margin-right: 4px;
+  }
+
+  .el-table :deep(td), .el-table :deep(th) {
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f2f5;
+  }
+
+  .el-button-group {
+    gap: 8px;
   }
 
   .empty-state {

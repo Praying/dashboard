@@ -4,8 +4,8 @@
       <div class="auth-box">
         <div class="auth-header">
           <div class="logo">PB GUI</div>
-          <h2 class="auth-title">{{ title }}</h2>
-          <p class="auth-subtitle">{{ subtitle }}</p>
+          <h2 class="auth-title">{{ title || t('common.welcome') }}</h2>
+          <p class="auth-subtitle">{{ subtitle || t('auth.sign_in') }}</p>
         </div>
         <div class="auth-content">
           <slot />
@@ -16,14 +16,18 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 interface Props {
   title?: string
   subtitle?: string
 }
 
 withDefaults(defineProps<Props>(), {
-  title: 'Welcome to PB GUI',
-  subtitle: 'Please sign in to continue'
+  title: 'Welcome',
+  subtitle: 'Sign In'
 })
 </script>
 

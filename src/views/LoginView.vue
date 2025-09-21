@@ -1,17 +1,17 @@
 <template>
   <el-form @submit.prevent="handleLogin" class="login-form">
-    <el-form-item label="Username">
+    <el-form-item :label="$t('auth.username')">
       <el-input
         v-model="username"
-        placeholder="Username (can be any)"
+        :placeholder="$t('auth.usernamePlaceholder')"
         size="large"
       />
     </el-form-item>
-    <el-form-item label="Password">
+    <el-form-item :label="$t('auth.password')">
       <el-input
         v-model="password"
         type="password"
-        placeholder="Enter password"
+        :placeholder="$t('auth.passwordPlaceholder')"
         show-password
         size="large"
       />
@@ -24,7 +24,7 @@
         size="large"
         style="width: 100%;"
       >
-        {{ loading || authStore.loading ? 'Signing In...' : 'Sign In' }}
+        {{ loading || authStore.loading ? $t('auth.signingIn') : $t('auth.signIn') }}
       </el-button>
     </el-form-item>
 
@@ -43,6 +43,9 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/store/auth'
 import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const username = ref('user')
 const password = ref('')

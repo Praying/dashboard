@@ -1,27 +1,27 @@
 <template>
   <div class="backtest-results-view">
     <PageHeader
-      :title="`Results for ${backtestName}`"
-      description="View and analyze backtest performance metrics"
+      :title="`${t('backtest.results.for')} ${backtestName}`"
+      :description="t('backtest.results.description')"
     >
       <template #actions>
         <el-button @click="$router.push('/backtest')">
           <el-icon><ArrowLeft /></el-icon>
-          Back to Backtests
+          {{ t('backtest.results.backToBacktests') }}
         </el-button>
         <el-button type="primary" @click="runBacktest">
           <el-icon><VideoPlay /></el-icon>
-          Run Again
+          {{ t('backtest.results.runAgain') }}
         </el-button>
       </template>
     </PageHeader>
 
-    <LoadingSpinner v-if="loading" text="Loading results..." />
+    <LoadingSpinner v-if="loading" :text="t('backtest.results.loading')" />
 
     <div v-else-if="results.length === 0" class="empty-state">
-      <el-empty description="No results found for this backtest">
+      <el-empty :description="t('backtest.results.noResults')">
         <el-button type="primary" @click="runBacktest">
-          Run Backtest
+          {{ t('backtest.results.runBacktest') }}
         </el-button>
       </el-empty>
     </div>
@@ -37,7 +37,7 @@
               </div>
               <div class="stat-info">
                 <div class="stat-value">12.5%</div>
-                <div class="stat-label">ADG</div>
+                <div class="stat-label">{{ t('backtest.results.adg') }}</div>
               </div>
             </div>
           </el-card>
@@ -50,7 +50,7 @@
               </div>
               <div class="stat-info">
                 <div class="stat-value">1.85</div>
-                <div class="stat-label">Sharpe Ratio</div>
+                <div class="stat-label">{{ t('backtest.results.sharpeRatio') }}</div>
               </div>
             </div>
           </el-card>
@@ -63,7 +63,7 @@
               </div>
               <div class="stat-info">
                 <div class="stat-value">-15.2%</div>
-                <div class="stat-label">Max Drawdown</div>
+                <div class="stat-label">{{ t('backtest.results.maxDrawdown') }}</div>
               </div>
             </div>
           </el-card>
@@ -76,7 +76,7 @@
               </div>
               <div class="stat-info">
                 <div class="stat-value">$12,500</div>
-                <div class="stat-label">Final Balance</div>
+                <div class="stat-label">{{ t('backtest.results.finalBalance') }}</div>
               </div>
             </div>
           </el-card>
@@ -89,7 +89,7 @@
           <el-card class="chart-card">
             <template #header>
               <div class="card-header">
-                <span>Portfolio Performance</span>
+                <span>{{ t('backtest.results.portfolioPerformance') }}</span>
               </div>
             </template>
             <div ref="chartRef" class="chart-container"></div>
@@ -98,18 +98,18 @@
         <el-col :span="8">
           <el-card>
             <template #header>
-              <span>Results List</span>
+              <span>{{ t('backtest.results.resultsList') }}</span>
             </template>
             <el-table :data="results" size="small">
-              <el-table-column prop="id" label="ID" width="80" />
-              <el-table-column prop="status" label="Status" width="100">
+              <el-table-column prop="id" :label="t('backtest.table.id')" width="80" />
+              <el-table-column prop="status" :label="t('backtest.table.status')" width="100">
                 <template #default="{ row }">
                   <el-tag :type="getStatusType(row.status)">
-                    {{ row.status }}
+                    {{ getStatusText(row.status) }}
                   </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column label="Actions" width="80">
+              <el-table-column :label="t('common.actions')" width="80">
                 <template #default="{ row }">
                   <el-button size="small" @click="viewResultDetail(row.id)">
                     <el-icon><View /></el-icon>
@@ -128,6 +128,7 @@
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { useBacktestStore } from '@/store/backtest'
 import * as echarts from 'echarts'
 import PageHeader from '@/components/PageHeader.vue'
@@ -141,6 +142,8 @@ import {
   Money,
   View
 } from '@element-plus/icons-vue'
+
+const { t } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -159,6 +162,15 @@ const getStatusType = (status: string) => {
     case 'running': return 'warning'
     case 'failed': return 'danger'
     default: return 'info'
+  }
+}
+
+const getStatusText = (status: string) => {
+  switch (status) {
+    case 'completed': return t('backtest.status.completed')
+    case 'running': return t('backtest.status.running')
+    case 'failed': return t('backtest.status.failed')
+    default: return status
   }
 }
 
@@ -206,7 +218,7 @@ const updateChart = () => {
       }
     },
     legend: {
-      data: ['Portfolio', 'Baseline']
+      data: [t('backtest.results.portfolio'), t('backtest.results.baseline')]
     },
     xAxis: {
       type: 'category',
@@ -214,11 +226,11 @@ const updateChart = () => {
     },
     yAxis: {
       type: 'value',
-      name: 'Portfolio Value ($)'
+      name: t('backtest.results.portfolioValue')
     },
     series: [
       {
-        name: 'Portfolio',
+        name: t('backtest.results.portfolio'),
         type: 'line',
         data: values,
         smooth: true,
@@ -227,7 +239,7 @@ const updateChart = () => {
         }
       },
       {
-        name: 'Baseline',
+        name: t('backtest.results.baseline'),
         type: 'line',
         data: baseline,
         smooth: true,
@@ -244,16 +256,16 @@ const updateChart = () => {
 const runBacktest = async () => {
   try {
     await backtestStore.addToQueue(backtestName.value)
-    ElMessage.success('Backtest added to queue')
+    ElMessage.success(t('backtest.messages.addedToQueue'))
     router.push('/queue')
   } catch (error) {
-    ElMessage.error('Failed to add backtest to queue')
+    ElMessage.error(t('backtest.messages.addFailed'))
   }
 }
 
 const viewResultDetail = (resultId: string) => {
   // Navigate to detailed result view (to be implemented)
-  ElMessage.info(`Viewing details for result ${resultId}`)
+  ElMessage.info(`${t('backtest.results.viewingDetails')} ${resultId}`)
 }
 
 onMounted(async () => {
@@ -275,10 +287,11 @@ onMounted(async () => {
   .stat-card {
     border-radius: 8px;
     transition: transform 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     }
   }
 
@@ -286,6 +299,7 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     gap: 16px;
+    text-align: left;
   }
 
   .stat-icon {
@@ -338,6 +352,7 @@ onMounted(async () => {
   .chart-card {
     .card-header {
       font-weight: 600;
+      color: #303133;
     }
   }
 

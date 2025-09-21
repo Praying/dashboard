@@ -1,13 +1,13 @@
 <template>
   <div class="dashboard-view">
     <PageHeader
-      title="Dashboard"
-      description="Welcome to PB GUI - Overview of your trading activities"
+      :title="$t('dashboard.title')"
+      :description="$t('dashboard.description')"
     >
       <template #actions>
         <el-button type="primary" @click="refreshData">
           <el-icon><Refresh /></el-icon>
-          Refresh
+          {{ $t('common.refresh') }}
         </el-button>
       </template>
     </PageHeader>
@@ -22,7 +22,7 @@
             </div>
             <div class="stat-info">
               <div class="stat-value">{{ stats.totalBacktests }}</div>
-              <div class="stat-label">Total Backtests</div>
+              <div class="stat-label">{{ $t('dashboard.totalBacktests') }}</div>
             </div>
           </div>
         </el-card>
@@ -35,7 +35,7 @@
             </div>
             <div class="stat-info">
               <div class="stat-value">{{ stats.completedBacktests }}</div>
-              <div class="stat-label">Completed</div>
+              <div class="stat-label">{{ $t('dashboard.completed') }}</div>
             </div>
           </div>
         </el-card>
@@ -48,7 +48,7 @@
             </div>
             <div class="stat-info">
               <div class="stat-value">{{ stats.runningBacktests }}</div>
-              <div class="stat-label">Running</div>
+              <div class="stat-label">{{ $t('dashboard.running') }}</div>
             </div>
           </div>
         </el-card>
@@ -61,7 +61,7 @@
             </div>
             <div class="stat-info">
               <div class="stat-value">{{ stats.failedBacktests }}</div>
-              <div class="stat-label">Failed</div>
+              <div class="stat-label">{{ $t('dashboard.failed') }}</div>
             </div>
           </div>
         </el-card>
@@ -74,7 +74,7 @@
         <el-card class="chart-card">
           <template #header>
             <div class="card-header">
-              <span>Backtest Status Distribution</span>
+              <span>{{ $t('dashboard.backtestStatusDistribution') }}</span>
             </div>
           </template>
           <div ref="pieChartRef" class="chart-container"></div>
@@ -84,7 +84,7 @@
         <el-card class="chart-card">
           <template #header>
             <div class="card-header">
-              <span>Recent Activity</span>
+              <span>{{ $t('dashboard.recentActivity') }}</span>
             </div>
           </template>
           <div ref="lineChartRef" class="chart-container"></div>
@@ -98,27 +98,27 @@
         <el-card>
           <template #header>
             <div class="card-header">
-              <span>Recent Backtests</span>
+              <span>{{ $t('dashboard.recentBacktests') }}</span>
               <el-button type="text" @click="$router.push('/backtest')">
-                View All
+                {{ $t('dashboard.viewAll') }}
               </el-button>
             </div>
           </template>
           <el-table :data="recentBacktests" v-loading="loading" stripe>
-            <el-table-column prop="name" label="Name" />
-            <el-table-column prop="exchanges" label="Exchanges">
+            <el-table-column prop="name" :label="$t('common.name')" />
+            <el-table-column prop="exchanges" :label="$t('dashboard.exchanges')">
               <template #default="{ row }">
                 <el-tag v-for="exchange in row.exchanges" :key="exchange" size="small" class="exchange-tag">
                   {{ exchange }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="last_modified" label="Last Modified">
+            <el-table-column prop="last_modified" :label="$t('dashboard.lastModified')">
               <template #default="{ row }">
                 {{ formatDate(row.last_modified) }}
               </template>
             </el-table-column>
-            <el-table-column label="Actions" width="150">
+            <el-table-column :label="$t('common.actions')" width="150">
               <template #default="{ row }">
                 <el-button-group>
                   <el-button size="small" @click="viewBacktest(row.name)">
@@ -142,6 +142,7 @@ import { ref, onMounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useBacktestStore } from '@/store/backtest'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import * as echarts from 'echarts'
 import PageHeader from '@/components/PageHeader.vue'
 import {
@@ -153,6 +154,8 @@ import {
   View,
   VideoPlay
 } from '@element-plus/icons-vue'
+
+const { t } = useI18n()
 
 const router = useRouter()
 const backtestStore = useBacktestStore()
@@ -203,13 +206,13 @@ const updatePieChart = () => {
     },
     series: [
       {
-        name: 'Backtests',
+        name: t('dashboard.backtestStatusDistribution'),
         type: 'pie',
         radius: '50%',
         data: [
-          { value: stats.value.completedBacktests, name: 'Completed' },
-          { value: stats.value.runningBacktests, name: 'Running' },
-          { value: stats.value.failedBacktests, name: 'Failed' }
+          { value: stats.value.completedBacktests, name: t('dashboard.completed') },
+          { value: stats.value.runningBacktests, name: t('dashboard.running') },
+          { value: stats.value.failedBacktests, name: t('dashboard.failed') }
         ],
         emphasis: {
           itemStyle: {
@@ -272,10 +275,10 @@ const viewBacktest = (name: string) => {
 const runBacktest = async (name: string) => {
   try {
     await backtestStore.addToQueue(name)
-    ElMessage.success('Backtest added to queue')
+    ElMessage.success(t('dashboard.backtestAddedToQueue'))
     refreshData()
   } catch (error) {
-    ElMessage.error('Failed to add backtest to queue')
+    ElMessage.error(t('dashboard.failedToAddBacktestToQueue'))
   }
 }
 
@@ -300,7 +303,7 @@ const refreshData = async () => {
     updatePieChart()
     updateLineChart()
   } catch (error) {
-    ElMessage.error('Failed to refresh data')
+    ElMessage.error(t('dashboard.failedToRefreshData'))
   } finally {
     loading.value = false
   }
@@ -327,10 +330,11 @@ onMounted(async () => {
   .stat-card {
     border-radius: 8px;
     transition: transform 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     }
   }
 
@@ -338,6 +342,7 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     gap: 16px;
+    text-align: left;
   }
 
   .stat-icon {
@@ -393,6 +398,7 @@ onMounted(async () => {
       justify-content: space-between;
       align-items: center;
       font-weight: 600;
+      color: #303133;
     }
   }
 
