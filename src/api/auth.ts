@@ -1,17 +1,22 @@
-import axios from 'axios';
+import api from './index';
 
-const apiClient = axios.create({
-  baseURL: '/api/v1', // The proxy in vite.config.ts will handle this
-});
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+}
 
 export const login = (username: string, password: string) => {
   const params = new URLSearchParams();
   params.append('username', username);
   params.append('password', password);
 
-  return apiClient.post('/auth/login', params, {
+  return api.post<LoginResponse>('/auth/login', params, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   });
+};
+
+export const logout = () => {
+  return api.post('/auth/logout');
 };

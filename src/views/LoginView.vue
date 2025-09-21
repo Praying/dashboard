@@ -1,70 +1,83 @@
 <template>
-  <div class="login-container">
-    <el-card class="login-card">
-      <template #header>
-        <div class="card-header">
-          <span>pbgui Login</span>
-        </div>
-      </template>
-      <el-form @submit.prevent="handleLogin">
-        <el-form-item label="Username">
-          <el-input v-model="username" placeholder="Username (can be any)"></el-input>
-        </el-form-item>
-        <el-form-item label="Password">
-          <el-input v-model="password" type="password" placeholder="Enter password" show-password></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" native-type="submit" :loading="loading" style="width: 100%;">Login</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-  </div>
+  <el-form @submit.prevent="handleLogin" class="login-form">
+    <el-form-item label="Username">
+      <el-input
+        v-model="username"
+        placeholder="Username (can be any)"
+        size="large"
+      />
+    </el-form-item>
+    <el-form-item label="Password">
+      <el-input
+        v-model="password"
+        type="password"
+        placeholder="Enter password"
+        show-password
+        size="large"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        native-type="submit"
+        :loading="loading || authStore.loading"
+        size="large"
+        style="width: 100%;"
+      >
+        {{ loading || authStore.loading ? 'Signing In...' : 'Sign In' }}
+      </el-button>
+    </el-form-item>
+
+    <el-alert
+      v-if="authStore.error"
+      :title="authStore.error"
+      type="error"
+      show-icon
+      :closable="false"
+      class="error-alert"
+    />
+  </el-form>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ElNotification } from 'element-plus'
 import { useAuthStore } from '@/store/auth'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const username = ref('user')
 const password = ref('')
 const loading = ref(false)
 const authStore = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 
 const handleLogin = async () => {
-  loading.value = true
   try {
+    loading.value = true
     await authStore.login(username.value, password.value)
-    router.push('/') // Redirect to dashboard on successful login
-  } catch (error: any) {
+
+    // Redirect to the intended page or dashboard
+    const redirectPath = route.query.redirect as string || '/dashboard'
+    router.push(redirectPath)
+  } catch (error) {
+    // Error is already handled by the auth store and displayed via the alert
     console.error('Login failed:', error)
-    ElNotification({
-      title: 'Login Failed',
-      message: error.response?.data?.detail || 'An unknown error occurred.',
-      type: 'error',
-    })
   } finally {
     loading.value = false
   }
 }
 </script>
 
-<style scoped>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f2f5;
-}
-.login-card {
-  width: 400px;
-}
-.card-header {
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
+<style scoped lang="scss">
+.login-form {
+  width: 100%;
+
+  .el-form-item {
+    margin-bottom: 24px;
+  }
+
+  .error-alert {
+    margin-top: 16px;
+  }
 }
 </style>

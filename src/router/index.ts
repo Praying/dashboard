@@ -1,34 +1,125 @@
 import { createRouter, createWebHistory, type NavigationGuardNext, type RouteLocationNormalized } from 'vue-router'
-import LoginView from '../views/LoginView.vue'
-import DashboardView from '../views/DashboardView.vue'
 import { useAuthStore } from '@/store/auth'
+
+// Layout components
+import MainLayout from '@/layouts/MainLayout.vue'
+import AuthLayout from '@/layouts/AuthLayout.vue'
+
+// Lazy load views for better performance
+const LoginView = () => import('@/views/LoginView.vue')
+const DashboardView = () => import('@/views/DashboardView.vue')
+const BacktestListView = () => import('@/views/backtest/BacktestListView.vue')
+const BacktestCreateView = () => import('@/views/backtest/BacktestCreateView.vue')
+const BacktestResultsView = () => import('@/views/backtest/BacktestResultsView.vue')
+const QueueView = () => import('@/views/backtest/QueueView.vue')
+const OptimizeView = () => import('@/views/OptimizeView.vue')
+const RunView = () => import('@/views/RunView.vue')
+const ApiKeysView = () => import('@/views/ApiKeysView.vue')
+const SystemView = () => import('@/views/SystemView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'dashboard',
-      component: DashboardView,
-      meta: { requiresAuth: true } // Mark this route as requiring authentication
-    },
-    {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: AuthLayout,
+      meta: { requiresAuth: false, layout: 'auth' },
+      children: [
+        {
+          path: '',
+          name: 'login-page',
+          component: LoginView
+        }
+      ]
     },
+    {
+      path: '/',
+      component: MainLayout,
+      meta: { requiresAuth: true, layout: 'main' },
+      children: [
+        {
+          path: '',
+          name: 'dashboard',
+          component: DashboardView
+        },
+        {
+          path: '/dashboard',
+          redirect: '/'
+        },
+        {
+          path: '/backtest',
+          name: 'backtest',
+          children: [
+            {
+              path: '',
+              name: 'backtest-list',
+              component: BacktestListView
+            },
+            {
+              path: 'create',
+              name: 'backtest-create',
+              component: BacktestCreateView
+            },
+            {
+              path: ':name',
+              name: 'backtest-edit',
+              component: BacktestCreateView,
+              props: route => ({ name: route.params.name })
+            },
+            {
+              path: ':name/results',
+              name: 'backtest-results',
+              component: BacktestResultsView,
+              props: route => ({ name: route.params.name })
+            }
+          ]
+        },
+        {
+          path: '/queue',
+          name: 'queue',
+          component: QueueView
+        },
+        {
+          path: '/optimize',
+          name: 'optimize',
+          component: OptimizeView
+        },
+        {
+          path: '/run',
+          name: 'run',
+          component: RunView
+        },
+        {
+          path: '/api-keys',
+          name: 'api-keys',
+          component: ApiKeysView
+        },
+        {
+          path: '/system',
+          name: 'system',
+          component: SystemView
+        }
+      ]
+    }
   ]
 })
 
-router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+router.beforeEach(async (to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
   const authStore = useAuthStore();
+
+  // Check authentication status from localStorage on page load
+  if (!authStore.isAuthenticated && authStore.checkAuth()) {
+    // Token was found in localStorage, update auth state
+  }
+
   const isAuthenticated = authStore.isAuthenticated;
 
   if (to.meta.requiresAuth && !isAuthenticated) {
-    // If the route requires auth and the user is not authenticated, redirect to login
-    next({ name: 'login' });
-  } else if (to.name === 'login' && isAuthenticated) {
-    // If the user is authenticated and tries to access the login page, redirect to dashboard
+    // Save the attempted route for redirect after login
+    next({ name: 'login', query: { redirect: to.fullPath } });
+  } else if (to.meta.layout === 'auth' && isAuthenticated) {
+    // If user is authenticated and tries to access auth pages, redirect to dashboard
     next({ name: 'dashboard' });
   } else {
     // Otherwise, allow navigation

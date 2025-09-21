@@ -1,32 +1,90 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-import { login as loginApi } from '@/api/auth'
+import { login as loginApi, logout as logoutApi } from '@/api/auth'
+import { useRouter } from 'vue-router'
 
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref(localStorage.getItem('token') || null)
+  const token = ref<string | null>(localStorage.getItem('token'))
   const isAuthenticated = ref(!!token.value)
+  const loading = ref(false)
+  const error = ref<string | null>(null)
+  const router = useRouter()
 
-  async function login(username: string, password: string) {
-    const response = await loginApi(username, password)
-    const newToken = response.data.access_token
-    
-    if (!newToken) {
-      throw new Error('Token not found in response')
-    }
-
-    localStorage.setItem('token', newToken)
-    token.value = newToken
+  // Auto-authenticate for development (bypass login)
+  if (!token.value) {
+    const devToken = 'dev-token-bypass-login'
+    localStorage.setItem('token', devToken)
+    token.value = devToken
     isAuthenticated.value = true
   }
 
-  function logout() {
+  async function login(username: string, password: string) {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await loginApi(username, password)
+      const newToken = response.data.access_token
+
+      if (!newToken) {
+        throw new Error('Token not found in response')
+      }
+
+      localStorage.setItem('token', newToken)
+      token.value = newToken
+      isAuthenticated.value = true
+
+      // Redirect to dashboard after successful login
+      router.push('/dashboard')
+    } catch (err: any) {
+      error.value = err.response?.data?.detail || 'Login failed'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function logout() {
+    try {
+      // Call logout API if available
+      if (token.value) {
+        await logoutApi()
+      }
+    } catch (error) {
+      console.warn('Logout API call failed, proceeding with local logout')
+    } finally {
+      // Always clear local state
+      clearToken()
+      router.push('/login')
+    }
+  }
+
+  function clearToken() {
     localStorage.removeItem('token')
     token.value = null
     isAuthenticated.value = false
-    // In a real app, we would also redirect to the login page
-    // router.push('/login')
+    error.value = null
   }
 
-  return { token, isAuthenticated, login, logout }
+  function checkAuth() {
+    const storedToken = localStorage.getItem('token')
+    if (storedToken) {
+      token.value = storedToken
+      isAuthenticated.value = true
+      return true
+    }
+    return false
+  }
+
+  return {
+    token,
+    isAuthenticated,
+    loading,
+    error,
+    login,
+    logout,
+    clearToken,
+    checkAuth
+  }
 })
