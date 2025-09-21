@@ -52,14 +52,15 @@
             <!-- 语言切换组件 -->
             <el-dropdown trigger="click" @command="handleLanguageChange">
               <div class="language-switcher">
-                <el-button circle>
-                  <el-icon><Location /></el-icon>
+                <el-button text class="language-btn">
+                  <GlobeIcon class="globe-icon" />
+                  <span class="language-text">{{ languageText }}</span>
                 </el-button>
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="zh" :class="{ active: currentLanguage === 'zh' }">中文</el-dropdown-item>
-                  <el-dropdown-item command="en" :class="{ active: currentLanguage === 'en' }">English</el-dropdown-item>
+                  <el-dropdown-item command="zh" :class="{ active: currentLanguage === 'zh' }"> 中文</el-dropdown-item>
+                  <el-dropdown-item command="en" :class="{ active: currentLanguage === 'en' }"> English</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -93,7 +94,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Monitor, DataLine, TrendCharts, VideoPlay, Key, Setting, Bell, Location } from '@element-plus/icons-vue'
+import { Monitor, DataLine, TrendCharts, VideoPlay, Key, Setting, Bell } from '@element-plus/icons-vue'
+import GlobeIcon from '@/components/icons/GlobeIcon.vue'
 import { useAuthStore } from '@/store/auth'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
@@ -112,6 +114,11 @@ const activeMenu = computed(() => {
 
 // 当前语言
 const currentLanguage = ref(locale.value)
+
+// 语言显示文本
+const languageText = computed(() => {
+  return currentLanguage.value === 'zh' ? '中文' : 'English'
+})
 
 // 用户头像
 const userAvatar = ref('')
@@ -240,12 +247,30 @@ onMounted(() => {
 .language-switcher {
   cursor: pointer;
   
-  .el-button {
-    border: none;
-    background: transparent;
-    
+  .language-btn {
+    padding: 0 8px; /* 调整内边距 */
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px; /* 优化图标和文字的间距 */
+    color: #606266; /* 使用更柔和的文字颜色 */
+    border-radius: 4px; /* 添加轻微圆角 */
+    transition: background-color 0.2s ease-in-out; /* 优化过渡效果 */
+
+    .language-text {
+      font-size: 14px;
+      font-weight: 500; /* 略微加粗字体 */
+    }
+
+    .globe-icon {
+      width: 16px; /* 优化图标大小 */
+      height: 16px;
+      color: currentColor;
+    }
+
     &:hover {
-      background: rgba(64, 158, 255, 0.1);
+      background-color: #f0f2f5; /* 使用更深的hover背景色 */
     }
   }
 }
