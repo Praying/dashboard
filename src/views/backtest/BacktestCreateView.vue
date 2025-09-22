@@ -255,7 +255,7 @@ onMounted(async () => {
 .backtest-create-view {
   .el-card {
     border-radius: 8px;
-    border: 1px solid #f0f2f5;
+    border: 1px solid var(--border-color);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
@@ -263,19 +263,19 @@ onMounted(async () => {
     .form-section {
       margin-bottom: 32px;
       padding: 24px;
-      border: 1px solid #f0f2f5;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
 
       h3 {
         font-size: 18px;
         font-weight: 600;
-        color: #303133;
+        color: var(--text-color);
         margin-bottom: 24px;
       }
     }
 
     .advanced-config {
-      background-color: #fafbfc;
+      background-color: var(--card-background-color);
     }
 
     .el-form-item {

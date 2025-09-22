@@ -26,7 +26,7 @@ defineProps<Props>()
   justify-content: space-between;
   margin-bottom: 20px;
   padding: 20px;
-  background: white;
+  background: var(--card-background-color);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -39,12 +39,12 @@ defineProps<Props>()
   margin: 0 0 8px 0;
   font-size: 24px;
   font-weight: 600;
-  color: #303133;
+  color: var(--text-color);
 }
 
 .page-description {
   margin: 0;
-  color: #909399;
+  color: var(--text-color-secondary);
   font-size: 14px;
 }
 

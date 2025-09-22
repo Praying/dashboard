@@ -1,0 +1,21 @@
+// src/styles/_light.scss
+
+:root {
+  --primary-color: #4a90e2;
+  --primary-color-light: #e6f7ff;
+  --secondary-color: #f5a623;
+  --success-color: #67c23a;
+  --success-color-light: #f6ffed;
+  --warning-color: #e6a23c;
+  --warning-color-light: #fffbe6;
+  --danger-color: #f56c6c;
+  --danger-color-light: #fff1f0;
+  --info-color: #909399;
+  --background-color: #ffffff;
+  --text-color: #333333;
+  --text-color-secondary: #909399;
+  --border-color: #e0e0e0;
+  --card-background-color: #f9f9f9;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --shadow-hover-color: rgba(0, 0, 0, 0.12);
+}

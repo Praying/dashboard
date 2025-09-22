@@ -330,7 +330,7 @@ const deleteApiKey = async (apiKey: ApiKey) => {
   }
 
   .el-table {
-    --el-table-row-hover-bg-color: #f5f7fa;
+    --el-table-row-hover-bg-color: var(--primary-color-light);
     
     .el-button-group {
       gap: 8px;
@@ -343,7 +343,7 @@ const deleteApiKey = async (apiKey: ApiKey) => {
 
   .el-table :deep(td), .el-table :deep(th) {
     padding: 16px 0;
-    border-bottom: 1px solid #f0f2f5;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .empty-state {
@@ -352,12 +352,12 @@ const deleteApiKey = async (apiKey: ApiKey) => {
   }
 
   code {
-    background: #f0f2f5;
+    background: var(--border-color);
     padding: 4px 8px;
     border-radius: 4px;
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
     font-size: 13px;
-    color: #303133;
+    color: var(--text-color);
   }
 
   .el-tag {

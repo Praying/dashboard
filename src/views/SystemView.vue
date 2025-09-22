@@ -47,7 +47,7 @@
                 :step="5"
                 style="width: 300px"
               />
-              <span style="margin-left: 8px; color: #909399;">{{ t('common.seconds') }}</span>
+              <span style="margin-left: 8px; color: var(--text-color-secondary);">{{ t('common.seconds') }}</span>
             </el-form-item>
 
             <el-form-item :label="t('system.settings.darkMode')">
@@ -219,6 +219,7 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useI18n } from 'vue-i18n'
+import { useTheme } from '@/store/theme'
 import PageHeader from '@/components/PageHeader.vue'
 import { formatDate } from '@/utils/date'
 import {
@@ -230,6 +231,7 @@ import {
 } from '@element-plus/icons-vue'
 
 const { t } = useI18n()
+const { theme } = useTheme()
 
 // 动态计算表单标签宽度，根据当前语言调整
 const formLabelWidth = computed(() => {
@@ -266,9 +268,10 @@ const systemStatus = reactive({
 const saving = ref(false)
 
 const getStatusColor = (percentage: number): string => {
-  if (percentage < 50) return '#67c23a'
-  if (percentage < 80) return '#e6a23c'
-  return '#f56c6c'
+  const isDark = theme.theme === 'dark'
+  if (percentage < 50) return isDark ? '#3fb950' : '#67c23a'
+  if (percentage < 80) return isDark ? '#d29922' : '#e6a23c'
+  return isDark ? '#f85149' : '#f56c6c'
 }
 
 const saveSettings = async () => {
@@ -412,18 +415,18 @@ onMounted(() => {
 .system-view {
   .el-card {
     border-radius: 8px;
-    border: 1px solid #f0f2f5;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px var(--shadow-color);
     margin-bottom: 24px;
 
     &:hover {
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 6px 16px var(--shadow-hover-color);
     }
 
     .el-card__header {
       font-weight: 600;
-      color: #303133;
-      border-bottom: 1px solid #f0f2f5;
+      color: var(--text-color);
+      border-bottom: 1px solid var(--border-color);
     }
   }
 
@@ -442,10 +445,10 @@ onMounted(() => {
   }
 
   .advanced-config {
-    background-color: #fafbfc;
+    background-color: var(--card-background-color);
 
     .el-card__header {
-      background-color: #f0f7ff;
+      background-color: var(--primary-color-light);
       font-weight: 600;
     }
   }
@@ -463,11 +466,11 @@ onMounted(() => {
         display: block;
         margin-bottom: 8px;
         font-weight: 500;
-        color: #303133;
+        color: var(--text-color);
       }
 
       .status-time {
-        color: #909399;
+        color: var(--text-color-secondary);
         font-size: 12px;
       }
     }
@@ -488,7 +491,7 @@ onMounted(() => {
 
         &:hover {
           transform: translateY(-1px);
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 2px 8px var(--shadow-hover-color);
         }
       }
 

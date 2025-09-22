@@ -267,7 +267,7 @@ backtestStore.fetchBacktests()
 
   .el-table :deep(td), .el-table :deep(th) {
     padding: 16px 0;
-    border-bottom: 1px solid #f0f2f5;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .el-button-group {

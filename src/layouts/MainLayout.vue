@@ -49,6 +49,10 @@
                 <el-icon><Bell /></el-icon>
               </el-button>
             </el-badge>
+            <!-- Theme Switcher -->
+            <el-button @click="handleThemeToggle" circle>
+              <el-icon><Sunny v-if="theme.theme === 'light'" /><Moon v-else /></el-icon>
+            </el-button>
             <!-- 语言切换组件 -->
             <el-dropdown trigger="click" @command="handleLanguageChange">
               <div class="language-switcher">
@@ -94,10 +98,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Monitor, DataLine, TrendCharts, VideoPlay, Key, Setting, Bell } from '@element-plus/icons-vue'
+import { Monitor, DataLine, TrendCharts, VideoPlay, Key, Setting, Bell, Sunny, Moon } from '@element-plus/icons-vue'
 import GlobeIcon from '@/components/icons/GlobeIcon.vue'
 import { useAuthStore } from '@/store/auth'
 import { useI18n } from 'vue-i18n'
+import { useTheme } from '@/store/theme'
 import { ElMessage } from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import en from 'element-plus/es/locale/lang/en'
@@ -106,6 +111,30 @@ const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const { locale, t } = useI18n()
+const { theme, toggleTheme } = useTheme()
+
+// Handle theme toggle with logging
+const handleThemeToggle = () => {
+  console.log('Theme toggle button clicked');
+  console.log('Current theme before toggle:', theme.theme);
+  
+  // Log CSS variables before toggle
+  const htmlElement = document.documentElement;
+  const computedStyle = window.getComputedStyle(htmlElement);
+  console.log('CSS variables before toggle:');
+  console.log('--background-color:', computedStyle.getPropertyValue('--background-color'));
+  console.log('--text-color:', computedStyle.getPropertyValue('--text-color'));
+  
+  toggleTheme();
+  
+  console.log('Current theme after toggle:', theme.theme);
+  
+  // Log CSS variables after toggle
+  const computedStyleAfter = window.getComputedStyle(htmlElement);
+  console.log('CSS variables after toggle:');
+  console.log('--background-color:', computedStyleAfter.getPropertyValue('--background-color'));
+  console.log('--text-color:', computedStyleAfter.getPropertyValue('--text-color'));
+}
 
 // Active menu based on current route
 const activeMenu = computed(() => {
@@ -171,12 +200,91 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+/* Global overrides for MainLayout */
 .app-layout {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: var(--background-color);
+  transition: background-color 0.3s;
 }
 
+.app-sidebar {
+  background: var(--card-background-color) !important;
+  border-right: 1px solid var(--border-color) !important;
+  box-shadow: 2px 0 8px var(--shadow-color) !important;
+  transition: background-color 0.3s, border-color 0.3s;
+
+  .main-menu {
+    background-color: transparent !important;
+    border-right: none !important;
+  }
+
+  .el-menu-item {
+    color: var(--text-color-secondary) !important;
+    
+    .el-icon {
+      color: var(--text-color-secondary) !important;
+    }
+
+    &:hover {
+      background-color: var(--primary-color-light) !important;
+      color: var(--primary-color) !important;
+      .el-icon {
+        color: var(--primary-color) !important;
+      }
+    }
+  }
+
+  .el-menu-item.is-active {
+    color: var(--primary-color) !important;
+    background-color: var(--primary-color-light) !important;
+    .el-icon {
+      color: var(--primary-color) !important;
+    }
+  }
+}
+
+.app-header {
+  background: var(--card-background-color) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  box-shadow: 0 2px 8px var(--shadow-color) !important;
+  transition: background-color 0.3s, border-color 0.3s;
+
+  .header-right {
+    .el-button {
+      background-color: transparent !important;
+      border-color: transparent !important;
+      color: var(--text-color-secondary) !important;
+
+      .el-icon {
+        color: var(--text-color-secondary) !important;
+      }
+
+      &:hover {
+        color: var(--primary-color) !important;
+        .el-icon {
+          color: var(--primary-color) !important;
+        }
+      }
+    }
+
+    .language-btn {
+      color: var(--text-color-secondary) !important;
+      &:hover {
+        color: var(--primary-color) !important;
+        background-color: var(--primary-color-light) !important;
+      }
+    }
+  }
+}
+
+.el-dropdown-menu__item.active {
+  color: var(--primary-color) !important;
+  font-weight: bold !important;
+}
+</style>
+
+<style scoped lang="scss">
 .layout-container {
   min-height: 100vh;
   width: 100%;
@@ -185,9 +293,6 @@ onMounted(() => {
 }
 
 .app-sidebar {
-  background: white;
-  border-right: 1px solid #f0f2f5;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -198,19 +303,18 @@ onMounted(() => {
 
 .sidebar-header {
   padding: 20px;
-  border-bottom: 1px solid #f0f2f5;
+  border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
 }
 
 .logo {
   font-size: 24px;
   font-weight: bold;
-  color: #409eff;
+  color: var(--primary-color);
   text-align: center;
 }
 
 .main-menu {
-  border-right: none;
   flex: 1;
   overflow-y: auto;
 }
@@ -227,9 +331,6 @@ onMounted(() => {
   align-items: center;
   justify-content: flex-end;
   padding: 0 20px;
-  background: white;
-  border-bottom: 1px solid #f0f2f5;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   height: 60px;
   flex-shrink: 0;
 }
@@ -248,43 +349,30 @@ onMounted(() => {
   cursor: pointer;
   
   .language-btn {
-    padding: 0 8px; /* 调整内边距 */
+    padding: 0 8px;
     height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px; /* 优化图标和文字的间距 */
-    color: #606266; /* 使用更柔和的文字颜色 */
-    border-radius: 4px; /* 添加轻微圆角 */
-    transition: background-color 0.2s ease-in-out; /* 优化过渡效果 */
+    gap: 6px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease-in-out;
 
     .language-text {
       font-size: 14px;
-      font-weight: 500; /* 略微加粗字体 */
+      font-weight: 500;
     }
 
     .globe-icon {
-      width: 16px; /* 优化图标大小 */
+      width: 16px;
       height: 16px;
       color: currentColor;
-    }
-
-    &:hover {
-      background-color: #f0f2f5; /* 使用更深的hover背景色 */
     }
   }
 }
 
 .user-avatar {
   cursor: pointer;
-}
-
-// 语言切换下拉菜单项激活状态样式
-:deep(.el-dropdown-menu) {
-  .el-dropdown-item.active {
-    color: #409eff;
-    font-weight: bold;
-  }
 }
 
 .app-main {
@@ -294,7 +382,6 @@ onMounted(() => {
   overflow-y: auto;
   padding: 10px;
 }
-
 
 .page-content {
   padding: 10px;

@@ -10,6 +10,11 @@ import './styles/index.scss'
 import router from './router'
 import { createPinia } from 'pinia'
 import i18n from './locales'
+import { useTheme } from './store/theme'
+
+// Load theme
+const { loadTheme } = useTheme()
+loadTheme()
 
 // 配置Element Plus国际化
 import zhCn from 'element-plus/es/locale/lang/zh-cn'

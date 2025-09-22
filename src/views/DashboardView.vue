@@ -138,7 +138,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useBacktestStore } from '@/store/backtest'
 import { useRouter } from 'vue-router'
@@ -154,8 +154,10 @@ import {
   View,
   VideoPlay
 } from '@element-plus/icons-vue'
+import { useTheme } from '@/store/theme'
 
 const { t } = useI18n()
+const { theme } = useTheme()
 
 const router = useRouter()
 const backtestStore = useBacktestStore()
@@ -196,13 +198,20 @@ const initCharts = async () => {
 const updatePieChart = () => {
   if (!pieChart) return
 
+  const isDark = theme.theme === 'dark'
+  pieChart.dispose()
+  pieChart = echarts.init(pieChartRef.value, isDark ? 'dark' : undefined)
+
   const option = {
     tooltip: {
       trigger: 'item'
     },
     legend: {
       orient: 'vertical',
-      left: 'left'
+      left: 'left',
+      textStyle: {
+        color: isDark ? '#c9d1d9' : '#303133'
+      }
     },
     series: [
       {
@@ -231,6 +240,10 @@ const updatePieChart = () => {
 const updateLineChart = () => {
   if (!lineChart) return
 
+  const isDark = theme.theme === 'dark'
+  lineChart.dispose()
+  lineChart = echarts.init(lineChartRef.value, isDark ? 'dark' : undefined)
+
   // Mock data for recent activity
   const dates = []
   const counts = []
@@ -247,10 +260,31 @@ const updateLineChart = () => {
     },
     xAxis: {
       type: 'category',
-      data: dates
+      data: dates,
+      axisLine: {
+        lineStyle: {
+          color: isDark ? '#30363d' : '#e0e0e0'
+        }
+      },
+      axisLabel: {
+        color: isDark ? '#c9d1d9' : '#303133'
+      }
     },
     yAxis: {
-      type: 'value'
+      type: 'value',
+      axisLine: {
+        lineStyle: {
+          color: isDark ? '#30363d' : '#e0e0e0'
+        }
+      },
+      axisLabel: {
+        color: isDark ? '#c9d1d9' : '#303133'
+      },
+      splitLine: {
+        lineStyle: {
+          color: isDark ? '#30363d' : '#e0e0e0'
+        }
+      }
     },
     series: [
       {
@@ -319,6 +353,12 @@ onMounted(async () => {
     lineChart?.resize()
   })
 })
+
+// Watch for theme changes and update charts
+watch(() => theme.theme, () => {
+  updatePieChart()
+  updateLineChart()
+})
 </script>
 
 <style scoped lang="scss">
@@ -349,25 +389,25 @@ onMounted(async () => {
     width: 48px;
     height: 48px;
     border-radius: 8px;
-    background: #e6f7ff;
+    background: var(--primary-color-light);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #409eff;
+    color: var(--primary-color);
 
     &.success {
-      background: #f6ffed;
-      color: #52c41a;
+      background: var(--success-color-light);
+      color: var(--success-color);
     }
 
     &.warning {
-      background: #fffbe6;
-      color: #faad14;
+      background: var(--warning-color-light);
+      color: var(--warning-color);
     }
 
     &.error {
-      background: #fff1f0;
-      color: #f5222d;
+      background: var(--danger-color-light);
+      color: var(--danger-color);
     }
   }
 
@@ -378,13 +418,13 @@ onMounted(async () => {
   .stat-value {
     font-size: 24px;
     font-weight: bold;
-    color: #303133;
+    color: var(--text-color);
     line-height: 1;
   }
 
   .stat-label {
     font-size: 12px;
-    color: #909399;
+    color: var(--text-color-secondary);
     margin-top: 4px;
   }
 
@@ -398,7 +438,7 @@ onMounted(async () => {
       justify-content: space-between;
       align-items: center;
       font-weight: 600;
-      color: #303133;
+      color: var(--text-color);
     }
   }
 
