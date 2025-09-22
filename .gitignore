@@ -1,1 +1,5 @@
 node_modules
+.bmad-core
+web-bundles
+.claude
+.roomodes
