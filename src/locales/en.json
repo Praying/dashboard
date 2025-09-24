@@ -96,6 +96,7 @@
     "enterYourApiSecret": "Enter your API secret",
     "enterApiPassphrase": "Enter API passphrase",
     "pleaseSelectExchange": "Please select exchange",
+    "exchangePlaceholder": "Please select",
     "pleaseEnterAccountName": "Please enter account name",
     "nameMustBeBetween2And50Characters": "Name must be between 2 and 50 characters",
     "pleaseEnterApiKey": "Please enter API key",
@@ -114,7 +115,29 @@
     "areYouSureYouWantToDeleteTheApiKeyFor": "Are you sure you want to delete the API key for \"{name}\"?",
     "confirmDelete": "Confirm Delete",
     "apiKeyDeletedSuccessfully": "API key deleted successfully",
-    "failedToDeleteApiKey": "Failed to delete API key"
+    "failedToDeleteApiKey": "Failed to delete API key",
+    "validation": {
+      "exchangeRequired": "Exchange is required",
+      "nameRequired": "Account name is required",
+      "keyRequired": "API key is required",
+      "secretRequired": "API secret is required",
+      "nameLength": "Name must be between 2 and 50 characters",
+      "passphraseRequired": "Passphrase is required"
+    },
+    "messages": {
+      "confirmDeleteTitle": "Confirm API Key Deletion",
+      "confirmDelete": "Are you sure you want to delete the API key “{name}”? This action cannot be undone.",
+      "updateSuccess": "API key updated successfully",
+      "addSuccess": "API key added successfully",
+      "saveError": "Failed to save API key",
+      "confirmToggle": "Are you sure you want to {action} this API key?",
+      "confirmToggleTitle": "Confirm {action}",
+      "confirmToggleButton": "Confirm {action}",
+      "toggleSuccess": "API key {action} successfully",
+      "toggleError": "Failed to update API key status",
+      "deleteSuccess": "API key deleted successfully",
+      "deleteError": "Failed to delete API key"
+    }
   },
   "backtest": {
     "title": "Backtests",

@@ -76,7 +76,7 @@
         label-width="120px"
       >
         <el-form-item :label="$t('apiKeys.exchange')" prop="exchange">
-          <el-select v-model="form.exchange" style="width: 100%">
+          <el-select v-model="form.exchange" :placeholder="$t('apiKeys.exchangePlaceholder')" style="width: 100%">
             <el-option label="Binance" value="binance" />
             <el-option label="Coinbase" value="coinbase" />
             <el-option label="Kraken" value="kraken" />
