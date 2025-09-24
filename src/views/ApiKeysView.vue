@@ -15,6 +15,11 @@
     <el-card>
       <el-table :data="apiKeys" stripe>
         <el-table-column prop="exchange" :label="$t('apiKeys.exchange')" />
+        <el-table-column prop="account_type" :label="$t('apiKeys.accountType')">
+          <template #default="{ row }">
+            {{ $t(`apiKeys.${row.account_type}`) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="name" :label="$t('apiKeys.accountName')" />
         <el-table-column prop="api_key" :label="$t('apiKeys.apiKey')">
           <template #default="{ row }">
@@ -83,6 +88,12 @@
             <el-option label="Bitfinex" value="bitfinex" />
           </el-select>
         </el-form-item>
+        <el-form-item :label="$t('apiKeys.accountType')" prop="account_type">
+          <el-select v-model="form.account_type" :placeholder="$t('apiKeys.accountType')" style="width: 100%">
+            <el-option :label="$t('apiKeys.spot')" value="spot" />
+            <el-option :label="$t('apiKeys.futures')" value="futures" />
+          </el-select>
+        </el-form-item>
         <el-form-item :label="$t('apiKeys.accountName')" prop="name">
           <el-input v-model="form.name" :placeholder="$t('apiKeys.enterAccountName')" />
         </el-form-item>
@@ -128,6 +139,7 @@ const { t } = useI18n()
 interface ApiKey {
   id?: string
   exchange: string
+  account_type: 'spot' | 'futures'
   name: string
   api_key: string
   api_secret?: string
@@ -141,6 +153,7 @@ const apiKeys = ref<ApiKey[]>([
   {
     id: '1',
     exchange: 'binance',
+    account_type: 'futures',
     name: 'Main Trading Account',
     api_key: 'binance_api_key_123456',
     test_mode: false,
@@ -150,6 +163,7 @@ const apiKeys = ref<ApiKey[]>([
   {
     id: '2',
     exchange: 'coinbase',
+    account_type: 'spot',
     name: 'Test Account',
     api_key: 'coinbase_api_key_789012',
     test_mode: true,
@@ -166,6 +180,7 @@ const editingId = ref<string>()
 
 const form = reactive<ApiKey>({
   exchange: '',
+  account_type: 'spot',
   name: '',
   api_key: '',
   api_secret: '',
@@ -205,6 +220,7 @@ const showAddDialog = () => {
   editingId.value = undefined
   Object.assign(form, {
     exchange: '',
+    account_type: 'spot',
     name: '',
     api_key: '',
     api_secret: '',

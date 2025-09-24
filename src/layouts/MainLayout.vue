@@ -44,33 +44,35 @@
         <!-- Header -->
         <el-header class="app-header">
           <div class="header-right">
-            <el-badge :value="3" class="notification-badge">
+            <!-- Notifications -->
+            <el-badge :value="3" class="notification-badge item">
               <el-button circle>
-                <el-icon><Bell /></el-icon>
+                <el-icon size="18"><Bell /></el-icon>
               </el-button>
             </el-badge>
+
             <!-- Theme Switcher -->
-            <el-button @click="handleThemeToggle" circle>
-              <el-icon><Sunny v-if="theme.theme === 'light'" /><Moon v-else /></el-icon>
+            <el-button @click="handleThemeToggle" circle class="item">
+              <el-icon size="18"><Sunny v-if="theme.theme === 'light'" /><Moon v-else /></el-icon>
             </el-button>
-            <!-- 语言切换组件 -->
-            <el-dropdown trigger="click" @command="handleLanguageChange">
-              <div class="language-switcher">
-                <el-button text class="language-btn">
-                  <GlobeIcon class="globe-icon" />
-                  <span class="language-text">{{ languageText }}</span>
-                </el-button>
-              </div>
+
+            <!-- Language Switcher -->
+            <el-dropdown trigger="click" @command="handleLanguageChange" class="item">
+              <el-button circle>
+                <el-icon size="18"><GlobeIcon /></el-icon>
+              </el-button>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="zh" :class="{ active: currentLanguage === 'zh' }"> 中文</el-dropdown-item>
-                  <el-dropdown-item command="en" :class="{ active: currentLanguage === 'en' }"> English</el-dropdown-item>
+                  <el-dropdown-item command="zh" :class="{ active: currentLanguage === 'zh' }">中文</el-dropdown-item>
+                  <el-dropdown-item command="en" :class="{ active: currentLanguage === 'en' }">English</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-            <el-dropdown trigger="click">
+
+            <!-- User Avatar -->
+            <el-dropdown trigger="click" class="item">
               <div class="user-avatar">
-                <el-avatar :size="32" :src="userAvatar">U</el-avatar>
+                <el-avatar :size="36" :src="userAvatar">U</el-avatar>
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
@@ -255,24 +257,19 @@ onMounted(() => {
       background-color: transparent !important;
       border-color: transparent !important;
       color: var(--text-color-secondary) !important;
+      transition: all 0.2s ease-in-out;
 
       .el-icon {
         color: var(--text-color-secondary) !important;
+        transition: color 0.2s ease-in-out;
       }
 
-      &:hover {
-        color: var(--primary-color) !important;
-        .el-icon {
-          color: var(--primary-color) !important;
-        }
-      }
-    }
-
-    .language-btn {
-      color: var(--text-color-secondary) !important;
       &:hover {
         color: var(--primary-color) !important;
         background-color: var(--primary-color-light) !important;
+        .el-icon {
+          color: var(--primary-color) !important;
+        }
       }
     }
   }
@@ -338,41 +335,25 @@ onMounted(() => {
 .header-right {
   display: flex;
   align-items: center;
-  gap: 20px;
-}
+  gap: 16px; // Reduced gap for a tighter look
 
-.notification-badge {
-  cursor: pointer;
-}
-
-.language-switcher {
-  cursor: pointer;
-  
-  .language-btn {
-    padding: 0 8px;
-    height: 32px;
+  .item {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+  }
 
-    .language-text {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .globe-icon {
-      width: 16px;
-      height: 16px;
-      color: currentColor;
-    }
+  .el-button {
+    width: 36px;
+    height: 36px;
   }
 }
 
 .user-avatar {
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .app-main {

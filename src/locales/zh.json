@@ -39,7 +39,8 @@
     "signing_in": "登录中...",
     "sign_in": "登录",
     "profile": "个人资料",
-    "settings": "设置"
+    "settings": "设置",
+    "languageChanged": "语言已切换"
   },
   "menu": {
     "dashboard": "仪表板",
@@ -78,6 +79,9 @@
     "description": "管理您的交易所 API 凭据",
     "exchange": "交易所",
     "accountName": "账户名称",
+    "accountType": "账户类型",
+    "spot": "现货",
+    "futures": "合约",
     "apiKey": "API 密钥",
     "apiSecret": "API 密码",
     "passphrase": "密码短语",

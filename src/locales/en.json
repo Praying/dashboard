@@ -39,7 +39,8 @@
     "signing_in": "Signing In...",
     "sign_in": "Sign In",
     "profile": "Profile",
-    "settings": "Settings"
+    "settings": "Settings",
+    "languageChanged": "Language Changed"
   },
   "menu": {
     "dashboard": "Dashboard",
@@ -79,6 +80,9 @@
     "addApiKey": "Add API Key",
     "exchange": "Exchange",
     "accountName": "Account Name",
+    "accountType": "Account Type",
+    "spot": "Spot",
+    "futures": "Futures",
     "apiKey": "API Key",
     "apiSecret": "API Secret",
     "passphrase": "Passphrase",
