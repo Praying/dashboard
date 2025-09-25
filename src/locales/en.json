@@ -498,5 +498,9 @@
     "darkMode": "Dark Mode",
     "enabled": "enabled",
     "disabled": "disabled"
+  },
+  "enhancedDemo": {
+    "title": "Enhanced Demo",
+    "description": "Explore the enhanced UI components and features"
   }
 }

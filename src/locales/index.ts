@@ -259,6 +259,10 @@ type MessageSchema = {
       close: string
     }
   }
+  enhancedDemo: {
+    title: string
+    description: string
+  }
 }
 
 // 导出类型以供其他文件使用

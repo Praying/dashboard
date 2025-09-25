@@ -503,5 +503,9 @@
     "darkMode": "深色模式",
     "enabled": "已启用",
     "disabled": "已禁用"
+  },
+  "enhancedDemo": {
+    "title": "增强演示",
+    "description": "探索增强的UI组件和功能特性"
   }
 }

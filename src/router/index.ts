@@ -16,6 +16,7 @@ const OptimizeView = () => import('@/views/OptimizeView.vue')
 const RunView = () => import('@/views/RunView.vue')
 const ApiKeysView = () => import('@/views/ApiKeysView.vue')
 const SystemView = () => import('@/views/SystemView.vue')
+const EnhancedDemoView = () => import('@/views/EnhancedDemo.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -99,6 +100,11 @@ const router = createRouter({
           path: '/system',
           name: 'system',
           component: SystemView
+        },
+        {
+          path: '/enhanced-demo',
+          name: 'enhanced-demo',
+          component: EnhancedDemoView
         }
       ]
     }

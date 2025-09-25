@@ -36,6 +36,10 @@
             <el-icon><Setting /></el-icon>
             <span>{{ $t('menu.system') }}</span>
           </el-menu-item>
+          <el-menu-item index="/enhanced-demo">
+            <el-icon><Star /></el-icon>
+            <span>Enhanced UI Demo</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
 
@@ -100,7 +104,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Monitor, DataLine, TrendCharts, VideoPlay, Key, Setting, Bell, Sunny, Moon } from '@element-plus/icons-vue'
+import { Monitor, DataLine, TrendCharts, VideoPlay, Key, Setting, Star, Bell, Sunny, Moon } from '@element-plus/icons-vue'
 import GlobeIcon from '@/components/icons/GlobeIcon.vue'
 import { useAuthStore } from '@/store/auth'
 import { useI18n } from 'vue-i18n'
