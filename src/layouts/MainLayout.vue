@@ -205,13 +205,14 @@ onMounted(() => {
 <style lang="scss">
 /* Global overrides for MainLayout */
 .app-layout {
-  min-height: 100vh;
-  background-color: var(--background-color);
+  height: 100vh;
+  display: flex;
+  background-color: var(--background-color-secondary);
   transition: background-color 0.3s;
 }
 
 .app-sidebar {
-  background: var(--card-background-color) !important;
+  background: var(--background-color-secondary) !important;
   border-right: 1px solid var(--border-color) !important;
   box-shadow: 2px 0 8px var(--shadow-color) !important;
   transition: background-color 0.3s, border-color 0.3s;
@@ -247,7 +248,7 @@ onMounted(() => {
 }
 
 .app-header {
-  background: var(--card-background-color) !important;
+  background: var(--background-color-secondary) !important;
   border-bottom: 1px solid var(--border-color) !important;
   box-shadow: 0 2px 8px var(--shadow-color) !important;
   transition: background-color 0.3s, border-color 0.3s;
@@ -283,16 +284,15 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .layout-container {
-  min-height: 100vh;
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: row;
 }
 
 .app-sidebar {
-  display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   width: 240px;
   flex-shrink: 0;
@@ -365,6 +365,8 @@ onMounted(() => {
 }
 
 .page-content {
-  padding: 10px;
+  padding: 20px;
+  background-color: var(--background-color-secondary);
+  min-height: calc(100vh - 60px);
 }
 </style>

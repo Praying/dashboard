@@ -368,13 +368,16 @@ watch(() => theme.theme, () => {
   }
 
   .stat-card {
+    background: var(--card-background-color);
     border-radius: 8px;
-    transition: transform 0.2s;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    border: 1px solid var(--border-color);
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 16px var(--shadow-hover-color);
+      background: var(--card-background-hover);
     }
   }
 
@@ -433,6 +436,17 @@ watch(() => theme.theme, () => {
   }
 
   .chart-card {
+    background: var(--card-background-color);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    border: 1px solid var(--border-color);
+
+    &:hover {
+      box-shadow: 0 4px 16px var(--shadow-hover-color);
+      background: var(--card-background-hover);
+    }
+
     .card-header {
       display: flex;
       justify-content: space-between;
@@ -447,6 +461,19 @@ watch(() => theme.theme, () => {
   }
 
   .table-row {
+    .el-card {
+      background: var(--card-background-color);
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      border: 1px solid var(--border-color);
+
+      &:hover {
+        box-shadow: 0 4px 16px var(--shadow-hover-color);
+        background: var(--card-background-hover);
+      }
+    }
+
     .card-header {
       display: flex;
       justify-content: space-between;
@@ -462,6 +489,12 @@ watch(() => theme.theme, () => {
 // Responsive styles
 @media (max-width: 768px) {
   .dashboard-view {
+    .stat-card,
+    .chart-card {
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+    }
+
     .stat-col {
       margin-bottom: 16px;
     }

@@ -24,11 +24,18 @@ defineProps<Props>()
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
-  padding: 20px;
+  margin-bottom: 24px;
+  padding: 24px;
   background: var(--card-background-color);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 16px var(--shadow-hover-color);
+    background: var(--card-background-hover);
+  }
 }
 
 .page-header-left {

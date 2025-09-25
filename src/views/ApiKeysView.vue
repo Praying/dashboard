@@ -13,7 +13,7 @@
     </PageHeader>
 
     <el-card>
-      <el-table :data="apiKeys" stripe>
+      <el-table :data="apiKeys">
         <el-table-column prop="exchange" :label="$t('apiKeys.exchange')" />
         <el-table-column prop="account_type" :label="$t('apiKeys.accountType')">
           <template #default="{ row }">
@@ -343,6 +343,7 @@ const deleteApiKey = async (apiKey: ApiKey) => {
     border-radius: 8px;
     border: none;
     margin-top: 24px;
+    background-color: var(--background-color-secondary);
   }
 
   .el-table {
@@ -368,7 +369,7 @@ const deleteApiKey = async (apiKey: ApiKey) => {
   }
 
   code {
-    background: var(--border-color);
+    background: var(--background-color-tertiary);
     padding: 4px 8px;
     border-radius: 4px;
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;

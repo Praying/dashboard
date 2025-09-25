@@ -12,10 +12,14 @@
   --danger-color-light: #fff1f0;
   --info-color: #909399;
   --background-color: #ffffff;
+  --background-color-primary: #ffffff;        // 主背景
+  --background-color-secondary: #f5f5f5;      // 次要背景
+  --background-color-tertiary: #eeeeee;       // 第三级背景
   --text-color: #333333;
-  --text-color-secondary: #909399;
-  --border-color: #e0e0e0;
-  --card-background-color: #f9f9f9;
+  --text-color-secondary: #666666;            // 增加对比度
+  --border-color: #d0d0d0;                    // 增加对比度
+  --card-background-color: #ffffff;
+  --card-background-hover: #f9f9f9;
   --shadow-color: rgba(0, 0, 0, 0.08);
   --shadow-hover-color: rgba(0, 0, 0, 0.12);
 }

@@ -204,20 +204,48 @@ html.dark {
   .el-page-header__title {
     color: var(--text-color) !important;
   }
-}
 
-  // --- Select Dropdown (inside html.dark) ---
-  .el-select-dropdown {
-    background-color: var(--card-background-color) !important;
+  // --- Message Box ---
+  .el-message-box {
+    background-color: var(--background-color-secondary) !important;
     border: 1px solid var(--border-color) !important;
-    border-radius: 4px !important;
-    box-shadow: 0 2px 12px var(--shadow-color) !important;
+    box-shadow: var(--shadow-color) !important;
+    .el-message-box__title {
+      color: var(--text-color) !important;
+    }
+    .el-message-box__content {
+      color: var(--text-color-secondary) !important;
+    }
+  }
+
+  // --- Dialog ---
+  .el-dialog {
+    background-color: var(--background-color-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-color) !important;
+    .el-dialog__title {
+      color: var(--text-color) !important;
+    }
+    .el-dialog__header {
+      border-bottom: 1px solid var(--border-color) !important;
+    }
+    .el-dialog__body {
+      color: var(--text-color-secondary) !important;
+    }
+  }
+
+  // --- Select Dropdown ---
+  .el-select-dropdown {
+    background-color: var(--background-color-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-color) !important;
 
     .el-select-dropdown__list {
       padding: 4px 0 !important;
     }
 
     .el-select-dropdown__item {
+      background-color: var(--background-color-secondary) !important;
       color: var(--text-color) !important;
       padding: 0 20px !important;
       height: 34px !important;
@@ -252,6 +280,7 @@ html.dark {
       background-color: var(--text-color-secondary) !important;
     }
   }
+}
 
 // Utility classes
 .text-center {
@@ -351,4 +380,36 @@ html.dark {
 
 .slide-leave-to {
   transform: translateX(100%);
+}
+
+// Reusable utility classes
+.card {
+  background: var(--card-background-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 16px var(--shadow-hover-color);
+    background: var(--card-background-hover);
+  }
+}
+
+// Background level classes
+.bg-primary {
+  background-color: var(--background-color-primary);
+}
+
+.bg-secondary {
+  background-color: var(--background-color-secondary);
+}
+
+.bg-tertiary {
+  background-color: var(--background-color-tertiary);
+}
+
+// Global transition effects
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s ease;
 }
