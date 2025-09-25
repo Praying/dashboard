@@ -146,11 +146,6 @@ const activeMenu = computed(() => {
 // 当前语言
 const currentLanguage = ref(locale.value)
 
-// 语言显示文本
-const languageText = computed(() => {
-  return currentLanguage.value === 'zh' ? '中文' : 'English'
-})
-
 // 用户头像
 const userAvatar = ref('')
 
@@ -203,34 +198,47 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-/* Global overrides for MainLayout */
+/* Global overrides for MainLayout - 原研哉的精致美学 */
 .app-layout {
   min-height: 100vh;
   background-color: var(--background-color);
-  transition: background-color 0.3s;
+  transition: background-color $transition-slow;
 }
 
 .app-sidebar {
   background: var(--card-background-color) !important;
-  border-right: 1px solid var(--border-color) !important;
-  box-shadow: 2px 0 8px var(--shadow-color) !important;
-  transition: background-color 0.3s, border-color 0.3s;
+  transition: background-color $transition-slow;
 
   .main-menu {
     background-color: transparent !important;
     border-right: none !important;
+    padding: 0 $spacing-sm; // 增加左右内边距
   }
 
   .el-menu-item {
     color: var(--text-color-secondary) !important;
+    margin-bottom: $spacing-xs; // 增加菜单项之间的间距
+    border-radius: $border-radius-md !important;
+    padding: $spacing-md $spacing-lg !important; // 增加内边距
+    transition: all $transition-base !important;
+    font-weight: $font-weight-normal !important;
     
     .el-icon {
       color: var(--text-color-secondary) !important;
+      margin-right: $spacing-md !important; // 增加图标与文字的间距
+      transition: color $transition-base !important;
+    }
+
+    span {
+      font-size: $font-size-sm !important;
+      letter-spacing: 0.3px !important; // 增加字间距
     }
 
     &:hover {
-      background-color: var(--primary-color-light) !important;
+      background-color: var(--hover-background) !important;
       color: var(--primary-color) !important;
+      transform: translateX(2px); // 微妙的移动效果
+      
       .el-icon {
         color: var(--primary-color) !important;
       }
@@ -239,54 +247,111 @@ onMounted(() => {
 
   .el-menu-item.is-active {
     color: var(--primary-color) !important;
-    background-color: var(--primary-color-light) !important;
+    background-color: var(--primary-color-lighter) !important;
+    font-weight: $font-weight-medium !important;
+    box-shadow: $shadow-sm !important;
+    
     .el-icon {
       color: var(--primary-color) !important;
+    }
+    
+    // 添加左侧指示条
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 20px;
+      background-color: var(--primary-color);
+      border-radius: 0 $border-radius-sm $border-radius-sm 0;
     }
   }
 }
 
 .app-header {
-  background: var(--card-background-color) !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  box-shadow: 0 2px 8px var(--shadow-color) !important;
-  transition: background-color 0.3s, border-color 0.3s;
+  background: var(--surface-color) !important;
+  transition: background-color $transition-slow;
+  backdrop-filter: blur(8px); // 添加毛玻璃效果
 
   .header-right {
     .el-button {
       background-color: transparent !important;
-      border-color: transparent !important;
+      border: none !important;
       color: var(--text-color-secondary) !important;
-      transition: all 0.2s ease-in-out;
+      transition: all $transition-base !important;
+      position: relative;
+      overflow: hidden;
 
       .el-icon {
         color: var(--text-color-secondary) !important;
-        transition: color 0.2s ease-in-out;
+        transition: all $transition-base !important;
       }
 
       &:hover {
         color: var(--primary-color) !important;
-        background-color: var(--primary-color-light) !important;
+        background-color: var(--hover-background) !important;
+        
         .el-icon {
           color: var(--primary-color) !important;
+          transform: scale(1.1); // 微妙的缩放效果
         }
+      }
+
+      &:active {
+        transform: scale(0.95);
       }
     }
   }
 }
 
-.el-dropdown-menu__item.active {
-  color: var(--primary-color) !important;
-  font-weight: bold !important;
+// 下拉菜单优化
+.el-dropdown-menu {
+  border: 1px solid var(--border-color) !important;
+  border-radius: $border-radius-md !important;
+  box-shadow: $shadow-lg !important;
+  padding: $spacing-xs 0 !important;
+  background-color: var(--card-background-color) !important;
+  
+  .el-dropdown-menu__item {
+    padding: $spacing-sm $spacing-lg !important;
+    font-size: $font-size-sm !important;
+    color: var(--text-color) !important;
+    transition: all $transition-base !important;
+    
+    &:hover {
+      background-color: var(--hover-background) !important;
+      color: var(--primary-color) !important;
+    }
+    
+    &.active {
+      color: var(--primary-color) !important;
+      font-weight: $font-weight-medium !important;
+      background-color: var(--primary-color-lighter) !important;
+    }
+  }
+}
+
+// 通知徽章优化
+.notification-badge {
+  .el-badge__content {
+    background-color: var(--danger-color) !important;
+    border: 2px solid var(--card-background-color) !important;
+    font-size: $font-size-xs !important;
+    font-weight: $font-weight-medium !important;
+  }
 }
 </style>
 
 <style scoped lang="scss">
+// 原研哉设计理念：简约、留白、本质
 .layout-container {
   min-height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: row;
+  background-color: var(--background-color);
 }
 
 .app-sidebar {
@@ -294,26 +359,30 @@ onMounted(() => {
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-  width: 240px;
+  width: 260px; // 稍微增加宽度，提供更好的呼吸感
   flex-shrink: 0;
+  border-right: 1px solid var(--border-color);
 }
 
 .sidebar-header {
-  padding: 20px;
-  border-bottom: 1px solid var(--border-color);
+  padding: $spacing-xl $spacing-lg; // 使用新的间距系统
+  border-bottom: 1px solid var(--border-color-light);
   flex-shrink: 0;
+  background-color: var(--surface-color);
 }
 
 .logo {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-medium; // 减少字重，更加优雅
   color: var(--primary-color);
   text-align: center;
+  letter-spacing: 0.5px; // 增加字间距
 }
 
 .main-menu {
   flex: 1;
   overflow-y: auto;
+  padding: $spacing-md 0; // 增加上下间距
 }
 
 .main-container {
@@ -321,32 +390,50 @@ onMounted(() => {
   flex-direction: column;
   flex: 1;
   overflow: hidden;
+  background-color: var(--background-color);
 }
 
 .app-header {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 0 20px;
-  height: 60px;
+  padding: 0 $spacing-xl; // 使用新的间距系统
+  height: 72px; // 增加高度，提供更好的呼吸感
   flex-shrink: 0;
+  border-bottom: 1px solid var(--border-color-light);
+  background-color: var(--surface-color);
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 16px; // Reduced gap for a tighter look
+  gap: $spacing-md; // 使用新的间距系统
 
   .item {
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: all $transition-base;
+    border-radius: $border-radius-md;
+    
+    &:hover {
+      background-color: var(--hover-background);
+    }
   }
 
   .el-button {
-    width: 36px;
-    height: 36px;
+    width: 40px; // 稍微增加尺寸
+    height: 40px;
+    border-radius: $border-radius-md;
+    border: none;
+    background-color: transparent;
+    transition: all $transition-base;
+    
+    &:hover {
+      background-color: var(--hover-background);
+      transform: translateY(-1px);
+    }
   }
 }
 
@@ -354,6 +441,13 @@ onMounted(() => {
   cursor: pointer;
   display: flex;
   align-items: center;
+  padding: $spacing-xs;
+  border-radius: $border-radius-md;
+  transition: all $transition-base;
+  
+  &:hover {
+    background-color: var(--hover-background);
+  }
 }
 
 .app-main {
@@ -361,10 +455,48 @@ onMounted(() => {
   box-sizing: border-box;
   flex: 1;
   overflow-y: auto;
-  padding: 10px;
+  padding: $spacing-xl; // 增加内边距，提供更好的留白
+  background-color: var(--background-color);
 }
 
 .page-content {
-  padding: 10px;
+  max-width: 1400px; // 限制最大宽度，避免在大屏幕上过度拉伸
+  margin: 0 auto; // 居中对齐
+  padding: 0; // 移除额外的内边距
+}
+
+// 响应式设计
+@media (max-width: 1024px) {
+  .app-sidebar {
+    width: 240px;
+  }
+  
+  .app-main {
+    padding: $spacing-lg;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-sidebar {
+    width: 200px;
+  }
+  
+  .app-header {
+    padding: 0 $spacing-lg;
+    height: 64px;
+  }
+  
+  .app-main {
+    padding: $spacing-md;
+  }
+  
+  .header-right {
+    gap: $spacing-sm;
+    
+    .el-button {
+      width: 36px;
+      height: 36px;
+    }
+  }
 }
 </style>

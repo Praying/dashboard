@@ -18,7 +18,6 @@ loadTheme()
 
 // 配置Element Plus国际化
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import en from 'element-plus/es/locale/lang/en'
 
 const app = createApp(App)
 

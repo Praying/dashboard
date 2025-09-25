@@ -362,112 +362,284 @@ watch(() => theme.theme, () => {
 </script>
 
 <style scoped lang="scss">
+// 原研哉设计理念：简约、功能性、美感统一
 .dashboard-view {
   .stats-row {
-    margin-bottom: 24px;
+    margin-bottom: $spacing-xl;
   }
 
   .stat-card {
-    border-radius: 8px;
-    transition: transform 0.2s;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border-radius: $border-radius-lg;
+    border: 1px solid var(--border-color-light);
+    background-color: var(--card-background-color);
+    transition: all $transition-base;
+    box-shadow: $shadow-xs;
+    overflow: hidden;
+    position: relative;
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      box-shadow: $shadow-md;
+      border-color: var(--border-color);
+    }
+
+    // 移除Element Plus默认样式
+    :deep(.el-card__body) {
+      padding: $spacing-xl;
     }
   }
 
   .stat-content {
     display: flex;
-    align-items: center;
-    gap: 16px;
+    align-items: flex-start; // 改为顶部对齐，更加优雅
+    gap: $spacing-lg;
     text-align: left;
   }
 
   .stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-    background: var(--primary-color-light);
+    width: 56px; // 稍微增大
+    height: 56px;
+    border-radius: $border-radius-lg;
+    background: transparent; // 移除背景色，更加简洁
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--primary-color);
+    color: var(--text-color-tertiary); // 使用更柔和的颜色
+    position: relative;
+    
+    // 添加微妙的背景圆圈
+    &::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: $border-radius-lg;
+      background: var(--primary-color);
+      opacity: 0.08;
+      transition: opacity $transition-base;
+    }
+
+    .el-icon {
+      font-size: 24px;
+      z-index: 1;
+    }
 
     &.success {
-      background: var(--success-color-light);
       color: var(--success-color);
+      &::before {
+        background: var(--success-color);
+      }
     }
 
     &.warning {
-      background: var(--warning-color-light);
       color: var(--warning-color);
+      &::before {
+        background: var(--warning-color);
+      }
     }
 
     &.error {
-      background: var(--danger-color-light);
       color: var(--danger-color);
+      &::before {
+        background: var(--danger-color);
+      }
     }
   }
 
   .stat-info {
     flex: 1;
+    min-width: 0; // 防止文字溢出
   }
 
   .stat-value {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: $font-size-xxxl; // 使用新的字体系统
+    font-weight: $font-weight-semibold;
     color: var(--text-color);
-    line-height: 1;
+    line-height: $line-height-tight;
+    margin-bottom: $spacing-xs;
+    font-feature-settings: 'tnum' 1; // 等宽数字
   }
 
   .stat-label {
-    font-size: 12px;
+    font-size: $font-size-sm;
     color: var(--text-color-secondary);
-    margin-top: 4px;
+    font-weight: $font-weight-normal;
+    letter-spacing: 0.3px;
   }
 
   .charts-row {
-    margin-bottom: 24px;
+    margin-bottom: $spacing-xl;
   }
 
   .chart-card {
+    border-radius: $border-radius-lg;
+    border: 1px solid var(--border-color-light);
+    box-shadow: $shadow-xs;
+    transition: all $transition-base;
+
+    &:hover {
+      box-shadow: $shadow-sm;
+    }
+
+    :deep(.el-card__header) {
+      padding: $spacing-lg $spacing-xl;
+      border-bottom: 1px solid var(--border-color-light);
+      background-color: var(--surface-color);
+    }
+
+    :deep(.el-card__body) {
+      padding: $spacing-lg;
+    }
+
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-weight: 600;
+      font-weight: $font-weight-medium;
+      font-size: $font-size-md;
       color: var(--text-color);
     }
   }
 
   .chart-container {
-    height: 300px;
+    height: 320px; // 稍微增加高度
+    border-radius: $border-radius-base;
+    overflow: hidden;
   }
 
   .table-row {
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .chart-card {
+      :deep(.el-card__header) {
+        .card-header {
+          .el-button--text {
+            color: var(--primary-color);
+            font-weight: $font-weight-medium;
+            font-size: $font-size-sm;
+            padding: $spacing-xs $spacing-sm;
+            border-radius: $border-radius-base;
+            transition: all $transition-base;
+
+            &:hover {
+              background-color: var(--primary-color-lighter);
+            }
+          }
+        }
+      }
     }
   }
 
   .exchange-tag {
-    margin-right: 4px;
+    margin-right: $spacing-xs;
+    margin-bottom: $spacing-xs;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    background-color: var(--accent-color);
+    color: var(--text-color-secondary);
+    border: none;
+  }
+
+  // 表格优化
+  :deep(.el-table) {
+    border-radius: $border-radius-base;
+    overflow: hidden;
+    
+    .el-table__header-wrapper {
+      th {
+        background-color: var(--surface-color);
+        color: var(--text-color-secondary);
+        font-weight: $font-weight-medium;
+        font-size: $font-size-sm;
+        padding: $spacing-md $spacing-lg;
+        border-bottom: 1px solid var(--border-color-light);
+      }
+    }
+
+    .el-table__body-wrapper {
+      td {
+        padding: $spacing-lg;
+        border-bottom: 1px solid var(--border-color-light);
+        font-size: $font-size-sm;
+      }
+    }
+
+    .el-button-group {
+      .el-button {
+        border-radius: $border-radius-sm;
+        padding: $spacing-xs $spacing-sm;
+        font-size: $font-size-xs;
+        
+        &:first-child {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+        
+        &:last-child {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+      }
+    }
   }
 }
 
-// Responsive styles
+// 响应式优化
+@media (max-width: 1200px) {
+  .dashboard-view {
+    .chart-container {
+      height: 280px;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .dashboard-view {
-    .stat-col {
-      margin-bottom: 16px;
+    .stats-row {
+      margin-bottom: $spacing-lg;
+    }
+
+    .stat-card {
+      margin-bottom: $spacing-md;
+      
+      :deep(.el-card__body) {
+        padding: $spacing-lg;
+      }
+    }
+
+    .stat-content {
+      gap: $spacing-md;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+    }
+
+    .stat-value {
+      font-size: $font-size-xl;
     }
 
     .chart-container {
-      height: 250px;
+      height: 240px;
+    }
+
+    .charts-row {
+      margin-bottom: $spacing-lg;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-view {
+    .stat-content {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: $spacing-sm;
+    }
+
+    .chart-container {
+      height: 200px;
     }
   }
 }

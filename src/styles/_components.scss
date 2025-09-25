@@ -1,0 +1,307 @@
+// 原研哉设计理念：组件级别的精致样式
+// 这些是可复用的组件样式类
+@use 'variables' as *;
+
+// 卡片样式变体
+.card-minimal {
+  background-color: var(--card-background-color);
+  border: 1px solid var(--border-color-light);
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  box-shadow: $shadow-xs;
+  transition: all $transition-base;
+  
+  &:hover {
+    box-shadow: $shadow-sm;
+    transform: translateY(-1px);
+  }
+}
+
+.card-elevated {
+  @extend .card-minimal;
+  box-shadow: $shadow-md;
+  
+  &:hover {
+    box-shadow: $shadow-lg;
+    transform: translateY(-2px);
+  }
+}
+
+.card-flat {
+  background-color: var(--card-background-color);
+  border: 1px solid var(--border-color-light);
+  border-radius: $border-radius-md;
+  padding: $spacing-lg;
+  transition: all $transition-base;
+  
+  &:hover {
+    border-color: var(--border-color);
+  }
+}
+
+// 按钮样式变体
+.btn-minimal {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $border-radius-md;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-sm;
+  transition: all $transition-base;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: var(--hover-background);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-ghost {
+  background-color: transparent;
+  border: none;
+  color: var(--text-color-secondary);
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-sm;
+  transition: all $transition-base;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: var(--hover-background);
+    color: var(--primary-color);
+  }
+}
+
+// 输入框样式变体
+.input-minimal {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: $border-radius-md;
+  padding: $spacing-md;
+  font-size: $font-size-base;
+  color: var(--text-color);
+  transition: all $transition-base;
+  width: 100%;
+  
+  &::placeholder {
+    color: var(--text-color-tertiary);
+  }
+  
+  &:hover {
+    border-color: var(--primary-color);
+  }
+  
+  &:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--focus-outline);
+    outline: none;
+  }
+}
+
+// 标签样式变体
+.tag-minimal {
+  background-color: var(--accent-color);
+  color: var(--text-color-secondary);
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  display: inline-block;
+}
+
+.tag-outlined {
+  background-color: transparent;
+  color: var(--text-color-secondary);
+  border: 1px solid var(--border-color);
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  display: inline-block;
+}
+
+// 分割线样式
+.divider-minimal {
+  height: 1px;
+  background-color: var(--border-color-light);
+  border: none;
+  margin: $spacing-lg 0;
+}
+
+.divider-text {
+  display: flex;
+  align-items: center;
+  margin: $spacing-lg 0;
+  
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(--border-color-light);
+  }
+  
+  &::before {
+    margin-right: $spacing-md;
+  }
+  
+  &::after {
+    margin-left: $spacing-md;
+  }
+  
+  span {
+    color: var(--text-color-secondary);
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+  }
+}
+
+// 头像样式
+.avatar-minimal {
+  width: 40px;
+  height: 40px;
+  border-radius: $border-radius-full;
+  background-color: var(--accent-color);
+  color: var(--text-color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-sm;
+  border: 2px solid var(--border-color-light);
+  transition: all $transition-base;
+  
+  &:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+  }
+}
+
+// 徽章样式
+.badge-minimal {
+  background-color: var(--danger-color);
+  color: white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  padding: 2px 6px;
+  border-radius: $border-radius-full;
+  min-width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+}
+
+// 加载状态
+.loading-minimal {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  color: var(--text-color-secondary);
+  font-size: $font-size-sm;
+  
+  &::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: $border-radius-full;
+    animation: spin 1s linear infinite;
+  }
+}
+
+// 空状态
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xxxl;
+  text-align: center;
+  color: var(--text-color-secondary);
+  
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: $spacing-lg;
+    opacity: 0.5;
+  }
+  
+  .empty-title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    color: var(--text-color);
+    margin-bottom: $spacing-sm;
+  }
+  
+  .empty-description {
+    font-size: $font-size-sm;
+    max-width: 300px;
+    line-height: $line-height-relaxed;
+  }
+}
+
+// 状态指示器
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: $border-radius-full;
+  display: inline-block;
+  margin-right: $spacing-xs;
+  
+  &.status-success {
+    background-color: var(--success-color);
+  }
+  
+  &.status-warning {
+    background-color: var(--warning-color);
+  }
+  
+  &.status-danger {
+    background-color: var(--danger-color);
+  }
+  
+  &.status-info {
+    background-color: var(--info-color);
+  }
+}
+
+// 工具提示样式
+.tooltip-minimal {
+  background-color: var(--card-background-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: $border-radius-md;
+  padding: $spacing-sm $spacing-md;
+  font-size: $font-size-xs;
+  box-shadow: $shadow-lg;
+  backdrop-filter: blur(8px);
+}
+
+// 进度条样式
+.progress-minimal {
+  width: 100%;
+  height: 6px;
+  background-color: var(--border-color);
+  border-radius: $border-radius-full;
+  overflow: hidden;
+  
+  .progress-bar {
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: $border-radius-full;
+    transition: width $transition-base;
+  }
+}

@@ -45,7 +45,7 @@ import { useAuthStore } from '@/store/auth'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { } = useI18n()
 
 const username = ref('user')
 const password = ref('')

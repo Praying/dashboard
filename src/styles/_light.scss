@@ -1,21 +1,49 @@
 // src/styles/_light.scss
+// 原研哉设计理念：克制、自然、本质
 
 :root {
-  --primary-color: #4a90e2;
-  --primary-color-light: #e6f7ff;
-  --secondary-color: #f5a623;
-  --success-color: #67c23a;
-  --success-color-light: #f6ffed;
-  --warning-color: #e6a23c;
-  --warning-color-light: #fffbe6;
-  --danger-color: #f56c6c;
-  --danger-color-light: #fff1f0;
-  --info-color: #909399;
-  --background-color: #ffffff;
-  --text-color: #333333;
-  --text-color-secondary: #909399;
-  --border-color: #e0e0e0;
-  --card-background-color: #f9f9f9;
-  --shadow-color: rgba(0, 0, 0, 0.08);
-  --shadow-hover-color: rgba(0, 0, 0, 0.12);
+  // 主色调 - 更加内敛和自然的蓝灰色
+  --primary-color: #5a7ba8;
+  --primary-color-light: #f4f6f9;
+  --primary-color-lighter: #fafbfc;
+  
+  // 辅助色彩 - 更加柔和的色调
+  --secondary-color: #8b9dc3;
+  --accent-color: #dfe3ea;
+  
+  // 状态色彩 - 减少饱和度，更加自然
+  --success-color: #6b8e5a;
+  --success-color-light: #f6f8f4;
+  --warning-color: #b8956b;
+  --warning-color-light: #faf8f4;
+  --danger-color: #c17a7a;
+  --danger-color-light: #faf6f6;
+  --info-color: #8a8a8a;
+  
+  // 背景色系 - 温暖的白色和灰色
+  --background-color: #fafafa;
+  --background-secondary: #f5f5f5;
+  --card-background-color: #ffffff;
+  --surface-color: #fcfcfc;
+  
+  // 文字色彩 - 更加柔和的对比度
+  --text-color: #2c2c2c;
+  --text-color-secondary: #6b6b6b;
+  --text-color-tertiary: #9a9a9a;
+  --text-color-disabled: #c8c8c8;
+  
+  // 边框和分割线 - 几乎不可见的分割
+  --border-color: #f0f0f0;
+  --border-color-light: #f8f8f8;
+  --divider-color: #f4f4f4;
+  
+  // 阴影系统 - 更加微妙的层次感
+  --shadow-color: rgba(0, 0, 0, 0.04);
+  --shadow-hover-color: rgba(0, 0, 0, 0.08);
+  --shadow-focus-color: rgba(90, 123, 168, 0.15);
+  
+  // 交互状态
+  --hover-background: #f8f9fa;
+  --active-background: #f0f2f5;
+  --focus-outline: rgba(90, 123, 168, 0.3);
 }

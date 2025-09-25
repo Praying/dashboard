@@ -1,21 +1,49 @@
 // src/styles/_dark.scss
+// 原研哉设计理念：深色模式下的温暖与克制
 
 html.dark[data-theme='dark'] {
-  --primary-color: #58a6ff;
-  --primary-color-light: #1f6feb;
-  --secondary-color: #f7b731;
-  --success-color: #3fb950;
-  --success-color-light: #1a7f37;
-  --warning-color: #d29922;
-  --warning-color-light: #9e6a03;
-  --danger-color: #f85149;
-  --danger-color-light: #da3633;
-  --info-color: #8b949e;
-  --background-color: #0d1117;
-  --text-color: #c9d1d9;
-  --text-color-secondary: #8b949e;
-  --border-color: #30363d;
-  --card-background-color: #161b22;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --shadow-hover-color: rgba(0, 0, 0, 0.5);
+  // 主色调 - 在深色背景下更加柔和
+  --primary-color: #7a9cc6;
+  --primary-color-light: #2a3441;
+  --primary-color-lighter: #1f2937;
+  
+  // 辅助色彩
+  --secondary-color: #9bb0d1;
+  --accent-color: #374151;
+  
+  // 状态色彩 - 深色模式下的自然表达
+  --success-color: #7ba05b;
+  --success-color-light: #2d3b28;
+  --warning-color: #c4a574;
+  --warning-color-light: #3b3529;
+  --danger-color: #d18a8a;
+  --danger-color-light: #3b2929;
+  --info-color: #9ca3af;
+  
+  // 背景色系 - 温暖的深色调
+  --background-color: #1a1a1a;
+  --background-secondary: #212121;
+  --card-background-color: #242424;
+  --surface-color: #2a2a2a;
+  
+  // 文字色彩 - 柔和的对比度
+  --text-color: #e8e8e8;
+  --text-color-secondary: #b8b8b8;
+  --text-color-tertiary: #888888;
+  --text-color-disabled: #555555;
+  
+  // 边框和分割线
+  --border-color: #333333;
+  --border-color-light: #2a2a2a;
+  --divider-color: #2f2f2f;
+  
+  // 阴影系统
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --shadow-hover-color: rgba(0, 0, 0, 0.3);
+  --shadow-focus-color: rgba(122, 156, 198, 0.2);
+  
+  // 交互状态
+  --hover-background: #2f2f2f;
+  --active-background: #353535;
+  --focus-outline: rgba(122, 156, 198, 0.4);
 }

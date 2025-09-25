@@ -1,35 +1,30 @@
 // Global styles and variables
+// 原研哉设计理念：建立有机的设计系统
 
-@import 'light';
-@import 'dark';
+@use 'variables';
+@use 'light';
+@use 'dark';
+@use 'components';
 
-// Typography
-$font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-$font-size-base: 14px;
-$line-height-base: 1.5;
-
-// Spacing
-$spacing-unit: 8px;
-
-// Border radius
-$border-radius-base: 4px;
-$border-radius-large: 8px;
-
-// Box shadows
-$box-shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
-$box-shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.15);
-$box-shadow-heavy: 0 8px 16px rgba(0, 0, 0, 0.2);
-
-// Global styles
+// Global styles - 原研哉的简约美学
 * {
   box-sizing: border-box;
 }
 
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
-  font-size: $font-size-base;
-  font-family: $font-family-base;
+  font-size: variables.$font-size-base;
+  font-family: variables.$font-family-base;
+  font-weight: variables.$font-weight-normal;
+  line-height: variables.$line-height-base;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -37,24 +32,76 @@ body {
   padding: 0;
   background-color: var(--background-color);
   color: var(--text-color);
-  line-height: $line-height-base;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color variables.$transition-slow, color variables.$transition-slow;
+  font-feature-settings: 'kern' 1;
+  text-rendering: optimizeLegibility;
 }
 
-// Element Plus dark theme overrides
-html.dark {
-  // --- General ---
+// 重置默认样式
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: variables.$font-weight-semibold;
+  line-height: variables.$line-height-tight;
+  color: var(--text-color);
+}
+
+p {
+  margin: 0;
+  line-height: variables.$line-height-base;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+// 选择状态的优化
+::selection {
+  background-color: var(--primary-color-light);
+  color: var(--primary-color);
+}
+
+::-moz-selection {
+  background-color: var(--primary-color-light);
+  color: var(--primary-color);
+}
+
+// Element Plus theme overrides - 原研哉的精致美学
+html.dark,
+html:not(.dark) {
+  // --- 卡片组件 ---
   .el-card {
     background-color: var(--card-background-color) !important;
-    border-color: var(--border-color) !important;
+    border: 1px solid var(--border-color-light) !important;
+    border-radius: variables.$border-radius-lg !important;
+    box-shadow: variables.$shadow-xs !important;
     color: var(--text-color) !important;
+    transition: all variables.$transition-base !important;
+    
+    &:hover {
+      box-shadow: variables.$shadow-sm !important;
+    }
+    
+    .el-card__header {
+      border-bottom: 1px solid var(--border-color-light) !important;
+      background-color: var(--surface-color) !important;
+      padding: variables.$spacing-lg variables.$spacing-xl !important;
+    }
+    
+    .el-card__body {
+      padding: variables.$spacing-xl !important;
+    }
   }
 
+  // --- 弹出层 ---
   .el-popper {
     background-color: var(--card-background-color) !important;
     border: 1px solid var(--border-color) !important;
+    border-radius: variables.$border-radius-md !important;
     color: var(--text-color) !important;
-    box-shadow: 0 2px 12px var(--shadow-color) !important;
+    box-shadow: variables.$shadow-lg !important;
+    backdrop-filter: blur(8px) !important;
   }
 
   .el-popper__arrow::before {
@@ -62,277 +109,410 @@ html.dark {
     border: 1px solid var(--border-color) !important;
   }
 
-  // --- Form ---
+  // --- 表单 ---
   .el-form-item__label {
     color: var(--text-color) !important;
+    font-weight: variables.$font-weight-medium !important;
+    font-size: variables.$font-size-sm !important;
   }
 
-  // --- Input & Select ---
+  // --- 输入框 ---
   .el-input__wrapper,
   .el-select__wrapper {
-    background-color: var(--card-background-color) !important;
-    box-shadow: 0 0 0 1px var(--border-color) inset !important;
+    background-color: var(--surface-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: $border-radius-md !important;
+    transition: all $transition-base !important;
+    box-shadow: none !important;
+    
+    &:hover {
+      border-color: var(--primary-color) !important;
+    }
   }
 
   .el-input__inner {
     color: var(--text-color) !important;
+    font-size: $font-size-base !important;
+    
+    &::placeholder {
+      color: var(--text-color-tertiary) !important;
+    }
   }
 
   .el-input.is-focus .el-input__wrapper,
   .el-select.is-focus .el-input__wrapper {
-    box-shadow: 0 0 0 1px var(--primary-color) inset !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px var(--focus-outline) !important;
   }
 
-  .el-input-group__append {
-    background-color: var(--card-background-color) !important;
-    border-color: var(--border-color) !important;
-    color: var(--text-color) !important;
-  }
-
-  // --- Input Number ---
-  .el-input-number {
-    .el-input__wrapper {
-      background-color: var(--card-background-color) !important;
-      box-shadow: 0 0 0 1px var(--border-color) inset !important;
-    }
-    .el-input-number__decrease,
-    .el-input-number__increase {
-      background-color: var(--card-background-color) !important;
+  // --- 按钮 ---
+  .el-button {
+    border-radius: $border-radius-md !important;
+    font-weight: $font-weight-medium !important;
+    transition: all $transition-base !important;
+    border: 1px solid var(--border-color) !important;
+    
+    &:not(.el-button--primary):not(.el-button--text) {
       color: var(--text-color) !important;
-      border-color: var(--border-color) !important;
-      &:hover {
+      background-color: var(--card-background-color) !important;
+      
+      &:hover, &:focus {
+        background-color: var(--hover-background) !important;
+        border-color: var(--primary-color) !important;
         color: var(--primary-color) !important;
+        transform: translateY(-1px) !important;
       }
     }
   }
-
-  // --- Select Dropdown ---
-  .el-select__caret {
-    color: var(--text-color-secondary) !important;
-  }
-
-  // --- Switch ---
-  .el-switch__core {
-    background-color: var(--border-color) !important;
-    border-color: var(--border-color) !important;
-  }
-  .el-switch.is-checked .el-switch__core {
-    background-color: var(--primary-color) !important;
-    border-color: var(--primary-color) !important;
-  }
-
-  // --- Button ---
-  .el-button {
-    color: var(--text-color) !important;
-    background-color: var(--card-background-color) !important;
-    border-color: var(--border-color) !important;
-    &:hover, &:focus {
-      background-color: var(--primary-color-light) !important;
-      border-color: var(--primary-color) !important;
-      color: var(--primary-color) !important;
-    }
-  }
+  
   .el-button--primary {
     background-color: var(--primary-color) !important;
     border-color: var(--primary-color) !important;
-    color: #fff !important;
+    color: white !important;
+    
     &:hover, &:focus {
-      background-color: var(--primary-color-light) !important;
+      background-color: var(--primary-color) !important;
       border-color: var(--primary-color) !important;
+      transform: translateY(-1px) !important;
+      box-shadow: $shadow-md !important;
     }
   }
+  
   .el-button--text {
     background-color: transparent !important;
-    border-color: transparent !important;
-    color: var(--text-color) !important;
+    border: none !important;
+    color: var(--primary-color) !important;
+    
     &:hover, &:focus {
-      color: var(--primary-color) !important;
-      background-color: transparent !important;
+      background-color: var(--primary-color-lighter) !important;
     }
   }
 
-  // --- Table ---
+  // --- 表格 ---
   .el-table {
     background-color: var(--card-background-color) !important;
     color: var(--text-color) !important;
+    border-radius: $border-radius-lg !important;
+    overflow: hidden !important;
+    
     th, tr {
-      background-color: var(--card-background-color) !important;
+      background-color: transparent !important;
       color: var(--text-color) !important;
-      border-color: var(--border-color) !important;
+      border-color: var(--border-color-light) !important;
     }
+    
     td {
-      border-color: var(--border-color) !important;
+      border-color: var(--border-color-light) !important;
+      padding: $spacing-lg !important;
     }
+    
     &--enable-row-hover .el-table__body tr:hover > td {
-      background-color: var(--primary-color-light) !important;
+      background-color: var(--hover-background) !important;
     }
   }
+  
   .el-table__header-wrapper th {
-    background-color: var(--card-background-color) !important;
-    color: var(--text-color) !important;
+    background-color: var(--surface-color) !important;
+    color: var(--text-color-secondary) !important;
+    font-weight: $font-weight-medium !important;
+    padding: $spacing-md $spacing-lg !important;
   }
 
-  // --- Tag ---
+  // --- 标签 ---
   .el-tag {
-    background-color: var(--primary-color-light) !important;
-    color: var(--primary-color) !important;
-    border-color: var(--primary-color) !important;
+    border-radius: $border-radius-sm !important;
+    font-weight: $font-weight-medium !important;
+    font-size: $font-size-xs !important;
+    border: none !important;
+    
+    &:not(.el-tag--success):not(.el-tag--warning):not(.el-tag--danger) {
+      background-color: var(--accent-color) !important;
+      color: var(--text-color-secondary) !important;
+    }
   }
+  
   .el-tag--success {
-    background-color: rgba(63, 185, 80, 0.15) !important;
+    background-color: var(--success-color-light) !important;
     color: var(--success-color) !important;
-    border-color: rgba(63, 185, 80, 0.3) !important;
   }
+  
   .el-tag--warning {
     background-color: var(--warning-color-light) !important;
     color: var(--warning-color) !important;
-    border-color: var(--warning-color) !important;
   }
+  
   .el-tag--danger {
     background-color: var(--danger-color-light) !important;
     color: var(--danger-color) !important;
-    border-color: var(--danger-color) !important;
   }
 
-  // --- Other ---
+  // --- 其他组件 ---
   .el-progress-bar__outer {
     background-color: var(--border-color) !important;
+    border-radius: $border-radius-full !important;
   }
+  
   .el-empty__description p {
-    color: var(--text-color) !important;
+    color: var(--text-color-secondary) !important;
   }
-  .el-page-header__title {
-    color: var(--text-color) !important;
+  
+  .el-badge__content {
+    border-radius: $border-radius-full !important;
+    font-weight: $font-weight-medium !important;
+  }
+  
+  // --- 开关 ---
+  .el-switch__core {
+    background-color: var(--border-color) !important;
+    border-radius: $border-radius-full !important;
+    transition: all $transition-base !important;
+  }
+  
+  .el-switch.is-checked .el-switch__core {
+    background-color: var(--primary-color) !important;
   }
 }
 
-  // --- Select Dropdown (inside html.dark) ---
+  // --- 下拉选择器 ---
   .el-select-dropdown {
     background-color: var(--card-background-color) !important;
     border: 1px solid var(--border-color) !important;
-    border-radius: 4px !important;
-    box-shadow: 0 2px 12px var(--shadow-color) !important;
+    border-radius: $border-radius-md !important;
+    box-shadow: $shadow-lg !important;
+    backdrop-filter: blur(8px) !important;
 
     .el-select-dropdown__list {
-      padding: 4px 0 !important;
+      padding: $spacing-xs 0 !important;
     }
 
     .el-select-dropdown__item {
       color: var(--text-color) !important;
-      padding: 0 20px !important;
-      height: 34px !important;
-      line-height: 34px !important;
-      font-size: 14px !important;
+      padding: $spacing-sm $spacing-lg !important;
+      height: auto !important;
+      line-height: $line-height-base !important;
+      font-size: $font-size-sm !important;
+      margin: 0 $spacing-xs !important;
+      border-radius: $border-radius-sm !important;
+      transition: all $transition-base !important;
 
       &.hover, &:hover {
-        background-color: var(--primary-color-light) !important;
+        background-color: var(--hover-background) !important;
+        color: var(--primary-color) !important;
       }
 
       &.selected {
         color: var(--primary-color) !important;
-        font-weight: bold !important;
-        background-color: var(--primary-color-light) !important;
+        font-weight: $font-weight-medium !important;
+        background-color: var(--primary-color-lighter) !important;
       }
 
       &.disabled {
-        color: var(--text-color-secondary) !important;
+        color: var(--text-color-disabled) !important;
         cursor: not-allowed !important;
+        opacity: 0.5 !important;
       }
     }
 
     .el-select-dropdown__empty {
-      padding: 10px 0 !important;
+      padding: $spacing-lg 0 !important;
       margin: 0 !important;
       text-align: center !important;
       color: var(--text-color-secondary) !important;
-      font-size: 14px !important;
+      font-size: $font-size-sm !important;
     }
 
     .el-scrollbar__bar.is-vertical .el-scrollbar__thumb {
-      background-color: var(--text-color-secondary) !important;
+      background-color: var(--text-color-tertiary) !important;
+      border-radius: $border-radius-full !important;
     }
   }
 
-// Utility classes
-.text-center {
-  text-align: center;
-}
+  // --- 消息提示 ---
+  .el-message {
+    border-radius: $border-radius-md !important;
+    box-shadow: $shadow-lg !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid var(--border-color) !important;
+    
+    .el-message__content {
+      font-size: $font-size-sm !important;
+      font-weight: $font-weight-medium !important;
+    }
+  }
 
-.text-left {
-  text-align: left;
-}
+  // --- 警告框 ---
+  .el-alert {
+    border-radius: $border-radius-md !important;
+    border: 1px solid var(--border-color) !important;
+    
+    .el-alert__title {
+      font-size: $font-size-sm !important;
+      font-weight: $font-weight-medium !important;
+    }
+    
+    .el-alert__description {
+      font-size: $font-size-sm !important;
+    }
+  }
 
-.text-right {
-  text-align: right;
-}
+  // --- 加载状态 ---
+  .el-loading-mask {
+    background-color: rgba(var(--background-color), 0.8) !important;
+    backdrop-filter: blur(4px) !important;
+  }
 
-.mt-1 { margin-top: $spacing-unit; }
-.mt-2 { margin-top: $spacing-unit * 2; }
-.mt-3 { margin-top: $spacing-unit * 3; }
-.mt-4 { margin-top: $spacing-unit * 4; }
+  // --- 分页器 ---
+  .el-pagination {
+    .el-pager li {
+      border-radius: $border-radius-sm !important;
+      margin: 0 $spacing-xs !important;
+      transition: all $transition-base !important;
+      
+      &:hover {
+        background-color: var(--hover-background) !important;
+      }
+      
+      &.is-active {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+      }
+    }
+    
+    .btn-prev, .btn-next {
+      border-radius: $border-radius-sm !important;
+      transition: all $transition-base !important;
+      
+      &:hover {
+        background-color: var(--hover-background) !important;
+      }
+    }
+  }
 
-.mb-1 { margin-bottom: $spacing-unit; }
-.mb-2 { margin-bottom: $spacing-unit * 2; }
-.mb-3 { margin-bottom: $spacing-unit * 3; }
-.mb-4 { margin-bottom: $spacing-unit * 4; }
 
-.p-1 { padding: $spacing-unit; }
-.p-2 { padding: $spacing-unit * 2; }
-.p-3 { padding: $spacing-unit * 3; }
-.p-4 { padding: $spacing-unit * 4; }
 
-.flex {
-  display: flex;
-}
+// Utility classes - 精简而实用的工具类
+// 文本对齐
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
 
-.flex-column {
-  flex-direction: column;
-}
+// 字体大小
+.text-xs { font-size: variables.$font-size-xs; }
+.text-sm { font-size: variables.$font-size-sm; }
+.text-base { font-size: variables.$font-size-base; }
+.text-md { font-size: variables.$font-size-md; }
+.text-lg { font-size: variables.$font-size-lg; }
+.text-xl { font-size: variables.$font-size-xl; }
 
-.flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+// 字体重量
+.font-light { font-weight: variables.$font-weight-light; }
+.font-normal { font-weight: variables.$font-weight-normal; }
+.font-medium { font-weight: variables.$font-weight-medium; }
+.font-semibold { font-weight: variables.$font-weight-semibold; }
 
-.flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+// 文本颜色
+.text-primary { color: var(--text-color); }
+.text-secondary { color: var(--text-color-secondary); }
+.text-tertiary { color: var(--text-color-tertiary); }
+.text-accent { color: var(--primary-color); }
 
-.full-width {
-  width: 100%;
-}
+// 间距系统
+.m-0 { margin: 0; }
+.mt-xs { margin-top: variables.$spacing-xs; }
+.mt-sm { margin-top: variables.$spacing-sm; }
+.mt-md { margin-top: variables.$spacing-md; }
+.mt-lg { margin-top: variables.$spacing-lg; }
+.mt-xl { margin-top: variables.$spacing-xl; }
 
-.full-height {
-  height: 100%;
-}
+.mb-xs { margin-bottom: variables.$spacing-xs; }
+.mb-sm { margin-bottom: variables.$spacing-sm; }
+.mb-md { margin-bottom: variables.$spacing-md; }
+.mb-lg { margin-bottom: variables.$spacing-lg; }
+.mb-xl { margin-bottom: variables.$spacing-xl; }
 
-// Scrollbar styles
+.p-0 { padding: 0; }
+.p-xs { padding: variables.$spacing-xs; }
+.p-sm { padding: variables.$spacing-sm; }
+.p-md { padding: variables.$spacing-md; }
+.p-lg { padding: variables.$spacing-lg; }
+.p-xl { padding: variables.$spacing-xl; }
+
+.px-sm { padding-left: variables.$spacing-sm; padding-right: variables.$spacing-sm; }
+.px-md { padding-left: variables.$spacing-md; padding-right: variables.$spacing-md; }
+.px-lg { padding-left: variables.$spacing-lg; padding-right: variables.$spacing-lg; }
+
+.py-sm { padding-top: variables.$spacing-sm; padding-bottom: variables.$spacing-sm; }
+.py-md { padding-top: variables.$spacing-md; padding-bottom: variables.$spacing-md; }
+.py-lg { padding-top: variables.$spacing-lg; padding-bottom: variables.$spacing-lg; }
+
+// 布局
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-start { display: flex; align-items: center; justify-content: flex-start; }
+.flex-end { display: flex; align-items: center; justify-content: flex-end; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+// 尺寸
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.min-h-screen { min-height: 100vh; }
+
+// 圆角
+.rounded-sm { border-radius: variables.$border-radius-sm; }
+.rounded { border-radius: variables.$border-radius-base; }
+.rounded-md { border-radius: variables.$border-radius-md; }
+.rounded-lg { border-radius: variables.$border-radius-lg; }
+.rounded-full { border-radius: variables.$border-radius-full; }
+
+// 阴影
+.shadow-sm { box-shadow: variables.$shadow-sm; }
+.shadow { box-shadow: variables.$shadow-base; }
+.shadow-md { box-shadow: variables.$shadow-md; }
+.shadow-lg { box-shadow: variables.$shadow-lg; }
+
+// 过渡效果
+.transition { transition: all variables.$transition-base; }
+.transition-fast { transition: all variables.$transition-fast; }
+.transition-slow { transition: all variables.$transition-slow; }
+
+// Scrollbar styles - 精致而不突兀的滚动条
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--card-background-color);
-  border-radius: 4px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--text-color-secondary);
-  border-radius: 4px;
+  background: var(--border-color);
+  border-radius: variables.$border-radius-full;
+  transition: background-color variables.$transition-base;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-color);
+  background: var(--text-color-tertiary);
 }
 
-// Animations
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+// Firefox scrollbar
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+// Animations - 自然而优雅的动效
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity variables.$transition-slow;
 }
 
 .fade-enter-from,
@@ -342,7 +522,7 @@ html.dark {
 
 .slide-enter-active,
 .slide-leave-active {
-  transition: transform 0.3s ease;
+  transition: transform variables.$transition-slow;
 }
 
 .slide-enter-from {
@@ -351,4 +531,57 @@ html.dark {
 
 .slide-leave-to {
   transform: translateX(100%);
+}
+
+// 微妙的悬停效果
+.hover-lift {
+  transition: transform variables.$transition-base, box-shadow variables.$transition-base;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: variables.$shadow-md;
+  }
+}
+
+.hover-scale {
+  transition: transform variables.$transition-base;
+  
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+// 焦点状态
+.focus-ring {
+  &:focus {
+    outline: 2px solid var(--focus-outline);
+    outline-offset: 2px;
+  }
+}
+
+// 加载动画
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
