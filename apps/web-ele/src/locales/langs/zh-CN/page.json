@@ -1,0 +1,120 @@
+{
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "codeLogin": "验证码登录",
+    "qrcodeLogin": "二维码登录",
+    "forgetPassword": "忘记密码"
+  },
+  "dashboard": {
+    "title": "概览",
+    "analytics": "分析页",
+    "workspace": "工作台",
+    "reports": "报表管理"
+  },
+  "system": {
+    "title": "系统",
+    "welcome": "欢迎",
+    "welcomePage": {
+      "title": "欢迎使用系统",
+      "message": "欢迎使用我们的管理系统，希望您有愉快的体验！",
+      "morning": "早上好",
+      "forenoon": "上午好",
+      "noon": "中午好",
+      "afternoon": "下午好",
+      "evening": "晚上好",
+      "night": "夜深了",
+      "gettingStarted": "快速开始",
+      "gettingStartedDesc": "了解如何使用系统的基本功能和操作流程",
+      "systemInfo": "系统信息",
+      "systemInfoDesc": "查看系统状态、版本信息和运行环境",
+      "helpDocs": "帮助文档",
+      "helpDocsDesc": "查阅详细的使用指南和常见问题解答",
+      "quickActions": "快速操作",
+      "createNew": "创建新项目",
+      "viewReports": "查看报表",
+      "settings": "系统设置",
+      "help": "帮助中心"
+    },
+    "api-keys": "API密钥",
+    "apiKeys": {
+      "title": "API密钥管理",
+      "description": "管理您的交易所API密钥，用于自动化交易",
+      "addApiKey": "添加API密钥",
+      "editApiKey": "编辑API密钥",
+      "exchange": "交易所",
+      "accountType": "账户类型",
+      "accountName": "账户名称",
+      "apiKey": "API密钥",
+      "apiSecret": "API密钥",
+      "passphrase": "密码短语",
+      "testMode": "测试模式",
+      "status": "状态",
+      "lastUsed": "最后使用",
+      "actions": "操作",
+      "noApiKeysConfigured": "暂未配置API密钥",
+      "addYourFirstApiKey": "添加您的第一个API密钥",
+      "spot": "现货",
+      "futures": "期货",
+      "exchangePlaceholder": "请选择交易所",
+      "enterAccountName": "请输入账户名称",
+      "enterYourApiKey": "请输入您的API密钥",
+      "enterYourApiSecret": "请输入您的API密钥",
+      "enterApiPassphrase": "请输入API密码短语",
+      "validation": {
+        "exchangeRequired": "请选择交易所",
+        "nameRequired": "请输入账户名称",
+        "nameLength": "账户名称长度应在2-50个字符之间",
+        "keyRequired": "请输入API密钥",
+        "secretRequired": "请输入API密钥",
+        "passphraseRequired": "请输入密码短语"
+      },
+      "messages": {
+        "addSuccess": "API密钥添加成功",
+        "updateSuccess": "API密钥更新成功",
+        "saveError": "保存失败，请重试",
+        "deleteSuccess": "API密钥删除成功",
+        "deleteError": "删除失败，请重试",
+        "toggleSuccess": "API密钥{action}成功",
+        "toggleError": "状态切换失败，请重试",
+        "confirmDelete": "确定要删除API密钥 \"{name}\" 吗？",
+        "confirmDeleteTitle": "确认删除",
+        "confirmToggle": "确定要{action}此API密钥吗？",
+        "confirmToggleTitle": "确认{action}",
+        "confirmToggleButton": "确认{action}"
+      },
+      "update": "更新",
+      "add": "添加"
+    },
+    "pbgui-services": "PBGUI服务",
+    "vps-manager": "VPS管理器"
+  },
+  "information": {
+    "title": "信息",
+    "dashboards": "仪表盘",
+    "coin-data": "货币数据"
+  },
+  "passivbot": {
+    "v7": {
+      "title": "PBv7",
+      "run": "运行",
+      "backtest": "回测",
+      "optimize": "优化",
+      "gridVisualizer": "网格可视化",
+      "balanceCalculator": "余额计算器"
+    },
+    "v6multi": {
+      "title": "PBv6 Multi",
+      "run": "运行",
+      "backtest": "回测",
+      "optimize": "优化"
+    },
+    "v6single": {
+      "title": "PBv6 Single",
+      "run": "运行",
+      "backtest": "回测",
+      "optimize": "优化",
+      "spotView": "现货视图"
+    }
+  }
+}

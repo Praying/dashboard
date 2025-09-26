@@ -1,0 +1,120 @@
+{
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "codeLogin": "Code Login",
+    "qrcodeLogin": "Qr Code Login",
+    "forgetPassword": "Forget Password"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "analytics": "Analytics",
+    "workspace": "Workspace",
+    "reports": "Reports"
+  },
+  "system": {
+    "title": "System",
+    "welcome": "Welcome",
+    "welcomePage": {
+      "title": "Welcome to the System",
+      "message": "Welcome to our management system, we hope you have a pleasant experience!",
+      "morning": "Good morning",
+      "forenoon": "Good forenoon",
+      "noon": "Good noon",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening",
+      "night": "Good night",
+      "gettingStarted": "Getting Started",
+      "gettingStartedDesc": "Learn how to use the basic functions and operation流程 of the system",
+      "systemInfo": "System Information",
+      "systemInfoDesc": "View system status, version information and runtime environment",
+      "helpDocs": "Help Documentation",
+      "helpDocsDesc": "Consult detailed user guides and frequently asked questions",
+      "quickActions": "Quick Actions",
+      "createNew": "Create New Project",
+      "viewReports": "View Reports",
+      "settings": "System Settings",
+      "help": "Help Center"
+    },
+    "api-keys": "API-Keys",
+    "apiKeys": {
+      "title": "API Key Management",
+      "description": "Manage your exchange API keys for automated trading",
+      "addApiKey": "Add API Key",
+      "editApiKey": "Edit API Key",
+      "exchange": "Exchange",
+      "accountType": "Account Type",
+      "accountName": "Account Name",
+      "apiKey": "API Key",
+      "apiSecret": "API Secret",
+      "passphrase": "Passphrase",
+      "testMode": "Test Mode",
+      "status": "Status",
+      "lastUsed": "Last Used",
+      "actions": "Actions",
+      "noApiKeysConfigured": "No API keys configured",
+      "addYourFirstApiKey": "Add your first API key",
+      "spot": "Spot",
+      "futures": "Futures",
+      "exchangePlaceholder": "Select exchange",
+      "enterAccountName": "Enter account name",
+      "enterYourApiKey": "Enter your API key",
+      "enterYourApiSecret": "Enter your API secret",
+      "enterApiPassphrase": "Enter API passphrase",
+      "validation": {
+        "exchangeRequired": "Please select an exchange",
+        "nameRequired": "Please enter account name",
+        "nameLength": "Account name should be between 2-50 characters",
+        "keyRequired": "Please enter API key",
+        "secretRequired": "Please enter API secret",
+        "passphraseRequired": "Please enter passphrase"
+      },
+      "messages": {
+        "addSuccess": "API key added successfully",
+        "updateSuccess": "API key updated successfully",
+        "saveError": "Failed to save, please try again",
+        "deleteSuccess": "API key deleted successfully",
+        "deleteError": "Failed to delete, please try again",
+        "toggleSuccess": "API key {action}d successfully",
+        "toggleError": "Failed to toggle status, please try again",
+        "confirmDelete": "Are you sure you want to delete the API key \"{name}\"?",
+        "confirmDeleteTitle": "Confirm Delete",
+        "confirmToggle": "Are you sure you want to {action} this API key?",
+        "confirmToggleTitle": "Confirm {action}",
+        "confirmToggleButton": "Confirm {action}"
+      },
+      "update": "Update",
+      "add": "Add"
+    },
+    "pbgui-services": "PBGUI Services",
+    "vps-manager": "VPS Manager"
+  },
+  "information": {
+    "title": "Information",
+    "dashboards": "Dashboards",
+    "coin-data": "Coin Data"
+  },
+  "passivbot": {
+    "v7": {
+      "title": "PBv7",
+      "run": "Run",
+      "backtest": "Backtest",
+      "optimize": "Optimize",
+      "gridVisualizer": "Grid Visualizer",
+      "balanceCalculator": "Balance Calculator"
+    },
+    "v6multi": {
+      "title": "PBv6 Multi",
+      "run": "Run",
+      "backtest": "Backtest",
+      "optimize": "Optimize"
+    },
+    "v6single": {
+      "title": "PBv6 Single",
+      "run": "Run",
+      "backtest": "Backtest",
+      "optimize": "Optimize",
+      "spotView": "Spot View"
+    }
+  }
+}

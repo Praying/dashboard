@@ -1,0 +1,17 @@
+{
+  "noData": "No data",
+  "active": "Active",
+  "inactive": "Inactive",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "save": "Save",
+  "edit": "Edit",
+  "add": "Add",
+  "update": "Update",
+  "confirm": "Confirm",
+  "loading": "Loading...",
+  "success": "Success",
+  "error": "Error",
+  "warning": "Warning",
+  "info": "Info"
+}
