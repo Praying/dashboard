@@ -23,12 +23,12 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'APIKeys',
-        path: 'api-keys',
-        component: () => import('#/views/system/api-keys/index.vue'),
+        name: 'Exchanges',
+        path: 'exchanges',
+        component: () => import('#/views/system/exchanges/index.vue'),
         meta: {
-          icon: 'lucide:key',
-          title: $t('page.system.api-keys'),
+          icon: 'lucide:landmark',
+          title: $t('page.system.exchanges'),
         },
       },
       {

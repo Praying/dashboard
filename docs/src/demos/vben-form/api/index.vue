@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { Button, message, Space } from 'ant-design-vue';
+import { useVbenForm } from '@vben/common-ui';
 
-import { useVbenForm } from '#/adapter/form';
+import { Button, message, Space } from 'ant-design-vue';
 
 const [BaseForm, formApi] = useVbenForm({
   // 所有表单项共用，可单独在表单内覆盖

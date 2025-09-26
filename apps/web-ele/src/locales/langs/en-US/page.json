@@ -36,8 +36,8 @@
       "settings": "System Settings",
       "help": "Help Center"
     },
-    "api-keys": "API-Keys",
-    "apiKeys": {
+    "exchanges": "Exchanges",
+    "exchange": {
       "title": "API Key Management",
       "description": "Manage your exchange API keys for automated trading",
       "addApiKey": "Add API Key",
