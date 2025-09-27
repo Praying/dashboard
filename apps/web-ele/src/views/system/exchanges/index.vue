@@ -280,11 +280,18 @@ const [Grid] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Page title="交易所" description="管理您的交易所 API 凭据">
-    <template #extra>
-      <ElButton type="primary" @click="handleAdd"> + 添加 API 密钥 </ElButton>
-    </template>
-    <ElCard class="mt-3" title="交易所列表">
+  <Page >
+
+    <ElCard class="mt-5" title="交易所列表">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-lg font-medium">交易所</div>
+            <div class="text-gray-500 text-sm">管理您的交易所 API 凭据</div>
+          </div>
+          <ElButton type="primary" @click="handleAdd">+ 添加 API 密钥</ElButton>
+        </div>
+      </template>
       <template #default>
         <Grid>
           <template #col-exchange="{ row }">
