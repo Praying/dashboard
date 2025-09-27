@@ -5,10 +5,16 @@ import { useVbenForm } from '#/adapter/form';
 
 const schemas: VbenFormSchema[] = [
   {
+    component: 'Divider',
+    fieldName: 'divider_basic',
+    label: '基础设置',
+    wrapperClass: 'col-span-24',
+  },
+  {
     component: 'Select',
     fieldName: 'exchanges',
     label: 'Exchanges',
-    wrapperClass: 'col-span-8',
+    wrapperClass: 'col-span-12',
     componentProps: {
       multiple: true,
       filterable: true,
@@ -20,42 +26,60 @@ const schemas: VbenFormSchema[] = [
     component: 'Input',
     fieldName: 'backtest_name',
     label: 'Backtest Name',
-    wrapperClass: 'col-span-8',
+    wrapperClass: 'col-span-12',
   },
   {
     component: 'DatePicker',
     fieldName: 'start_date',
     label: 'start_date',
-    wrapperClass: 'col-span-4',
+    wrapperClass: 'col-span-12',
   },
   {
     component: 'DatePicker',
     fieldName: 'end_date',
     label: 'end_date',
-    wrapperClass: 'col-span-4',
+    wrapperClass: 'col-span-12',
   },
   {
     component: 'InputNumber',
     fieldName: 'starting_balance',
     label: 'starting_balance',
-    wrapperClass: 'col-span-6',
+    wrapperClass: 'col-span-12',
+  },
+  {
+    component: 'InputNumber',
+    fieldName: 'market_cap',
+    label: 'market_cap',
+    wrapperClass: 'col-span-12',
+  },
+  {
+    component: 'Divider',
+    fieldName: 'divider_filter',
+    label: '策略过滤条件',
+    wrapperClass: 'col-span-24',
   },
   {
     component: 'InputNumber',
     fieldName: 'minimum_coin_age_days',
     label: 'minimum_coin_age_days',
-    wrapperClass: 'col-span-6',
+    wrapperClass: 'col-span-8',
+  },
+  {
+    component: 'InputNumber',
+    fieldName: 'vol_mcap',
+    label: 'vol/mcap',
+    wrapperClass: 'col-span-8',
   },
   {
     component: 'InputNumber',
     fieldName: 'gap_tolerance_ohlcvs_minutes',
     label: 'gap_tolerance_ohlcvs_minutes',
-    wrapperClass: 'col-span-6',
+    wrapperClass: 'col-span-8',
   },
   {
     component: 'Checkbox',
     fieldName: 'combine_ohlcvs',
-    wrapperClass: 'col-span-3',
+    wrapperClass: 'col-span-4',
     renderComponentContent: () => ({
       default: () => 'combine_ohlcvs',
     }),
@@ -63,7 +87,7 @@ const schemas: VbenFormSchema[] = [
   {
     component: 'Checkbox',
     fieldName: 'use_btc_collateral',
-    wrapperClass: 'col-span-3',
+    wrapperClass: 'col-span-4',
     renderComponentContent: () => ({
       default: () => 'use_btc_collateral',
     }),
@@ -71,28 +95,40 @@ const schemas: VbenFormSchema[] = [
   {
     component: 'Checkbox',
     fieldName: 'compress_cache',
-    wrapperClass: 'col-span-3',
+    wrapperClass: 'col-span-4',
     renderComponentContent: () => ({
       default: () => 'compress_cache',
     }),
   },
   {
-    component: 'InputNumber',
-    fieldName: 'market_cap',
-    label: 'market_cap',
-    wrapperClass: 'col-span-6',
+    component: 'Checkbox',
+    fieldName: 'only_cpt',
+    wrapperClass: 'col-span-4',
+    renderComponentContent: () => ({
+      default: () => 'only_cpt',
+    }),
   },
   {
-    component: 'InputNumber',
-    fieldName: 'vol_mcap',
-    label: 'vol/mcap',
-    wrapperClass: 'col-span-6',
+    component: 'Checkbox',
+    fieldName: 'notices_ignore',
+    wrapperClass: 'col-span-4',
+    renderComponentContent: () => ({
+      default: () => 'notices_ignore',
+    }),
+  },
+  {
+    component: 'Checkbox',
+    fieldName: 'apply_filters',
+    wrapperClass: 'col-span-4',
+    renderComponentContent: () => ({
+      default: () => 'apply_filters',
+    }),
   },
   {
     component: 'Select',
     fieldName: 'tags',
     label: 'tags',
-    wrapperClass: 'col-span-6',
+    wrapperClass: 'col-span-24',
     componentProps: {
       multiple: true,
       filterable: true,
@@ -101,28 +137,10 @@ const schemas: VbenFormSchema[] = [
     },
   },
   {
-    component: 'Checkbox',
-    fieldName: 'only_cpt',
-    wrapperClass: 'col-span-2',
-    renderComponentContent: () => ({
-      default: () => 'only_cpt',
-    }),
-  },
-  {
-    component: 'Checkbox',
-    fieldName: 'notices_ignore',
-    wrapperClass: 'col-span-2',
-    renderComponentContent: () => ({
-      default: () => 'notices_ignore',
-    }),
-  },
-  {
-    component: 'Checkbox',
-    fieldName: 'apply_filters',
-    wrapperClass: 'col-span-2',
-    renderComponentContent: () => ({
-      default: () => 'apply_filters',
-    }),
+    component: 'Divider',
+    fieldName: 'divider_coins',
+    label: '币种选择',
+    wrapperClass: 'col-span-24',
   },
   {
     component: 'Select',
@@ -171,32 +189,32 @@ const schemas: VbenFormSchema[] = [
   {
     component: 'Divider',
     fieldName: 'divider_coin_overrides',
-    label: 'Coin Overrides',
+    label: '参数配置',
     wrapperClass: 'col-span-24',
   },
   {
     component: 'InputNumber',
     fieldName: 'long_twe',
     label: 'long twe',
-    wrapperClass: 'col-span-6',
+    wrapperClass: 'col-span-12',
   },
   {
     component: 'InputNumber',
     fieldName: 'long_positions',
     label: 'long positions',
-    wrapperClass: 'col-span-6',
+    wrapperClass: 'col-span-12',
   },
   {
     component: 'InputNumber',
     fieldName: 'short_twe',
     label: 'short twe',
-    wrapperClass: 'col-span-6',
+    wrapperClass: 'col-span-12',
   },
   {
     component: 'InputNumber',
     fieldName: 'short_positions',
     label: 'short positions',
-    wrapperClass: 'col-span-6',
+    wrapperClass: 'col-span-12',
   },
   {
     component: 'CodeEditor',
