@@ -7,12 +7,12 @@ import type { Recordable } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, reactive, ref } from 'vue';
+import { h, reactive, ref, computed } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, useVbenDrawer } from '@vben/common-ui';
 import { useI18n } from '@vben/locales';
 
-import { ElButton, ElCard } from 'element-plus';
+import { ElButton, ElCard, ElDrawer, ElInput } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -35,34 +35,35 @@ interface ApiKey {
 }
 
 const modalTitle = ref('');
+const drawerVisible = ref(false);
 const { t } = useI18n();
 
 // 交易所数据
 const exchangeCategories = {
   crypto: {
-    label: '加密货币',
+    label: t('page.system.exchange.cryptoCurrency'),
     exchanges: [
-      { label: '币安期货', value: 'binance_futures' },
-      { label: '币安现货', value: 'binance_spot' },
-      { label: 'OKX期货', value: 'okx_futures' },
-      { label: 'OKX现货', value: 'okx_spot' },
-      { label: 'Bybit期货', value: 'bybit_futures' },
-      { label: 'Bybit现货', value: 'bybit_spot' },
-      { label: 'Bitfinex', value: 'bitfinex' },
-      { label: 'HTX期货', value: 'htx_futures' },
+      { label: t('page.system.exchange.binanceFutures'), value: 'binance_futures' },
+      { label: t('page.system.exchange.binanceSpot'), value: 'binance_spot' },
+      { label: t('page.system.exchange.okxFutures'), value: 'okx_futures' },
+      { label: t('page.system.exchange.okxSpot'), value: 'okx_spot' },
+      { label: t('page.system.exchange.bybitFutures'), value: 'bybit_futures' },
+      { label: t('page.system.exchange.bybitSpot'), value: 'bybit_spot' },
+      { label: t('page.system.exchange.bitfinex'), value: 'bitfinex' },
+      { label: t('page.system.exchange.htxFutures'), value: 'htx_futures' },
     ],
   },
   futu: {
-    label: '富途证券',
-    exchanges: [{ label: '富途证券', value: 'futu' }],
+    label: t('page.system.exchange.futuSecurities'),
+    exchanges: [{ label: t('page.system.exchange.futuSecurities'), value: 'futu' }],
   },
   ibkr: {
-    label: '盈透证券',
-    exchanges: [{ label: '盈透证券', value: 'ibkr' }],
+    label: t('page.system.exchange.interactiveBrokers'),
+    exchanges: [{ label: t('page.system.exchange.interactiveBrokers'), value: 'ibkr' }],
   },
   generic: {
-    label: '通用协议',
-    exchanges: [{ label: '通用协议', value: 'generic' }],
+    label: t('page.system.exchange.genericProtocol'),
+    exchanges: [{ label: t('page.system.exchange.genericProtocol'), value: 'generic' }],
   },
 };
 type ExchangeCategories = typeof exchangeCategories;
@@ -72,9 +73,9 @@ const formSchemas: VbenFormSchema[] = [
   {
     component: 'Select',
     fieldName: 'exchangeCategory',
-    label: '选择协议',
+    label: t('page.system.exchange.selectProtocol'),
     componentProps: {
-      placeholder: '加密货币',
+      placeholder: t('page.system.exchange.cryptoCurrency'),
       options: Object.entries(exchangeCategories).map(([value, { label }]) => ({
         label,
         value,
@@ -100,14 +101,16 @@ const formSchemas: VbenFormSchema[] = [
       },
     },
     rules: 'required',
+    labelClass: 'required-label',
   },
   {
     component: 'Select',
     fieldName: 'exchange',
-    label: '选择交易所',
+    label: t('page.system.exchange.selectExchange'),
     componentProps: {
-      placeholder: '币安期货',
+      placeholder: t('page.system.exchange.binanceFutures'),
       options: exchangeCategories.crypto.exchanges, // Initial options
+      defaultValue: 'binance_futures',
       onChange: (
         value: string,
         {
@@ -125,13 +128,16 @@ const formSchemas: VbenFormSchema[] = [
       },
     },
     rules: 'required',
+    labelClass: 'required-label',
   },
   {
     component: 'Input',
     fieldName: 'apiKey',
-    label: 'Access Key',
+    label: t('page.system.exchange.accessKey'),
     componentProps: {
-      placeholder: 'Access Key',
+      placeholder: t('page.system.exchange.accessKey'),
+      type: 'password',
+      'show-password': true,
       slots: {
         'label-suffix': () =>
           h('span', {
@@ -140,13 +146,16 @@ const formSchemas: VbenFormSchema[] = [
       },
     },
     rules: 'required',
+    labelClass: 'required-label',
   },
   {
     component: 'Input',
     fieldName: 'apiSecret',
-    label: 'Secret Key',
+    label: t('page.system.exchange.secretKey'),
     componentProps: {
-      placeholder: 'Secret Key',
+      placeholder: t('page.system.exchange.secretKey'),
+      type: 'password',
+      'show-password': true,
       slots: {
         'label-suffix': () =>
           h('span', {
@@ -155,15 +164,17 @@ const formSchemas: VbenFormSchema[] = [
       },
     },
     rules: 'required',
+    labelClass: 'required-label',
   },
   {
     component: 'Input',
     fieldName: 'accountName',
-    label: '标签',
+    label: t('page.system.exchange.label'),
     componentProps: {
-      placeholder: '币安期货',
+      placeholder: t('page.system.exchange.binanceFutures'),
     },
     rules: 'required',
+    labelClass: 'required-label',
   },
 ];
 
@@ -171,23 +182,22 @@ const [Form, formApi] = useVbenForm({
   schema: formSchemas,
   showDefaultActions: false,
   layout: 'horizontal',
+  commonConfig: {
+    colon: true,
+    labelWidth: 120,
+  },
 });
 
-const [Modal, modalApi] = useVbenModal({
-  onCancel: () => {
-    modalApi.close();
+const loading = ref(false);
+
+const drawerApi = {
+  open: () => {
+    drawerVisible.value = true;
   },
-  onConfirm: async () => {
-    try {
-      await formApi.validate();
-      const values = await formApi.getValues();
-      console.warn('form values:', values);
-      modalApi.close();
-    } catch (error) {
-      console.error(error);
-    }
+  close: () => {
+    drawerVisible.value = false;
   },
-});
+};
 
 const gridData = reactive<ApiKey[]>([
   {
@@ -214,14 +224,14 @@ const gridData = reactive<ApiKey[]>([
 
 function handleAdd() {
   formApi.resetForm();
-  modalTitle.value = '添加交易所';
-  modalApi.open();
+  modalTitle.value = t('page.system.exchange.addExchange');
+  drawerApi.open();
 }
 
 function handleEdit(row: ApiKey) {
   formApi.setValues(row);
   modalTitle.value = t('page.system.exchange.editApiKey');
-  modalApi.open();
+  drawerApi.open();
 }
 
 function handleDelete(row: ApiKey) {
@@ -238,32 +248,32 @@ const gridOptions: VxeGridProps<ApiKey> = {
       slots: {
         default: 'col-exchange',
       },
-      title: '名称',
+      title: t('page.system.exchange.name'),
       align: 'left',
       headerAlign: 'left',
     },
     {
       field: 'accountName',
-      title: 'API Name',
+      title: t('page.system.exchange.apiName'),
       align: 'left',
       headerAlign: 'left',
     },
     {
       field: 'exchangeName',
-      title: '交易所名称',
+      title: t('page.system.exchange.exchangeName'),
       align: 'left',
       headerAlign: 'left',
     },
     {
       field: 'lastUsed',
-      title: '日期',
+      title: t('page.system.exchange.date'),
       align: 'left',
       headerAlign: 'left',
     },
     {
       width: 200,
       fixed: 'right',
-      title: '操作项',
+      title: t('page.system.exchange.operation'),
       slots: {
         default: 'col-action',
       },
@@ -282,14 +292,14 @@ const [Grid] = useVbenVxeGrid({
 <template>
   <Page >
 
-    <ElCard class="mt-5" title="交易所列表">
+    <ElCard class="mt-5" :title="t('page.system.exchange.exchangeList')">
       <template #header>
         <div class="flex items-center justify-between">
           <div>
-            <div class="text-lg font-medium">交易所</div>
-            <div class="text-gray-500 text-sm">管理您的交易所 API 凭据</div>
+            <div class="text-lg font-medium">{{ t('page.system.exchanges') }}</div>
+            <div class="text-gray-500 text-sm">{{ t('page.system.exchange.manageApiCredentials') }}</div>
           </div>
-          <ElButton type="primary" @click="handleAdd">+ 添加 API 密钥</ElButton>
+          <ElButton type="primary" @click="handleAdd">+ {{ t('page.system.exchange.addApiKey') }}</ElButton>
         </div>
       </template>
       <template #default>
@@ -310,13 +320,13 @@ const [Grid] = useVbenVxeGrid({
           <template #col-action="{ row }">
             <div class="flex items-center justify-center gap-2 text-base">
               <ElButton link type="danger" @click="handleDelete(row)">
-                删除
+                {{ t('page.system.exchange.delete') }}
               </ElButton>
               <ElButton link type="primary" @click="handleEdit(row)">
-                编辑
+                {{ t('page.system.exchange.edit') }}
               </ElButton>
               <ElButton link type="success" @click="handleTrade(row)">
-                交易
+                {{ t('page.system.exchange.trade') }}
               </ElButton>
             </div>
           </template>
@@ -324,10 +334,21 @@ const [Grid] = useVbenVxeGrid({
       </template>
     </ElCard>
 
-    <Modal v-model:title="modalTitle">
-      <div class="flex flex-col gap-5">
-        <Form />
-      </div>
-    </Modal>
+    <ElDrawer v-model="drawerVisible" v-model:title="modalTitle" size="50%">
+      <ElCard class="h-full">
+        <div class="flex flex-col gap-5">
+          <Form />
+        </div>
+      </ElCard>
+      <template #footer>
+        <div class="flex justify-end">
+          <ElButton @click="drawerVisible = false">{{ t('common.cancel') }}</ElButton>
+          <ElButton type="primary" @click="handleAdd">
+            {{ t('common.submit') }}
+          </ElButton>
+        </div>
+      </template>
+    </ElDrawer>
   </Page>
 </template>
+
