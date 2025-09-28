@@ -13,5 +13,28 @@
   "success": "成功",
   "error": "错误",
   "warning": "警告",
-  "info": "信息"
+  "info": "信息",
+  "table": {
+    "name": "名称",
+    "exchange": "交易所",
+    "filename": "文件名",
+    "time": "时间",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "actions": {
+    "start": "开始",
+    "viewResults": "查看结果",
+    "viewLog": "查看日志",
+    "delete": "删除"
+  },
+  "status": {
+    "complete": "完成",
+    "running": "运行中",
+    "failed": "失败"
+  },
+  "choose": "请选择",
+  "chooseOrCreate": "请选择或创建",
+  "remove": "移除",
+  "submit": "提交"
 }

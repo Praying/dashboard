@@ -13,5 +13,28 @@
   "success": "Success",
   "error": "Error",
   "warning": "Warning",
-  "info": "Info"
+  "info": "Info",
+  "table": {
+    "name": "Name",
+    "exchange": "Exchange",
+    "filename": "Filename",
+    "time": "Time",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "actions": {
+    "start": "Start",
+    "viewResults": "View Results",
+    "viewLog": "View Log",
+    "delete": "Delete"
+  },
+  "status": {
+    "complete": "Complete",
+    "running": "Running",
+    "failed": "Failed"
+  },
+  "choose": "Choose",
+  "chooseOrCreate": "Choose or create",
+  "remove": "Remove",
+  "submit": "Submit"
 }

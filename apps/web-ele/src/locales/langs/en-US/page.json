@@ -101,7 +101,42 @@
       "backtest": "Backtest",
       "optimize": "Optimize",
       "gridVisualizer": "Grid Visualizer",
-      "balanceCalculator": "Balance Calculator"
+      "balanceCalculator": "Balance Calculator",
+      "backtestPage": {
+        "title": "Backtest",
+        "description": "Manage and run backtest tasks",
+        "listTitle": "Backtest List",
+        "listDescription": "View and manage all backtest tasks",
+        "newBacktest": "New Backtest",
+        "form": {
+          "basicSettings": "Basic Settings",
+          "exchanges": "Exchanges",
+          "backtestName": "Backtest Name",
+          "startingBalance": "Starting Balance",
+          "startDate": "Start Date",
+          "endDate": "End Date",
+          "marketCap": "Market Cap",
+          "filterConditions": "Filter Conditions",
+          "minCoinAge": "Min Coin Age (days)",
+          "volMcap": "Volume/Market Cap",
+          "gapTolerance": "Gap Tolerance (minutes)",
+          "coinSelection": "Coin Selection",
+          "approvedCoinsLong": "Approved Coins Long",
+          "approvedCoinsShort": "Approved Coins Short",
+          "ignoredSymbolsLong": "Ignored Symbols Long",
+          "ignoredSymbolsShort": "Ignored Symbols Short",
+          "paramConfig": "Parameter Configuration",
+          "longTwe": "Long TWE",
+          "longPositions": "Long Positions",
+          "shortTwe": "Short TWE",
+          "shortPositions": "Short Positions",
+          "coinOverrides": "Coin Overrides",
+          "addCoinOverride": "Add Coin Override",
+          "symbol": "Symbol",
+          "long": "Long Parameters",
+          "short": "Short Parameters"
+        }
+      }
     },
     "v6multi": {
       "title": "PBv6 Multi",

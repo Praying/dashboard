@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 
+import type { VxeGridProps } from '#/adapter/vxe-table';
 import { Page } from '@vben/common-ui';
+import { useI18n } from '@vben/locales';
 
 import dayjs from 'dayjs';
 import {
   ElButton,
   ElCard,
-  ElCheckbox,
   ElCol,
   ElCollapse,
   ElCollapseItem,
@@ -20,11 +21,126 @@ import {
   ElOption,
   ElRow,
   ElSelect,
+  ElTag,
 } from 'element-plus';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+
+const { t, locale } = useI18n();
 
 interface CoinOverride {
   symbol: string;
 }
+
+interface Backtest {
+  id: number;
+  status: 'complete' | 'running' | 'failed';
+  name: string;
+  filename: string;
+  time: string;
+  exchange: string;
+}
+
+const tableData = reactive<Backtest[]>([
+  {
+    id: 0,
+    status: 'complete',
+    name: 'rank8',
+    filename: '6c1b180e-3af2-458a-9f03-19bfd4a7b7cd',
+    time: '2025-09-07 12:54:30',
+    exchange: 'binance',
+  },
+  {
+    id: 1,
+    status: 'running',
+    name: 'rank8-last-9-month',
+    filename: '3a93300f-c796-4187-9d31-568f0e18273e',
+    time: '2025-09-07 13:18:46',
+    exchange: 'binance',
+  },
+  {
+    id: 2,
+    status: 'failed',
+    name: 'test-fail',
+    filename: '3a93300f-c796-4187-9d31-568f0e18273e',
+    time: '2025-09-07 14:00:00',
+    exchange: 'binance',
+  },
+]);
+
+const gridOptions = reactive<VxeGridProps<Backtest>>({
+  columns: [],
+  data: tableData,
+  sortConfig: {
+    defaultSort: { field: 'id', order: 'desc' },
+  },
+});
+
+watch(
+  locale,
+  () => {
+    gridOptions.columns = [
+      {
+        field: 'id',
+        title: 'ID',
+        sortable: true,
+        width: 80,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'name',
+        title: t('common.table.name'),
+        sortable: true,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'exchange',
+        title: t('common.table.exchange'),
+        sortable: true,
+        slots: { default: 'col-exchange' },
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'filename',
+        title: t('common.table.filename'),
+        sortable: true,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'time',
+        title: t('common.table.time'),
+        sortable: true,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'status',
+        title: t('common.table.status'),
+        sortable: true,
+        slots: { default: 'col-status' },
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        title: t('common.table.actions'),
+        width: 300,
+        fixed: 'right',
+        slots: { default: 'col-action' },
+        align: 'center',
+        headerAlign: 'center',
+      },
+    ];
+  },
+  { immediate: true },
+);
+
+const [Grid] = useVbenVxeGrid({
+  gridOptions,
+});
 
 const formModel = reactive({
   exchanges: 'binance',
@@ -143,42 +259,93 @@ function handleSubmit() {
 </script>
 
 <template>
-  <Page
-    content-class="flex flex-col gap-4"
-    description="基于Passivbot v7版本的回测页面"
-    title="PBv7 回测"
-  >
-    <template #extra>
-      <ElButton class="mb-2" type="primary" @click="drawer = true">
-        新建回测
-      </ElButton>
-    </template>
-    <ElCard>
+  <Page>
+    <ElCard class="mt-5">
+      <template #header>
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-lg font-medium">
+              {{ t('page.passivbot.v7.backtestPage.listTitle') }}
+            </div>
+            <div class="text-gray-500 text-sm">
+              {{ t('page.passivbot.v7.backtestPage.listDescription') }}
+            </div>
+          </div>
+          <ElButton type="primary" @click="drawer = true">
+            {{ t('page.passivbot.v7.backtestPage.newBacktest') }}
+          </ElButton>
+        </div>
+      </template>
       <template #default>
-        <Grid />
+        <Grid>
+          <template #col-status="{ row }">
+            <ElTag
+              :type="
+                row.status === 'complete'
+                  ? 'success'
+                  : row.status === 'running'
+                    ? 'primary'
+                    : 'danger'
+              "
+            >
+              {{ t(`common.status.${row.status}`) }}
+            </ElTag>
+          </template>
+          <template #col-exchange="{ row }">
+            <div class="flex items-center gap-2">
+              <span
+                v-if="row.exchange === 'binance'"
+                class="icon-[logos--binance] text-2xl"
+              ></span>
+              <span>{{ row.exchange }}</span>
+            </div>
+          </template>
+          <template #col-action="{ row }">
+            <div class="flex items-center justify-center gap-2 text-base">
+              <ElButton link type="primary">
+                {{ t('common.actions.start') }}
+              </ElButton>
+              <ElButton link type="success">
+                {{ t('common.actions.viewResults') }}
+              </ElButton>
+              <ElButton link type="info">
+                {{ t('common.actions.viewLog') }}
+              </ElButton>
+              <ElButton link type="danger">
+                {{ t('common.actions.delete') }}
+              </ElButton>
+            </div>
+          </template>
+        </Grid>
       </template>
     </ElCard>
-    <ElDrawer v-model="drawer" title="新建回测" size="50%">
+    <ElDrawer
+      v-model="drawer"
+      :title="t('page.passivbot.v7.backtestPage.newBacktest')"
+      size="50%"
+    >
       <ElForm :model="formModel" label-position="top">
         <ElCard class="mb-4">
           <template #header>
-            <div class="font-bold">基础设置</div>
+            <div class="font-bold">
+              {{ t('page.passivbot.v7.backtestPage.form.basicSettings') }}
+            </div>
           </template>
           <ElRow :gutter="20">
             <ElCol :span="8">
-              <ElFormItem label="Exchanges">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.exchanges')">
                 <ElSelect v-model="formModel.exchanges" class="w-full">
                   <ElOption label="binance" value="binance" />
                 </ElSelect>
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem label="Backtest Name">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.backtestName')">
                 <ElInput v-model="formModel.backtest_name" />
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem label="starting_balance">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.startingBalance')">
                 <ElInputNumber
                   v-model="formModel.starting_balance"
                   class="w-full"
@@ -187,7 +354,7 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem label="start_date">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.startDate')">
                 <ElDatePicker
                   v-model="formModel.start_date"
                   class="w-full"
@@ -196,7 +363,7 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem label="end_date">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.endDate')">
                 <ElDatePicker
                   v-model="formModel.end_date"
                   class="w-full"
@@ -205,7 +372,7 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem label="market_cap">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.marketCap')">
                 <ElInputNumber v-model="formModel.market_cap" class="w-full" />
               </ElFormItem>
             </ElCol>
@@ -214,11 +381,13 @@ function handleSubmit() {
 
         <ElCard class="mb-4">
           <template #header>
-            <div class="font-bold">策略过滤条件</div>
+            <div class="font-bold">
+              {{ t('page.passivbot.v7.backtestPage.form.filterConditions') }}
+            </div>
           </template>
           <ElRow :gutter="20">
             <ElCol :span="8">
-              <ElFormItem label="minimum_coin_age_days">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.minCoinAge')">
                 <ElInputNumber
                   v-model="formModel.minimum_coin_age_days"
                   class="w-full"
@@ -226,7 +395,7 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem label="vol/mcap">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.volMcap')">
                 <ElInputNumber
                   v-model="formModel.vol_mcap"
                   class="w-full"
@@ -235,7 +404,7 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem label="gap_tolerance_ohlcvs_minutes">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.gapTolerance')">
                 <ElInputNumber
                   v-model="formModel.gap_tolerance_ohlcvs_minutes"
                   class="w-full"
@@ -269,11 +438,13 @@ function handleSubmit() {
 
         <ElCard class="mb-4">
           <template #header>
-            <div class="font-bold">币种选择</div>
+            <div class="font-bold">
+              {{ t('page.passivbot.v7.backtestPage.form.coinSelection') }}
+            </div>
           </template>
           <ElRow :gutter="20">
             <ElCol :span="12">
-              <ElFormItem label="approved_coins_long">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.approvedCoinsLong')">
                 <ElSelect
                   v-model="formModel.approved_coins_long"
                   class="w-full"
@@ -281,12 +452,12 @@ function handleSubmit() {
                   filterable
                   allow-create
                   default-first-option
-                  placeholder="Choose an option"
+                  :placeholder="t('common.choose')"
                 />
               </ElFormItem>
             </ElCol>
             <ElCol :span="12">
-              <ElFormItem label="approved_coins_short">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.approvedCoinsShort')">
                 <ElSelect
                   v-model="formModel.approved_coins_short"
                   class="w-full"
@@ -294,12 +465,12 @@ function handleSubmit() {
                   filterable
                   allow-create
                   default-first-option
-                  placeholder="Choose an option"
+                  :placeholder="t('common.choose')"
                 />
               </ElFormItem>
             </ElCol>
             <ElCol :span="12">
-              <ElFormItem label="ignored_symbols_long">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.ignoredSymbolsLong')">
                 <ElSelect
                   v-model="formModel.ignored_symbols_long"
                   class="w-full"
@@ -307,12 +478,12 @@ function handleSubmit() {
                   filterable
                   allow-create
                   default-first-option
-                  placeholder="Choose an option"
+                  :placeholder="t('common.choose')"
                 />
               </ElFormItem>
             </ElCol>
             <ElCol :span="12">
-              <ElFormItem label="ignored_symbols_short">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.ignoredSymbolsShort')">
                 <ElSelect
                   v-model="formModel.ignored_symbols_short"
                   class="w-full"
@@ -320,7 +491,7 @@ function handleSubmit() {
                   filterable
                   allow-create
                   default-first-option
-                  placeholder="Choose an option"
+                  :placeholder="t('common.choose')"
                 />
               </ElFormItem>
             </ElCol>
@@ -329,11 +500,13 @@ function handleSubmit() {
 
         <ElCard class="mb-4">
           <template #header>
-            <div class="font-bold">参数配置</div>
+            <div class="font-bold">
+              {{ t('page.passivbot.v7.backtestPage.form.paramConfig') }}
+            </div>
           </template>
           <ElRow :gutter="20">
             <ElCol :span="6">
-              <ElFormItem label="long twe">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.longTwe')">
                 <ElInputNumber
                   v-model="formModel.long_twe"
                   class="w-full"
@@ -342,7 +515,7 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="6">
-              <ElFormItem label="long positions">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.longPositions')">
                 <ElInputNumber
                   v-model="formModel.long_positions"
                   class="w-full"
@@ -350,7 +523,7 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="6">
-              <ElFormItem label="short twe">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.shortTwe')">
                 <ElInputNumber
                   v-model="formModel.short_twe"
                   class="w-full"
@@ -359,7 +532,7 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="6">
-              <ElFormItem label="short positions">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.shortPositions')">
                 <ElInputNumber
                   v-model="formModel.short_positions"
                   class="w-full"
@@ -368,7 +541,7 @@ function handleSubmit() {
             </ElCol>
           </ElRow>
           <ElCollapse class="my-4 border-none">
-            <ElCollapseItem title="Coin Overrides" name="1">
+            <ElCollapseItem :title="t('page.passivbot.v7.backtestPage.form.coinOverrides')" name="1">
               <div
                 v-for="(override, index) in formModel.coin_overrides"
                 :key="index"
@@ -376,14 +549,14 @@ function handleSubmit() {
               >
                 <ElRow :gutter="20" class="mb-4">
                   <ElCol :span="10">
-                    <ElFormItem label="Symbol">
+                    <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.symbol')">
                       <ElSelect
                         v-model="override.symbol"
                         class="w-full"
                         default-first-option
                         filterable
                         allow-create
-                        placeholder="Choose or create a symbol"
+                        :placeholder="t('common.chooseOrCreate')"
                       >
                         <ElOption
                           v-for="item in allSymbols"
@@ -400,23 +573,23 @@ function handleSubmit() {
                       type="danger"
                       @click="removeOverride(index)"
                     >
-                      Remove
+                      {{ t('common.remove') }}
                     </ElButton>
                   </ElCol>
                 </ElRow>
               </div>
-              <ElButton @click="addOverride">Add Coin Override</ElButton>
+              <ElButton @click="addOverride">{{ t('page.passivbot.v7.backtestPage.form.addCoinOverride') }}</ElButton>
             </ElCollapseItem>
           </ElCollapse>
 
           <ElRow :gutter="20">
             <ElCol :span="12">
-              <ElFormItem label="long">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.long')">
                 <ElInput v-model="formModel.long" type="textarea" :rows="16" />
               </ElFormItem>
             </ElCol>
             <ElCol :span="12">
-              <ElFormItem label="short">
+              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.short')">
                 <ElInput v-model="formModel.short" type="textarea" :rows="16" />
               </ElFormItem>
             </ElCol>
@@ -425,8 +598,10 @@ function handleSubmit() {
       </ElForm>
       <template #footer>
         <div class="flex justify-end">
-          <ElButton @click="drawer = false">取消</ElButton>
-          <ElButton type="primary" @click="handleSubmit">提交</ElButton>
+          <ElButton @click="drawer = false">{{ t('common.cancel') }}</ElButton>
+          <ElButton type="primary" @click="handleSubmit">
+            {{ t('common.submit') }}
+          </ElButton>
         </div>
       </template>
     </ElDrawer>

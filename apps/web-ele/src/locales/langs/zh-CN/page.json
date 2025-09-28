@@ -107,7 +107,42 @@
       "backtest": "回测",
       "optimize": "优化",
       "gridVisualizer": "网格可视化",
-      "balanceCalculator": "余额计算器"
+      "balanceCalculator": "余额计算器",
+      "backtestPage": {
+        "title": "回测",
+        "description": "管理和运行回测任务",
+        "listTitle": "回测列表",
+        "listDescription": "查看和管理所有回测任务",
+        "newBacktest": "新建回测",
+        "form": {
+          "basicSettings": "基本设置",
+          "exchanges": "交易所",
+          "backtestName": "回测名称",
+          "startingBalance": "起始余额",
+          "startDate": "开始日期",
+          "endDate": "结束日期",
+          "marketCap": "市值",
+          "filterConditions": "过滤条件",
+          "minCoinAge": "最小币龄(天)",
+          "volMcap": "成交量/市值",
+          "gapTolerance": "间隔容忍度(分钟)",
+          "coinSelection": "币种选择",
+          "approvedCoinsLong": "做多批准币种",
+          "approvedCoinsShort": "做空批准币种",
+          "ignoredSymbolsLong": "做多忽略币种",
+          "ignoredSymbolsShort": "做空忽略币种",
+          "paramConfig": "参数配置",
+          "longTwe": "做多TWE",
+          "longPositions": "做多仓位",
+          "shortTwe": "做空TWE",
+          "shortPositions": "做空仓位",
+          "coinOverrides": "币种覆盖",
+          "addCoinOverride": "添加币种覆盖",
+          "symbol": "币种",
+          "long": "做多参数",
+          "short": "做空参数"
+        }
+      }
     },
     "v6multi": {
       "title": "PBv6 Multi",
