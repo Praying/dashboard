@@ -36,5 +36,6 @@
   "choose": "Choose",
   "chooseOrCreate": "Choose or create",
   "remove": "Remove",
-  "submit": "Submit"
+  "submit": "Submit",
+  "addLimit": "Add Limit"
 }

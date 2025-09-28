@@ -7,12 +7,12 @@ import type { Recordable } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, reactive, ref, computed } from 'vue';
+import { h, reactive, ref } from 'vue';
 
-import { Page, useVbenModal, useVbenDrawer } from '@vben/common-ui';
+import { Page, useVbenDrawer } from '@vben/common-ui';
 import { useI18n } from '@vben/locales';
 
-import { ElButton, ElCard, ElInput } from 'element-plus';
+import { ElButton, ElCard } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -42,7 +42,10 @@ const exchangeCategories = {
   crypto: {
     label: t('page.system.exchange.cryptoCurrency'),
     exchanges: [
-      { label: t('page.system.exchange.binanceFutures'), value: 'binance_futures' },
+      {
+        label: t('page.system.exchange.binanceFutures'),
+        value: 'binance_futures',
+      },
       { label: t('page.system.exchange.binanceSpot'), value: 'binance_spot' },
       { label: t('page.system.exchange.okxFutures'), value: 'okx_futures' },
       { label: t('page.system.exchange.okxSpot'), value: 'okx_spot' },
@@ -54,15 +57,21 @@ const exchangeCategories = {
   },
   futu: {
     label: t('page.system.exchange.futuSecurities'),
-    exchanges: [{ label: t('page.system.exchange.futuSecurities'), value: 'futu' }],
+    exchanges: [
+      { label: t('page.system.exchange.futuSecurities'), value: 'futu' },
+    ],
   },
   ibkr: {
     label: t('page.system.exchange.interactiveBrokers'),
-    exchanges: [{ label: t('page.system.exchange.interactiveBrokers'), value: 'ibkr' }],
+    exchanges: [
+      { label: t('page.system.exchange.interactiveBrokers'), value: 'ibkr' },
+    ],
   },
   generic: {
     label: t('page.system.exchange.genericProtocol'),
-    exchanges: [{ label: t('page.system.exchange.genericProtocol'), value: 'generic' }],
+    exchanges: [
+      { label: t('page.system.exchange.genericProtocol'), value: 'generic' },
+    ],
   },
 };
 type ExchangeCategories = typeof exchangeCategories;
@@ -136,7 +145,7 @@ const formSchemas: VbenFormSchema[] = [
     componentProps: {
       placeholder: t('page.system.exchange.accessKey'),
       type: 'password',
-      'show-password': true,
+      showPassword: true,
       slots: {
         'label-suffix': () =>
           h('span', {
@@ -154,7 +163,7 @@ const formSchemas: VbenFormSchema[] = [
     componentProps: {
       placeholder: t('page.system.exchange.secretKey'),
       type: 'password',
-      'show-password': true,
+      showPassword: true,
       slots: {
         'label-suffix': () =>
           h('span', {
@@ -187,12 +196,9 @@ const [Form, formApi] = useVbenForm({
   },
 });
 
-const loading = ref(false);
-
 const [Drawer, drawerApi] = useVbenDrawer({
   onConfirm: () => {
     // TODO: Add submit logic
-    console.log('onConfirm');
     drawerApi.close();
   },
 });
@@ -251,24 +257,28 @@ const gridOptions: VxeGridProps<ApiKey> = {
       title: t('page.system.exchange.name'),
       align: 'left',
       headerAlign: 'left',
+      sortable: true,
     },
     {
       field: 'accountName',
       title: t('page.system.exchange.apiName'),
       align: 'left',
       headerAlign: 'left',
+      sortable: true,
     },
     {
       field: 'exchangeName',
       title: t('page.system.exchange.exchangeName'),
       align: 'left',
       headerAlign: 'left',
+      sortable: true,
     },
     {
       field: 'lastUsed',
       title: t('page.system.exchange.date'),
       align: 'left',
       headerAlign: 'left',
+      sortable: true,
     },
     {
       width: 200,
@@ -290,16 +300,21 @@ const [Grid] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Page >
-
+  <Page>
     <ElCard class="mt-5" :title="t('page.system.exchange.exchangeList')">
       <template #header>
         <div class="flex items-center justify-between">
           <div>
-            <div class="text-lg font-medium">{{ t('page.system.exchanges') }}</div>
-            <div class="text-gray-500 text-sm">{{ t('page.system.exchange.manageApiCredentials') }}</div>
+            <div class="text-lg font-medium">
+              {{ t('page.system.exchanges') }}
+            </div>
+            <div class="text-sm text-gray-500">
+              {{ t('page.system.exchange.manageApiCredentials') }}
+            </div>
           </div>
-          <ElButton type="primary" @click="handleAdd">+ {{ t('page.system.exchange.addApiKey') }}</ElButton>
+          <ElButton type="primary" @click="handleAdd">
+            + {{ t('page.system.exchange.addApiKey') }}
+          </ElButton>
         </div>
       </template>
       <template #default>
@@ -339,4 +354,3 @@ const [Grid] = useVbenVxeGrid({
     </Drawer>
   </Page>
 </template>
-

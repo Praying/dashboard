@@ -36,5 +36,6 @@
   "choose": "请选择",
   "chooseOrCreate": "请选择或创建",
   "remove": "移除",
-  "submit": "提交"
+  "submit": "提交",
+  "addLimit": "添加限制"
 }
