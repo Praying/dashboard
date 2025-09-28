@@ -12,7 +12,7 @@ import { h, reactive, ref, computed } from 'vue';
 import { Page, useVbenModal, useVbenDrawer } from '@vben/common-ui';
 import { useI18n } from '@vben/locales';
 
-import { ElButton, ElCard, ElDrawer, ElInput } from 'element-plus';
+import { ElButton, ElCard, ElInput } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -35,7 +35,6 @@ interface ApiKey {
 }
 
 const modalTitle = ref('');
-const drawerVisible = ref(false);
 const { t } = useI18n();
 
 // 交易所数据
@@ -190,14 +189,13 @@ const [Form, formApi] = useVbenForm({
 
 const loading = ref(false);
 
-const drawerApi = {
-  open: () => {
-    drawerVisible.value = true;
+const [Drawer, drawerApi] = useVbenDrawer({
+  onConfirm: () => {
+    // TODO: Add submit logic
+    console.log('onConfirm');
+    drawerApi.close();
   },
-  close: () => {
-    drawerVisible.value = false;
-  },
-};
+});
 
 const gridData = reactive<ApiKey[]>([
   {
@@ -225,12 +223,14 @@ const gridData = reactive<ApiKey[]>([
 function handleAdd() {
   formApi.resetForm();
   modalTitle.value = t('page.system.exchange.addExchange');
+  drawerApi.setState({ title: modalTitle.value });
   drawerApi.open();
 }
 
 function handleEdit(row: ApiKey) {
   formApi.setValues(row);
   modalTitle.value = t('page.system.exchange.editApiKey');
+  drawerApi.setState({ title: modalTitle.value });
   drawerApi.open();
 }
 
@@ -334,21 +334,9 @@ const [Grid] = useVbenVxeGrid({
       </template>
     </ElCard>
 
-    <ElDrawer v-model="drawerVisible" v-model:title="modalTitle" size="50%">
-      <ElCard class="h-full">
-        <div class="flex flex-col gap-5">
-          <Form />
-        </div>
-      </ElCard>
-      <template #footer>
-        <div class="flex justify-end">
-          <ElButton @click="drawerVisible = false">{{ t('common.cancel') }}</ElButton>
-          <ElButton type="primary" @click="handleAdd">
-            {{ t('common.submit') }}
-          </ElButton>
-        </div>
-      </template>
-    </ElDrawer>
+    <Drawer class="w-1/2">
+      <Form />
+    </Drawer>
   </Page>
 </template>
 
