@@ -8,6 +8,15 @@ import { usePreferences } from '@vben/preferences';
 
 import { json } from '@codemirror/lang-json';
 import { oneDark } from '@codemirror/theme-one-dark';
+import { LineChart } from 'echarts/charts';
+import {
+  GridComponent,
+  LegendComponent,
+  MarkAreaComponent,
+  MarkLineComponent,
+} from 'echarts/components';
+import { use as useEcharts } from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
 import {
   ElAlert,
   ElButton,
@@ -20,6 +29,15 @@ import {
 
 // IMPORTANT: Please install necessary dependencies before running
 // pnpm add vue-codemirror codemirror @codemirror/lang-json echarts vue-echarts @codemirror/theme-one-dark
+
+useEcharts([
+  CanvasRenderer,
+  LineChart,
+  GridComponent,
+  LegendComponent,
+  MarkAreaComponent,
+  MarkLineComponent,
+]);
 
 const { isDark } = usePreferences();
 
