@@ -18,6 +18,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv7/run/index.vue'),
         meta: {
           title: $t('page.passivbot.v7.run'),
+          icon: 'lucide:play',
         },
       },
       {
@@ -26,6 +27,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv7/backtest/index.vue'),
         meta: {
           title: $t('page.passivbot.v7.backtest'),
+          icon: 'lucide:bot',
         },
       },
       {
@@ -34,6 +36,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv7/optimize/index.vue'),
         meta: {
           title: $t('page.passivbot.v7.optimize'),
+          icon: 'lucide:sliders',
         },
       },
       {
@@ -42,6 +45,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv7/grid-visualizer/index.vue'),
         meta: {
           title: $t('page.passivbot.v7.gridVisualizer'),
+          icon: 'lucide:layout-grid',
         },
       },
       {
@@ -50,6 +54,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv7/balance-calculator/index.vue'),
         meta: {
           title: $t('page.passivbot.v7.balanceCalculator'),
+          icon: 'lucide:calculator',
         },
       },
     ],
@@ -69,6 +74,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv6-multi/run/index.vue'),
         meta: {
           title: $t('page.passivbot.v6multi.run'),
+          icon: 'lucide:play',
         },
       },
       {
@@ -77,6 +83,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv6-multi/backtest/index.vue'),
         meta: {
           title: $t('page.passivbot.v6multi.backtest'),
+          icon: 'lucide:bot',
         },
       },
       {
@@ -85,6 +92,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv6-multi/optimize/index.vue'),
         meta: {
           title: $t('page.passivbot.v6multi.optimize'),
+          icon: 'lucide:sliders',
         },
       },
     ],
@@ -104,6 +112,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv6-single/run/index.vue'),
         meta: {
           title: $t('page.passivbot.v6single.run'),
+          icon: 'lucide:play',
         },
       },
       {
@@ -112,6 +121,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv6-single/backtest/index.vue'),
         meta: {
           title: $t('page.passivbot.v6single.backtest'),
+          icon: 'lucide:bot',
         },
       },
       {
@@ -120,6 +130,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv6-single/optimize/index.vue'),
         meta: {
           title: $t('page.passivbot.v6single.optimize'),
+          icon: 'lucide:sliders',
         },
       },
       {
@@ -128,6 +139,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/pbv6-single/spot-view/index.vue'),
         meta: {
           title: $t('page.passivbot.v6single.spotView'),
+          icon: 'lucide:wallet',
         },
       },
     ],
