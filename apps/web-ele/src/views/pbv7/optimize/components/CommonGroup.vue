@@ -2,10 +2,13 @@
 import type { OptimizeForm } from '../typing';
 
 import { computed, ref, shallowRef, watch } from 'vue';
-import { json } from '@codemirror/lang-json';
-import { oneDark } from '@codemirror/theme-one-dark';
+import { Codemirror } from 'vue-codemirror';
+
 import { useI18n } from '@vben/locales';
 import { usePreferences } from '@vben/preferences';
+
+import { json } from '@codemirror/lang-json';
+import { oneDark } from '@codemirror/theme-one-dark';
 import {
   ElButton,
   ElCheckbox,
@@ -16,10 +19,10 @@ import {
   ElFormItem,
   ElInput,
   ElInputNumber,
+  ElOption,
   ElRow,
   ElSelect,
 } from 'element-plus';
-import { Codemirror } from 'vue-codemirror';
 
 const props = defineProps<{
   model: OptimizeForm;

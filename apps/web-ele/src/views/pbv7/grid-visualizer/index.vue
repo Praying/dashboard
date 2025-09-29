@@ -1,5 +1,13 @@
 <script lang="ts" setup>
 import { computed, ref, shallowRef } from 'vue';
+import { Codemirror } from 'vue-codemirror';
+import VChart from 'vue-echarts';
+
+import { $t } from '@vben/locales';
+import { usePreferences } from '@vben/preferences';
+
+import { json } from '@codemirror/lang-json';
+import { oneDark } from '@codemirror/theme-one-dark';
 import {
   ElAlert,
   ElButton,
@@ -9,13 +17,6 @@ import {
   ElTable,
   ElTableColumn,
 } from 'element-plus';
-import { json } from '@codemirror/lang-json';
-import { oneDark } from '@codemirror/theme-one-dark';
-import { $t } from '@vben/locales';
-import { usePreferences } from '@vben/preferences';
-import { Codemirror } from 'vue-codemirror';
-import VChart from 'vue-echarts';
-import * as echarts from 'echarts';
 
 // IMPORTANT: Please install necessary dependencies before running
 // pnpm add vue-codemirror codemirror @codemirror/lang-json echarts vue-echarts @codemirror/theme-one-dark
@@ -42,7 +43,7 @@ const botConfig = ref(
           close_grid_qty_pct: 0.3,
           close_trailing_threshold_pct: 0.05,
           close_trailing_retacement_pct: 0.03,
-          close_trailing_grid_ratio: 0.0,
+          close_trailing_grid_ratio: 0,
         },
         short: {
           wallet_exposure_limit: 1.5,
@@ -60,7 +61,7 @@ const botConfig = ref(
           close_grid_qty_pct: 0.3,
           close_trailing_threshold_pct: 0.05,
           close_trailing_retacement_pct: 0.03,
-          close_trailing_grid_ratio: 0.0,
+          close_trailing_grid_ratio: 0,
         },
       },
     },
@@ -132,7 +133,9 @@ const chartOptionBase = computed(() => ({
     {
       name: $t('grid-visualizer.legend.emaBand'),
       type: 'line',
-      data: [100, 100.2, 100.1, 100.3, 100.5, 100.4, 100.6, 100.7, 100.8, 100.9], // Placeholder
+      data: [
+        100, 100.2, 100.1, 100.3, 100.5, 100.4, 100.6, 100.7, 100.8, 100.9,
+      ], // Placeholder
       smooth: true,
       lineStyle: {
         color: 'purple',
@@ -149,12 +152,7 @@ const chartOptionBase = computed(() => ({
         itemStyle: {
           color: 'rgba(255, 192, 203, 0.3)', // Pink area
         },
-        data: [
-          [
-            { yAxis: 90 },
-            { yAxis: 100 },
-          ],
-        ],
+        data: [[{ yAxis: 90 }, { yAxis: 100 }]],
       },
     },
     {
@@ -177,12 +175,7 @@ const chartOptionBase = computed(() => ({
         itemStyle: {
           color: 'rgba(255, 255, 0, 0.3)', // Yellow area
         },
-        data: [
-          [
-            { yAxis: 80 },
-            { yAxis: 90 },
-          ],
-        ],
+        data: [[{ yAxis: 80 }, { yAxis: 90 }]],
       },
     },
     {
@@ -193,12 +186,7 @@ const chartOptionBase = computed(() => ({
         itemStyle: {
           color: 'rgba(144, 238, 144, 0.3)', // Green area
         },
-        data: [
-          [
-            { yAxis: 105 },
-            { yAxis: 110 },
-          ],
-        ],
+        data: [[{ yAxis: 105 }, { yAxis: 110 }]],
       },
     },
     {
@@ -257,45 +245,44 @@ const shortStats = computed(() => [
 ]);
 
 const longEntryOrders = ref([
-  { qty: 0.464, price: 97.0, maxTwe: 3, type: 'EntryInitialNormalLong' },
+  { qty: 0.464, price: 97, maxTwe: 3, type: 'EntryInitialNormalLong' },
   { qty: 0.557, price: 92.65, maxTwe: 6, type: 'EntryGridNormalLong' },
   { qty: 1.25, price: 89.87, maxTwe: 13, type: 'EntryGridNormalLong' },
   { qty: 2.87, price: 86.34, maxTwe: 30, type: 'EntryGridInflatedLong' },
 ]);
 
 const longCloseOrders = ref([
-  { qty: 4.5, price: 103.0, maxTwe: 0, type: 'CloseGridLong' },
+  { qty: 4.5, price: 103, maxTwe: 0, type: 'CloseGridLong' },
   { qty: 4.5, price: 103.6, maxTwe: 69, type: 'CloseGridLong' },
   { qty: 4.5, price: 104.2, maxTwe: 6, type: 'CloseGridLong' },
   { qty: 1.5, price: 104.81, maxTwe: 0, type: 'CloseGridLong' },
 ]);
 
 const shortEntryOrders = ref([
-  { qty: 0.437, price: 103.0, maxTwe: 3, type: 'EntryInitialNormalShort' },
+  { qty: 0.437, price: 103, maxTwe: 3, type: 'EntryInitialNormalShort' },
   { qty: 0.524, price: 107.86, maxTwe: 6, type: 'EntryGridNormalShort' },
   { qty: 1.806, price: 111.58, maxTwe: 20, type: 'EntryGridInflatedShort' },
 ]);
 
 const shortCloseOrders = ref([
-  { qty: 4.5, price: 97.0, maxTwe: 70, type: 'CloseGridShort' },
+  { qty: 4.5, price: 97, maxTwe: 70, type: 'CloseGridShort' },
   { qty: 4.5, price: 96.39, maxTwe: 41, type: 'CloseGridShort' },
   { qty: 4.5, price: 95.8, maxTwe: 13, type: 'CloseGridShort' },
   { qty: 1.5, price: 95.19, maxTwe: 3, type: 'CloseGridShort' },
 ]);
 
 const applyConfig = () => {
-  console.log('Applying config:', botConfig.value);
   // Add logic to submit the config
 };
 </script>
 
 <template>
-  <div class="p-4 h-full">
+  <div class="h-full p-4">
     <ElRow :gutter="20" class="h-full">
       <!-- Left Column: Config Editor -->
-      <ElCol :span="7" class="h-full flex flex-col">
+      <ElCol :span="7" class="flex h-full flex-col">
         <ElCard
-          class="flex-1 flex flex-col"
+          class="flex flex-1 flex-col"
           :body-style="{
             flex: 1,
             display: 'flex',
@@ -306,7 +293,7 @@ const applyConfig = () => {
           <template #header>
             <div>{{ $t('grid-visualizer.botConfig') }}</div>
           </template>
-          <div class="flex-1" style="overflow: auto;">
+          <div class="flex-1" style="overflow: auto">
             <Codemirror
               v-model="botConfig"
               :placeholder="$t('grid-visualizer.botConfig')"
@@ -318,10 +305,10 @@ const applyConfig = () => {
               @ready="handleReady"
             />
           </div>
-          <div class="mt-4 text-center">
-            <ElButton type="primary" @click="applyConfig">{{
-              $t('grid-visualizer.apply')
-            }}</ElButton>
+          <div class="mt-4 text-right">
+            <ElButton type="primary" @click="applyConfig">
+              {{ $t('grid-visualizer.apply') }}
+            </ElButton>
           </div>
         </ElCard>
       </ElCol>
@@ -474,6 +461,7 @@ const applyConfig = () => {
 .el-card__header {
   font-weight: bold;
 }
+
 .el-table .cell {
   padding: 8px 12px;
 }

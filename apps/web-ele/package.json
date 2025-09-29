@@ -26,6 +26,8 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@codemirror/lang-json": "catalog:",
+    "@codemirror/theme-one-dark": "catalog:",
     "@element-plus/icons-vue": "^2.3.2",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
@@ -46,6 +48,8 @@
     "element-plus": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
+    "vue-codemirror": "catalog:",
+    "vue-echarts": "catalog:",
     "vue-router": "catalog:"
   },
   "devDependencies": {

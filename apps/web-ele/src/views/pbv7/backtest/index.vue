@@ -1,15 +1,20 @@
 <script lang="ts" setup>
-import { computed, reactive, ref, shallowRef, watch } from 'vue';
-import { json } from '@codemirror/lang-json';
-import { oneDark } from '@codemirror/theme-one-dark';
 import type { VxeGridProps } from '#/adapter/vxe-table';
+
+import { computed, reactive, ref, shallowRef, watch } from 'vue';
+import { Codemirror } from 'vue-codemirror';
+
 import { Page } from '@vben/common-ui';
 import { useI18n } from '@vben/locales';
 import { usePreferences } from '@vben/preferences';
+
+import { json } from '@codemirror/lang-json';
+import { oneDark } from '@codemirror/theme-one-dark';
 import dayjs from 'dayjs';
 import {
   ElButton,
   ElCard,
+  ElCheckbox,
   ElCol,
   ElCollapse,
   ElCollapseItem,
@@ -24,7 +29,6 @@ import {
   ElSelect,
   ElTag,
 } from 'element-plus';
-import { Codemirror } from 'vue-codemirror';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
@@ -50,7 +54,7 @@ interface CoinOverride {
 
 interface Backtest {
   id: number;
-  status: 'complete' | 'running' | 'failed';
+  status: 'complete' | 'failed' | 'running';
   name: string;
   filename: string;
   time: string;
@@ -87,8 +91,7 @@ const tableData = reactive<Backtest[]>([
 const gridOptions = reactive<VxeGridProps<Backtest>>({
   columns: [],
   data: tableData,
-  sortConfig: {
-  },
+  sortConfig: {},
 });
 
 watch(
@@ -282,7 +285,7 @@ function handleSubmit() {
             <div class="text-lg font-medium">
               {{ t('page.passivbot.v7.backtestPage.listTitle') }}
             </div>
-            <div class="text-gray-500 text-sm">
+            <div class="text-sm text-gray-500">
               {{ t('page.passivbot.v7.backtestPage.listDescription') }}
             </div>
           </div>
@@ -315,7 +318,7 @@ function handleSubmit() {
               <span>{{ row.exchange }}</span>
             </div>
           </template>
-          <template #col-action="{ row }">
+          <template #col-action>
             <div class="flex items-center justify-center gap-2 text-base">
               <ElButton link type="primary">
                 {{ t('common.actions.start') }}
@@ -348,19 +351,27 @@ function handleSubmit() {
           </template>
           <ElRow :gutter="20">
             <ElCol :span="8">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.exchanges')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.exchanges')"
+              >
                 <ElSelect v-model="formModel.exchanges" class="w-full">
                   <ElOption label="binance" value="binance" />
                 </ElSelect>
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.backtestName')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.backtestName')"
+              >
                 <ElInput v-model="formModel.backtest_name" />
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.startingBalance')">
+              <ElFormItem
+                :label="
+                  t('page.passivbot.v7.backtestPage.form.startingBalance')
+                "
+              >
                 <ElInputNumber
                   v-model="formModel.starting_balance"
                   class="w-full"
@@ -369,7 +380,9 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.startDate')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.startDate')"
+              >
                 <ElDatePicker
                   v-model="formModel.start_date"
                   class="w-full"
@@ -378,7 +391,9 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.endDate')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.endDate')"
+              >
                 <ElDatePicker
                   v-model="formModel.end_date"
                   class="w-full"
@@ -387,7 +402,9 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.marketCap')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.marketCap')"
+              >
                 <ElInputNumber v-model="formModel.market_cap" class="w-full" />
               </ElFormItem>
             </ElCol>
@@ -402,7 +419,9 @@ function handleSubmit() {
           </template>
           <ElRow :gutter="20">
             <ElCol :span="8">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.minCoinAge')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.minCoinAge')"
+              >
                 <ElInputNumber
                   v-model="formModel.minimum_coin_age_days"
                   class="w-full"
@@ -410,7 +429,9 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.volMcap')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.volMcap')"
+              >
                 <ElInputNumber
                   v-model="formModel.vol_mcap"
                   class="w-full"
@@ -419,7 +440,9 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.gapTolerance')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.gapTolerance')"
+              >
                 <ElInputNumber
                   v-model="formModel.gap_tolerance_ohlcvs_minutes"
                   class="w-full"
@@ -429,7 +452,7 @@ function handleSubmit() {
           </ElRow>
           <ElRow>
             <ElCol :span="24">
-              <div class="grid grid-cols-6 gap-x-4 py-2">
+              <div class="grid grid-cols-3 gap-x-4 py-2">
                 <ElCheckbox v-model="formModel.combine_ohlcvs">
                   combine_ohlcvs
                 </ElCheckbox>
@@ -459,7 +482,11 @@ function handleSubmit() {
           </template>
           <ElRow :gutter="20">
             <ElCol :span="12">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.approvedCoinsLong')">
+              <ElFormItem
+                :label="
+                  t('page.passivbot.v7.backtestPage.form.approvedCoinsLong')
+                "
+              >
                 <ElSelect
                   v-model="formModel.approved_coins_long"
                   class="w-full"
@@ -472,7 +499,11 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="12">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.approvedCoinsShort')">
+              <ElFormItem
+                :label="
+                  t('page.passivbot.v7.backtestPage.form.approvedCoinsShort')
+                "
+              >
                 <ElSelect
                   v-model="formModel.approved_coins_short"
                   class="w-full"
@@ -485,7 +516,11 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="12">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.ignoredSymbolsLong')">
+              <ElFormItem
+                :label="
+                  t('page.passivbot.v7.backtestPage.form.ignoredSymbolsLong')
+                "
+              >
                 <ElSelect
                   v-model="formModel.ignored_symbols_long"
                   class="w-full"
@@ -498,7 +533,11 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="12">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.ignoredSymbolsShort')">
+              <ElFormItem
+                :label="
+                  t('page.passivbot.v7.backtestPage.form.ignoredSymbolsShort')
+                "
+              >
                 <ElSelect
                   v-model="formModel.ignored_symbols_short"
                   class="w-full"
@@ -521,7 +560,9 @@ function handleSubmit() {
           </template>
           <ElRow :gutter="20">
             <ElCol :span="6">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.longTwe')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.longTwe')"
+              >
                 <ElInputNumber
                   v-model="formModel.long_twe"
                   class="w-full"
@@ -530,7 +571,9 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="6">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.longPositions')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.longPositions')"
+              >
                 <ElInputNumber
                   v-model="formModel.long_positions"
                   class="w-full"
@@ -538,7 +581,9 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="6">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.shortTwe')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.shortTwe')"
+              >
                 <ElInputNumber
                   v-model="formModel.short_twe"
                   class="w-full"
@@ -547,7 +592,9 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="6">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.shortPositions')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.shortPositions')"
+              >
                 <ElInputNumber
                   v-model="formModel.short_positions"
                   class="w-full"
@@ -556,7 +603,10 @@ function handleSubmit() {
             </ElCol>
           </ElRow>
           <ElCollapse class="my-4 border-none">
-            <ElCollapseItem :title="t('page.passivbot.v7.backtestPage.form.coinOverrides')" name="1">
+            <ElCollapseItem
+              :title="t('page.passivbot.v7.backtestPage.form.coinOverrides')"
+              name="1"
+            >
               <div
                 v-for="(override, index) in formModel.coin_overrides"
                 :key="index"
@@ -564,7 +614,9 @@ function handleSubmit() {
               >
                 <ElRow :gutter="20" class="mb-4">
                   <ElCol :span="10">
-                    <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.symbol')">
+                    <ElFormItem
+                      :label="t('page.passivbot.v7.backtestPage.form.symbol')"
+                    >
                       <ElSelect
                         v-model="override.symbol"
                         class="w-full"
@@ -593,13 +645,17 @@ function handleSubmit() {
                   </ElCol>
                 </ElRow>
               </div>
-              <ElButton @click="addOverride">{{ t('page.passivbot.v7.backtestPage.form.addCoinOverride') }}</ElButton>
+              <ElButton @click="addOverride">
+                {{ t('page.passivbot.v7.backtestPage.form.addCoinOverride') }}
+              </ElButton>
             </ElCollapseItem>
           </ElCollapse>
 
           <ElRow :gutter="20">
             <ElCol :span="12">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.long')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.long')"
+              >
                 <Codemirror
                   v-model="formModel.long"
                   :extensions="cmExtensions"
@@ -612,7 +668,9 @@ function handleSubmit() {
               </ElFormItem>
             </ElCol>
             <ElCol :span="12">
-              <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.short')">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.short')"
+              >
                 <Codemirror
                   v-model="formModel.short"
                   :extensions="cmExtensions"
