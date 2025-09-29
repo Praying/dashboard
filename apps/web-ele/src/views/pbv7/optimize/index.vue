@@ -217,7 +217,6 @@ const gridOptions = reactive<VxeGridProps<Backtest>>({
   columns: [],
   data: tableData,
   sortConfig: {
-    defaultSort: { field: 'id', order: 'desc' },
   },
 });
 

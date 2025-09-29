@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { computed, reactive, ref, watch } from 'vue';
-
+import { computed, reactive, ref, shallowRef, watch } from 'vue';
+import { json } from '@codemirror/lang-json';
+import { oneDark } from '@codemirror/theme-one-dark';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import { Page } from '@vben/common-ui';
 import { useI18n } from '@vben/locales';
-
+import { usePreferences } from '@vben/preferences';
 import dayjs from 'dayjs';
 import {
   ElButton,
@@ -23,10 +24,25 @@ import {
   ElSelect,
   ElTag,
 } from 'element-plus';
+import { Codemirror } from 'vue-codemirror';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
 const { t, locale } = useI18n();
+const { isDark } = usePreferences();
+
+const view = shallowRef();
+const handleReady = (payload: { view: any }) => {
+  view.value = payload.view;
+};
+
+const cmExtensions = computed(() => {
+  const result: any[] = [json()];
+  if (isDark.value) {
+    result.push(oneDark);
+  }
+  return result;
+});
 
 interface CoinOverride {
   symbol: string;
@@ -72,7 +88,6 @@ const gridOptions = reactive<VxeGridProps<Backtest>>({
   columns: [],
   data: tableData,
   sortConfig: {
-    defaultSort: { field: 'id', order: 'desc' },
   },
 });
 
@@ -585,12 +600,28 @@ function handleSubmit() {
           <ElRow :gutter="20">
             <ElCol :span="12">
               <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.long')">
-                <ElInput v-model="formModel.long" type="textarea" :rows="16" />
+                <Codemirror
+                  v-model="formModel.long"
+                  :extensions="cmExtensions"
+                  :style="{ height: '320px', width: '100%' }"
+                  :autofocus="true"
+                  :indent-with-tab="true"
+                  :tab-size="2"
+                  @ready="handleReady"
+                />
               </ElFormItem>
             </ElCol>
             <ElCol :span="12">
               <ElFormItem :label="t('page.passivbot.v7.backtestPage.form.short')">
-                <ElInput v-model="formModel.short" type="textarea" :rows="16" />
+                <Codemirror
+                  v-model="formModel.short"
+                  :extensions="cmExtensions"
+                  :style="{ height: '320px', width: '100%' }"
+                  :autofocus="true"
+                  :indent-with-tab="true"
+                  :tab-size="2"
+                  @ready="handleReady"
+                />
               </ElFormItem>
             </ElCol>
           </ElRow>

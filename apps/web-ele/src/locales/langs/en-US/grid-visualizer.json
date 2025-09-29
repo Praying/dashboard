@@ -1,0 +1,36 @@
+{
+  "botConfig": "Bot Configuration",
+  "apply": "Apply",
+  "longChartTitle": "📈 LONG Entry and Close Grids Visualization",
+  "shortChartTitle": "📈 SHORT Entry and Close Grids Visualization",
+  "alertTitle": "Please note:",
+  "alertContent": "⚠️ Entry: The trailing area can't be calculated; 10% is just a placeholder.",
+  "longStatistics": "LONG Statistics",
+  "shortStatistics": "SHORT Statistics",
+  "longEntryOrders": "LONG Entry Orders",
+  "longCloseOrders": "LONG Close Orders",
+  "shortEntryOrders": "SHORT Entry Orders",
+  "shortCloseOrders": "SHORT Close Orders",
+  "table": {
+    "qty": "Qty",
+    "price": "Price",
+    "maxTwe": "Max-TWE% After",
+    "orderType": "Order Type"
+  },
+  "stats": {
+    "entryMode": "Entry: Mode",
+    "entryOrders": "Entry: Orders",
+    "entryAvgPrice": "Entry: Average Price",
+    "entryGridSize": "Entry: Grid Size",
+    "closeMode": "Close: Mode",
+    "closeOrders": "Close: Orders",
+    "closeAvgPrice": "Close: Average Price",
+    "closeGridSize": "Close: Grid Size"
+  },
+  "legend": {
+    "emaBand": "EMA Band",
+    "entryGrid": "Entry Grid (Lines)",
+    "entryTrailing": "Entry Trailing (Area)",
+    "closeGrid": "Close Grid (Lines)"
+  }
+}

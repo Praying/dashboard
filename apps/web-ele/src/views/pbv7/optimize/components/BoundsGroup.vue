@@ -41,8 +41,8 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div class="bounds-group">
-    <ElRow :gutter="20">
+  <div class="bounds-group p-4">
+    <ElRow :gutter="40">
       <ElCol :span="12">
         <div class="mb-2 text-center font-bold">
           {{ t('page.passivbot.v7.optimizePage.form.boundsLong') }}

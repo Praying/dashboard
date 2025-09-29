@@ -1,0 +1,35 @@
+{
+  "title": "Coin Data",
+  "exchange": "Exchange",
+  "selectPlaceholder": "Select",
+  "marketCapLabel": "market_cap",
+  "marketCapTooltip": "Market Cap",
+  "volMcapLabel": "vol/mcap",
+  "volMcapTooltip": "Volume / Market Cap",
+  "tags": "Tags",
+  "tagsPlaceholder": "Choose an option",
+  "table": {
+    "id": "ID",
+    "symbol": "Symbol",
+    "name": "Name",
+    "tags": "Tags",
+    "price": "Price",
+    "volume24h": "Volume 24h",
+    "marketCap": "Market Cap",
+    "volMcap": "Vol/Mcap",
+    "copyTrading": "Copy Trading",
+    "notice": "Notice",
+    "link": "Link"
+  },
+  "drawer": {
+    "title": "Configuration",
+    "apiKey": "CoinMarketCap API_Key",
+    "apiKeyTooltip": "API Key for CoinMarketCap",
+    "fetchLimit": "Fetch Limit",
+    "fetchLimitTooltip": "Number of records to fetch",
+    "fetchInterval": "Fetch Interval",
+    "fetchIntervalTooltip": "Interval in hours to fetch data",
+    "metadataInterval": "Metadata Interval",
+    "metadataIntervalTooltip": "Interval in hours to fetch metadata"
+  }
+}

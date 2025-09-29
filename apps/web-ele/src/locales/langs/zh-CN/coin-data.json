@@ -1,0 +1,35 @@
+{
+  "title": "币种数据",
+  "exchange": "交易所",
+  "selectPlaceholder": "请选择",
+  "marketCapLabel": "市值",
+  "marketCapTooltip": "市值",
+  "volMcapLabel": "成交量/市值",
+  "volMcapTooltip": "成交量 / 市值",
+  "tags": "标签",
+  "tagsPlaceholder": "请选择一个选项",
+  "table": {
+    "id": "ID",
+    "symbol": "代码",
+    "name": "名称",
+    "tags": "标签",
+    "price": "价格",
+    "volume24h": "24小时成交量",
+    "marketCap": "市值",
+    "volMcap": "成交量/市值",
+    "copyTrading": "跟单交易",
+    "notice": "公告",
+    "link": "链接"
+  },
+  "drawer": {
+    "title": "配置",
+    "apiKey": "CoinMarketCap API密钥",
+    "apiKeyTooltip": "CoinMarketCap的API密钥",
+    "fetchLimit": "获取限制",
+    "fetchLimitTooltip": "要获取的记录数",
+    "fetchInterval": "获取间隔",
+    "fetchIntervalTooltip": "获取数据的时间间隔（小时）",
+    "metadataInterval": "元数据间隔",
+    "metadataIntervalTooltip": "获取元数据的时间间隔（小时）"
+  }
+}

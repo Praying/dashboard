@@ -1,0 +1,36 @@
+{
+  "botConfig": "机器人配置",
+  "apply": "应用",
+  "longChartTitle": "📈 多头入场和平仓网格可视化",
+  "shortChartTitle": "📈 空头入场和平仓网格可视化",
+  "alertTitle": "请注意：",
+  "alertContent": "⚠️ 入场：追踪区域无法计算；10% 仅为占位符。",
+  "longStatistics": "多头统计",
+  "shortStatistics": "空头统计",
+  "longEntryOrders": "多头入场订单",
+  "longCloseOrders": "多头平仓订单",
+  "shortEntryOrders": "空头入场订单",
+  "shortCloseOrders": "空头平仓订单",
+  "table": {
+    "qty": "数量",
+    "price": "价格",
+    "maxTwe": "最大 TWE%",
+    "orderType": "订单类型"
+  },
+  "stats": {
+    "entryMode": "入场：模式",
+    "entryOrders": "入场：订单数",
+    "entryAvgPrice": "入场：平均价格",
+    "entryGridSize": "入场：网格大小",
+    "closeMode": "平仓：模式",
+    "closeOrders": "平仓：订单数",
+    "closeAvgPrice": "平仓：平均价格",
+    "closeGridSize": "平仓：网格大小"
+  },
+  "legend": {
+    "emaBand": "EMA 范围",
+    "entryGrid": "入场网格（线）",
+    "entryTrailing": "入场追踪（区域）",
+    "closeGrid": "平仓网格（线）"
+  }
+}

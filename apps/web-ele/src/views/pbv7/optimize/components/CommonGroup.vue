@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import type { OptimizeForm } from '../typing';
 
-import { ref, watch } from 'vue';
-
+import { computed, ref, shallowRef, watch } from 'vue';
+import { json } from '@codemirror/lang-json';
+import { oneDark } from '@codemirror/theme-one-dark';
 import { useI18n } from '@vben/locales';
-
+import { usePreferences } from '@vben/preferences';
 import {
   ElButton,
   ElCheckbox,
@@ -18,6 +19,7 @@ import {
   ElRow,
   ElSelect,
 } from 'element-plus';
+import { Codemirror } from 'vue-codemirror';
 
 const props = defineProps<{
   model: OptimizeForm;
@@ -50,6 +52,20 @@ watch(
 );
 
 const { t } = useI18n();
+const { isDark } = usePreferences();
+
+const view = shallowRef();
+const handleReady = (payload: { view: any }) => {
+  view.value = payload.view;
+};
+
+const cmExtensions = computed(() => {
+  const result: any[] = [json()];
+  if (isDark.value) {
+    result.push(oneDark);
+  }
+  return result;
+});
 </script>
 
 <template>
@@ -262,12 +278,28 @@ const { t } = useI18n();
         <ElRow :gutter="20">
           <ElCol :span="12">
             <ElFormItem :label="t('page.passivbot.v7.optimizePage.form.long')">
-              <ElInput v-model="localModel.long" type="textarea" :rows="16" />
+              <Codemirror
+                v-model="localModel.long"
+                :extensions="cmExtensions"
+                :style="{ height: '320px', width: '100%' }"
+                :autofocus="true"
+                :indent-with-tab="true"
+                :tab-size="2"
+                @ready="handleReady"
+              />
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
             <ElFormItem :label="t('page.passivbot.v7.optimizePage.form.short')">
-              <ElInput v-model="localModel.short" type="textarea" :rows="16" />
+              <Codemirror
+                v-model="localModel.short"
+                :extensions="cmExtensions"
+                :style="{ height: '320px', width: '100%' }"
+                :autofocus="true"
+                :indent-with-tab="true"
+                :tab-size="2"
+                @ready="handleReady"
+              />
             </ElFormItem>
           </ElCol>
         </ElRow>
