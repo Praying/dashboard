@@ -11,6 +11,13 @@ export default defineConfig(async () => {
           format: 'esm',
         }),
       ],
+      optimizeDeps: {
+        exclude: [
+          'vue-codemirror',
+          '@codemirror/lang-json',
+          '@codemirror/theme-one-dark',
+        ],
+      },
       server: {
         proxy: {
           '/api': {

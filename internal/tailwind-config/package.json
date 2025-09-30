@@ -61,6 +61,7 @@
     "tailwindcss-animate": "catalog:"
   },
   "devDependencies": {
+    "@iconify-json/logos": "catalog:",
     "@types/postcss-import": "catalog:"
   }
 }

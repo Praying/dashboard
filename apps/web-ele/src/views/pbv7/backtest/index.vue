@@ -313,7 +313,7 @@ function handleSubmit() {
             <div class="flex items-center gap-2">
               <span
                 v-if="row.exchange === 'binance'"
-                class="icon-[logos--binance] text-2xl"
+                class="icon-[logos:binance] text-2xl"
               ></span>
               <span>{{ row.exchange }}</span>
             </div>

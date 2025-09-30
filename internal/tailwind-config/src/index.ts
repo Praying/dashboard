@@ -2,6 +2,7 @@ import type { Config } from 'tailwindcss';
 
 import path from 'node:path';
 
+import { icons as logos } from '@iconify-json/logos';
 import { addDynamicIconSelectors } from '@iconify/tailwind';
 import { getPackagesSync } from '@manypkg/get-packages';
 import typographyPlugin from '@tailwindcss/typography';
@@ -126,7 +127,11 @@ export default {
   plugins: [
     animate,
     typographyPlugin,
-    addDynamicIconSelectors(),
+    addDynamicIconSelectors({
+      iconSets: {
+        logos,
+      },
+    }),
     enterAnimationPlugin,
   ],
   prefix: '',

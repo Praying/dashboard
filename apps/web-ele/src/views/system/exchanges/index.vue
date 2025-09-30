@@ -323,11 +323,11 @@ const [Grid] = useVbenVxeGrid({
             <div class="flex items-center gap-2">
               <span
                 v-if="row.exchange === 'Huobi'"
-                class="icon-[logos--huobi] text-2xl"
+                class="icon-[logos:huobi] text-2xl"
               ></span>
               <span
                 v-if="row.exchange === 'Binance'"
-                class="icon-[logos--binance] text-2xl"
+                class="icon-[logos:binance] text-2xl"
               ></span>
               <span>{{ row.exchange }}</span>
             </div>
