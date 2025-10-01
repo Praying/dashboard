@@ -166,6 +166,9 @@
         }
       },
       "optimizePage": {
+        "listTitle": "Optimize List",
+        "listDescription": "View and manage all optimization tasks",
+        "newOptimize": "New Optimize",
         "title": "Create/Edit",
         "form": {
           "exchanges": "Exchanges",
@@ -265,7 +268,32 @@
       "run": "Run",
       "backtest": "Backtest",
       "optimize": "Optimize",
-      "spotView": "Spot View"
+      "spotView": "Spot View",
+      "optimizePage": {
+        "listTitle": "Optimize List",
+        "listDescription": "View and manage all optimization tasks",
+        "newOptimize": "New Optimize",
+        "title": "Create/Edit",
+        "form": {
+          "user": "User",
+          "symbol": "Symbol",
+          "marketType": "Market Type",
+          "startingBalance": "Starting Balance",
+          "dateRange": "Date Range",
+          "ohlcv": "OHLCV",
+          "ohlcvTooltip": "OHLCV (Open, High, Low, Close, Volume) data is required for backtesting.",
+          "tradeDirection": "Trade Direction",
+          "longEnabled": "Long enabled",
+          "shortEnabled": "Short enabled",
+          "passivbotMode": "Passivbot Mode",
+          "algorithm": "Algorithm",
+          "iters": "Iters",
+          "itersTooltip": "Number of iterations for the optimization algorithm.",
+          "reruns": "Reruns",
+          "rerunsTooltip": "Number of times to rerun the optimization.",
+          "selectSymbolPlaceholder": "Select Symbol"
+        }
+      }
     }
   }
 }

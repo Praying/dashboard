@@ -170,9 +170,9 @@
         }
       },
       "optimizePage": {
-        "listTitle" : "优化列表",
-        "listDescription" : "查看和管理所有优化任务",
-        "newOptimize" : "新建优化",
+        "listTitle": "优化列表",
+        "listDescription": "查看和管理所有优化任务",
+        "newOptimize": "新建优化",
         "title": "创建/编辑",
         "form": {
           "exchanges": "交易所",
@@ -272,7 +272,32 @@
       "run": "运行",
       "backtest": "回测",
       "optimize": "优化",
-      "spotView": "现货视图"
+      "spotView": "现货视图",
+      "optimizePage": {
+        "listTitle": "优化列表",
+        "listDescription": "查看和管理所有优化任务",
+        "newOptimize": "新建优化",
+        "title": "创建/编辑",
+        "form": {
+          "user": "用户",
+          "symbol": "交易对",
+          "marketType": "市场类型",
+          "startingBalance": "起始余额",
+          "dateRange": "日期范围",
+          "ohlcv": "OHLCV",
+          "ohlcvTooltip": "OHLCV (开盘价, 最高价, 最低价, 收盘价, 成交量) 数据是回测所必需的。",
+          "tradeDirection": "交易方向",
+          "longEnabled": "允许做多",
+          "shortEnabled": "允许做空",
+          "passivbotMode": "Passivbot 模式",
+          "algorithm": "算法",
+          "iters": "迭代次数",
+          "itersTooltip": "优化算法的迭代次数。",
+          "reruns": "重新运行次数",
+          "rerunsTooltip": "重新运行优化的次数。",
+          "selectSymbolPlaceholder": "选择交易对"
+        }
+      }
     }
   }
 }

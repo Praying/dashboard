@@ -216,8 +216,7 @@ const tableData = reactive<Backtest[]>([
 const gridOptions = reactive<VxeGridProps<Backtest>>({
   columns: [],
   data: tableData,
-  sortConfig: {
-  },
+  sortConfig: {},
 });
 
 watch(
