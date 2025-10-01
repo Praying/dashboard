@@ -248,7 +248,9 @@ const [Grid] = useVbenVxeGrid({
           </ElCol>
           <ElCol :span="12">
             <ElFormItem
-              :label="t('page.passivbot.v6single.optimizePage.form.startingBalance')"
+              :label="
+                t('page.passivbot.v6single.optimizePage.form.startingBalance')
+              "
             >
               <ElInputNumber
                 v-model="formModel.starting_balance"
@@ -307,7 +309,9 @@ const [Grid] = useVbenVxeGrid({
         <ElRow :gutter="20">
           <ElCol :span="12">
             <ElFormItem
-              :label="t('page.passivbot.v6single.optimizePage.form.passivbotMode')"
+              :label="
+                t('page.passivbot.v6single.optimizePage.form.passivbotMode')
+              "
             >
               <ElSelect v-model="formModel.passivbot_mode" class="w-full">
                 <ElOption label="recursive_grid" value="recursive_grid" />

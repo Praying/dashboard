@@ -3,7 +3,6 @@ import type {
   ExtendedFormApi as VbenFormApi,
   VbenFormSchema,
 } from '@vben/common-ui';
-import type { Recordable } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
@@ -47,12 +46,26 @@ const exchangeCategories = {
         value: 'binance_futures',
       },
       { label: t('page.system.exchange.binanceSpot'), value: 'binance_spot' },
-      { label: t('page.system.exchange.okxFutures'), value: 'okx_futures' },
-      { label: t('page.system.exchange.okxSpot'), value: 'okx_spot' },
       { label: t('page.system.exchange.bybitFutures'), value: 'bybit_futures' },
       { label: t('page.system.exchange.bybitSpot'), value: 'bybit_spot' },
-      { label: t('page.system.exchange.bitfinex'), value: 'bitfinex' },
-      { label: t('page.system.exchange.htxFutures'), value: 'htx_futures' },
+      {
+        label: t('page.system.exchange.bitgetFutures'),
+        value: 'bitget_futures',
+      },
+      { label: t('page.system.exchange.bitgetSpot'), value: 'bitget_spot' },
+      { label: t('page.system.exchange.okxFutures'), value: 'okx_futures' },
+      { label: t('page.system.exchange.okxSpot'), value: 'okx_spot' },
+      {
+        label: t('page.system.exchange.gateioFutures'),
+        value: 'gateio_futures',
+      },
+      { label: t('page.system.exchange.gateioSpot'), value: 'gateio_spot' },
+      {
+        label: t('page.system.exchange.kucoinFutures'),
+        value: 'kucoin_futures',
+      },
+      { label: t('page.system.exchange.kucoinSpot'), value: 'kucoin_spot' },
+      { label: t('page.system.exchange.hyperliquid'), value: 'hyperliquid' },
     ],
   },
   futu: {
@@ -76,27 +89,38 @@ const exchangeCategories = {
 };
 type ExchangeCategories = typeof exchangeCategories;
 
+let formApi: VbenFormApi;
+
 // 表单schemas
 const formSchemas: VbenFormSchema[] = [
   {
     component: 'Select',
     fieldName: 'exchangeCategory',
     label: t('page.system.exchange.selectProtocol'),
+    defaultValue: 'crypto',
+    labelWidth: 100,
     componentProps: {
       placeholder: t('page.system.exchange.cryptoCurrency'),
       options: Object.entries(exchangeCategories).map(([value, { label }]) => ({
         label,
         value,
       })),
-      onChange: (
-        value: string,
-        { formApi }: { formApi: VbenFormApi; formModel: Recordable<any> },
-      ) => {
+      onChange: (value: string) => {
         const category = value as keyof ExchangeCategories;
         const newOptions = category
           ? exchangeCategories[category].exchanges
           : [];
-        formApi.setValues({ exchange: undefined, accountName: undefined });
+
+        const defaultExchange =
+          category === 'crypto' ? 'binance_futures' : newOptions[0]?.value;
+        const selectedOption = newOptions.find(
+          (o) => o.value === defaultExchange,
+        );
+
+        formApi.setValues({
+          exchange: defaultExchange,
+          accountName: selectedOption?.label,
+        });
         formApi.updateSchema([
           {
             fieldName: 'exchange',
@@ -115,17 +139,13 @@ const formSchemas: VbenFormSchema[] = [
     component: 'Select',
     fieldName: 'exchange',
     label: t('page.system.exchange.selectExchange'),
+    labelWidth: 100,
     componentProps: {
       placeholder: t('page.system.exchange.binanceFutures'),
       options: exchangeCategories.crypto.exchanges, // Initial options
       defaultValue: 'binance_futures',
-      onChange: (
-        value: string,
-        {
-          formApi,
-          formModel,
-        }: { formApi: VbenFormApi; formModel: Recordable<any> },
-      ) => {
+      onChange: async (value: string) => {
+        const formModel = await formApi.getValues();
         const category =
           (formModel.exchangeCategory as keyof ExchangeCategories) || 'crypto';
         const options = category ? exchangeCategories[category].exchanges : [];
@@ -133,6 +153,22 @@ const formSchemas: VbenFormSchema[] = [
         if (selectedOption) {
           formApi.setValues({ accountName: selectedOption.label });
         }
+
+        const showPassphrase = [
+          'bitget_futures',
+          'bitget_spot',
+          'kucoin_futures',
+          'kucoin_spot',
+          'okx_futures',
+          'okx_spot',
+        ].includes(value);
+
+        formApi.updateSchema([
+          {
+            fieldName: 'passphrase',
+            hide: !showPassphrase,
+          },
+        ]);
       },
     },
     rules: 'required',
@@ -142,6 +178,7 @@ const formSchemas: VbenFormSchema[] = [
     component: 'Input',
     fieldName: 'apiKey',
     label: t('page.system.exchange.accessKey'),
+    labelWidth: 100,
     componentProps: {
       placeholder: t('page.system.exchange.accessKey'),
       type: 'password',
@@ -160,6 +197,7 @@ const formSchemas: VbenFormSchema[] = [
     component: 'Input',
     fieldName: 'apiSecret',
     label: t('page.system.exchange.secretKey'),
+    labelWidth: 100,
     componentProps: {
       placeholder: t('page.system.exchange.secretKey'),
       type: 'password',
@@ -176,8 +214,23 @@ const formSchemas: VbenFormSchema[] = [
   },
   {
     component: 'Input',
+    fieldName: 'passphrase',
+    label: t('page.system.exchange.passphrase'),
+    labelWidth: 100,
+    hide: true,
+    componentProps: {
+      placeholder: t('page.system.exchange.passphrase'),
+      type: 'password',
+      showPassword: true,
+    },
+    rules: 'required',
+    labelClass: 'required-label',
+  },
+  {
+    component: 'Input',
     fieldName: 'accountName',
     label: t('page.system.exchange.label'),
+    labelWidth: 100,
     componentProps: {
       placeholder: t('page.system.exchange.binanceFutures'),
     },
@@ -186,15 +239,16 @@ const formSchemas: VbenFormSchema[] = [
   },
 ];
 
-const [Form, formApi] = useVbenForm({
+const [Form, formApiInstance] = useVbenForm({
   schema: formSchemas,
   showDefaultActions: false,
-  layout: 'horizontal',
+  // layout: 'horizontal',
   commonConfig: {
     colon: true,
-    labelWidth: 120,
+    // labelWidth: 120,
   },
 });
+formApi = formApiInstance;
 
 const [Drawer, drawerApi] = useVbenDrawer({
   onConfirm: () => {
@@ -228,6 +282,17 @@ const gridData = reactive<ApiKey[]>([
 
 function handleAdd() {
   formApi.resetForm();
+  formApi.setValues({
+    exchangeCategory: 'crypto',
+    exchange: 'binance_futures',
+    accountName: t('page.system.exchange.binanceFutures'),
+  });
+  formApi.updateSchema([
+    {
+      fieldName: 'passphrase',
+      hide: true,
+    },
+  ]);
   modalTitle.value = t('page.system.exchange.addExchange');
   drawerApi.setState({ title: modalTitle.value });
   drawerApi.open();
@@ -235,6 +300,20 @@ function handleAdd() {
 
 function handleEdit(row: ApiKey) {
   formApi.setValues(row);
+  const showPassphrase = [
+    'bitget_futures',
+    'bitget_spot',
+    'kucoin_futures',
+    'kucoin_spot',
+    'okx_futures',
+    'okx_spot',
+  ].includes(row.exchange);
+  formApi.updateSchema([
+    {
+      fieldName: 'passphrase',
+      hide: !showPassphrase,
+    },
+  ]);
   modalTitle.value = t('page.system.exchange.editApiKey');
   drawerApi.setState({ title: modalTitle.value });
   drawerApi.open();
