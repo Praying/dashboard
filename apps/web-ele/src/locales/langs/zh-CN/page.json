@@ -123,7 +123,10 @@
         "confirmToggleButton": "确认{action}"
       },
       "update": "更新",
-      "add": "添加"
+      "add": "添加",
+      "createdAt": "创建时间",
+      "lastUpdatedAt": "最后更新时间",
+      "category": "协议"
     },
     "pbgui-services": "PBGUI服务",
     "vps-manager": "VPS管理器"

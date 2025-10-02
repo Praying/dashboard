@@ -6,7 +6,7 @@ import type {
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, reactive, ref } from 'vue';
+import { h, onMounted, reactive, ref } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { useI18n } from '@vben/locales';
@@ -15,6 +15,12 @@ import { ElButton, ElCard } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  createApiKeyApi,
+  deleteApiKeyApi,
+  getApiKeysApi,
+  updateApiKeyApi,
+} from '#/api/system/exchange';
 
 defineOptions({
   name: 'SystemExchanges',
@@ -23,18 +29,19 @@ defineOptions({
 interface ApiKey {
   id: number;
   exchange: string;
-  accountType: 'futures' | 'spot';
+  exchangeCategory: string;
   accountName: string;
   apiKey: string;
-  status: 'active' | 'inactive';
-  lastUsed: string;
-  protocolType?: string;
-  protocolVersion?: string;
-  exchangeName?: string;
+  apiSecret: string;
+  passphrase?: string;
+  status: 'active' | 'inactive' | null;
+  createdAt: string;
+  lastUpdatedAt: string;
 }
 
 const modalTitle = ref('');
 const { t } = useI18n();
+const editingId = ref<null | number>(null);
 
 // 交易所数据
 const exchangeCategories = {
@@ -68,31 +75,55 @@ const exchangeCategories = {
       { label: t('page.system.exchange.hyperliquid'), value: 'hyperliquid' },
     ],
   },
-  futu: {
-    label: t('page.system.exchange.futuSecurities'),
-    exchanges: [
-      { label: t('page.system.exchange.futuSecurities'), value: 'futu' },
-    ],
-  },
-  ibkr: {
-    label: t('page.system.exchange.interactiveBrokers'),
-    exchanges: [
-      { label: t('page.system.exchange.interactiveBrokers'), value: 'ibkr' },
-    ],
-  },
-  generic: {
-    label: t('page.system.exchange.genericProtocol'),
-    exchanges: [
-      { label: t('page.system.exchange.genericProtocol'), value: 'generic' },
-    ],
-  },
+  // futu: {
+  //   label: t('page.system.exchange.futuSecurities'),
+  //   exchanges: [
+  //     { label: t('page.system.exchange.futuSecurities'), value: 'futu' },
+  //   ],
+  // },
+  // ibkr: {
+  //   label: t('page.system.exchange.interactiveBrokers'),
+  //   exchanges: [
+  //     { label: t('page.system.exchange.interactiveBrokers'), value: 'ibkr' },
+  //   ],
+  // },
+  // generic: {
+  //   label: t('page.system.exchange.genericProtocol'),
+  //   exchanges: [
+  //     { label: t('page.system.exchange.genericProtocol'), value: 'generic' },
+  //   ],
+  // },
 };
 type ExchangeCategories = typeof exchangeCategories;
 
 let formApi: VbenFormApi;
 
+const exchangeLabelMap = new Map(
+  Object.values(exchangeCategories)
+    .flatMap((category) => category.exchanges)
+    .map((exchange) => [exchange.value, exchange.label]),
+);
+
+const getExchangeLabel = (value: string) =>
+  exchangeLabelMap.get(value) || value;
+
+const exchangeCategoryLabelMap = new Map(
+  Object.entries(exchangeCategories).map(([value, { label }]) => [
+    value,
+    label,
+  ]),
+);
+
+const getExchangeCategoryLabel = (value: string) =>
+  exchangeCategoryLabelMap.get(value) || value;
+
 // 表单schemas
 const formSchemas: VbenFormSchema[] = [
+  {
+    component: 'Input',
+    fieldName: 'id',
+    hide: true,
+  },
   {
     component: 'Select',
     fieldName: 'exchangeCategory',
@@ -251,36 +282,29 @@ const [Form, formApiInstance] = useVbenForm({
 formApi = formApiInstance;
 
 const [Drawer, drawerApi] = useVbenDrawer({
-  onConfirm: () => {
-    // TODO: Add submit logic
-    drawerApi.close();
+  onConfirm: async () => {
+    try {
+      const values = await formApi.getValues();
+      await (editingId.value
+        ? updateApiKeyApi(editingId.value, values)
+        : createApiKeyApi(
+            values as Omit<
+              ApiKey,
+              'createdAt' | 'id' | 'lastUpdatedAt' | 'status'
+            >,
+          ));
+      await loadData();
+      drawerApi.close();
+    } catch (error) {
+      console.error(error);
+    }
   },
 });
 
-const gridData = reactive<ApiKey[]>([
-  {
-    id: 1,
-    exchange: 'Huobi',
-    accountType: 'spot',
-    accountName: 'Huobi',
-    apiKey: 'huobi_******************',
-    status: 'active',
-    lastUsed: '2021-02-05 15:53:36',
-    exchangeName: 'HTX',
-  },
-  {
-    id: 2,
-    exchange: 'Binance',
-    accountType: 'spot',
-    accountName: 'Binance',
-    apiKey: 'binance_******************',
-    status: 'active',
-    lastUsed: '2022-06-22 19:56:36',
-    exchangeName: '币安现货',
-  },
-]);
+const gridData = reactive<ApiKey[]>([]);
 
 function handleAdd() {
+  editingId.value = null;
   formApi.resetForm();
   formApi.setValues({
     exchangeCategory: 'crypto',
@@ -299,6 +323,7 @@ function handleAdd() {
 }
 
 function handleEdit(row: ApiKey) {
+  editingId.value = row.id;
   formApi.setValues(row);
   const showPassphrase = [
     'bitget_futures',
@@ -319,8 +344,13 @@ function handleEdit(row: ApiKey) {
   drawerApi.open();
 }
 
-function handleDelete(row: ApiKey) {
-  console.warn('delete', row);
+async function handleDelete(row: ApiKey) {
+  try {
+    await deleteApiKeyApi(row.id);
+    await loadData();
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function handleTrade(row: ApiKey) {
@@ -329,16 +359,6 @@ function handleTrade(row: ApiKey) {
 const gridOptions: VxeGridProps<ApiKey> = {
   columns: [
     {
-      field: 'exchange',
-      slots: {
-        default: 'col-exchange',
-      },
-      title: t('page.system.exchange.name'),
-      align: 'left',
-      headerAlign: 'left',
-      sortable: true,
-    },
-    {
       field: 'accountName',
       title: t('page.system.exchange.apiName'),
       align: 'left',
@@ -346,15 +366,35 @@ const gridOptions: VxeGridProps<ApiKey> = {
       sortable: true,
     },
     {
-      field: 'exchangeName',
-      title: t('page.system.exchange.exchangeName'),
+      field: 'exchangeCategory',
+      title: t('page.system.exchange.category'),
+      align: 'left',
+      headerAlign: 'left',
+      sortable: true,
+      slots: {
+        default: 'col-exchange-category',
+      },
+    },
+    {
+      field: 'exchange',
+      slots: {
+        default: 'col-exchange',
+      },
+      title: t('page.system.exchange.exchange'),
       align: 'left',
       headerAlign: 'left',
       sortable: true,
     },
     {
-      field: 'lastUsed',
-      title: t('page.system.exchange.date'),
+      field: 'createdAt',
+      title: t('page.system.exchange.createdAt'),
+      align: 'left',
+      headerAlign: 'left',
+      sortable: true,
+    },
+    {
+      field: 'lastUpdatedAt',
+      title: t('page.system.exchange.lastUpdatedAt'),
       align: 'left',
       headerAlign: 'left',
       sortable: true,
@@ -375,6 +415,19 @@ const gridOptions: VxeGridProps<ApiKey> = {
 
 const [Grid] = useVbenVxeGrid({
   gridOptions,
+});
+async function loadData() {
+  try {
+    const data = await getApiKeysApi();
+    gridData.length = 0;
+    gridData.push(...data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+onMounted(() => {
+  loadData();
 });
 </script>
 
@@ -400,16 +453,11 @@ const [Grid] = useVbenVxeGrid({
         <Grid>
           <template #col-exchange="{ row }">
             <div class="flex items-center gap-2">
-              <span
-                v-if="row.exchange === 'Huobi'"
-                class="icon-[logos:huobi] text-2xl"
-              ></span>
-              <span
-                v-if="row.exchange === 'Binance'"
-                class="icon-[logos:binance] text-2xl"
-              ></span>
-              <span>{{ row.exchange }}</span>
+              <span>{{ getExchangeLabel(row.exchange) }}</span>
             </div>
+          </template>
+          <template #col-exchange-category="{ row }">
+            <span>{{ getExchangeCategoryLabel(row.exchangeCategory) }}</span>
           </template>
           <template #col-action="{ row }">
             <div class="flex items-center justify-center gap-2 text-base">
