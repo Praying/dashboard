@@ -280,6 +280,27 @@
       "backtest": "Backtest",
       "optimize": "Optimize",
       "spotView": "Spot View",
+      "backtestPage": {
+        "form": {
+          "basicSettings": "Basic Settings",
+          "user": "User",
+          "symbol": "Symbol",
+          "dateRange": "Date Range",
+          "startingBalance": "Starting Balance",
+          "strategyParams": "Strategy Parameters",
+          "marketType": "Market Type",
+          "configType": "Config Type",
+          "longEnabled": "Long Enabled",
+          "longWalletExposureLimit": "Long Wallet Exposure Limit",
+          "shortEnabled": "Short Enabled",
+          "shortWalletExposureLimit": "Short Wallet Exposure Limit",
+          "strategyConfigCode": "Strategy Configuration Code",
+          "previewGridParams": "Preview Grid Parameters",
+          "pasteConfig": "Strategy Configuration (Paste here)",
+          "convertToV7": "Convert to v7",
+          "v7CompatibleConfig": "v7 Compatible Configuration (Auto-generated)"
+        }
+      },
       "optimizePage": {
         "listTitle": "Optimize List",
         "listDescription": "View and manage all optimization tasks",

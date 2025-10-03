@@ -10,16 +10,16 @@ import { usePreferences } from '@vben/preferences';
 
 import { json } from '@codemirror/lang-json';
 import { oneDark } from '@codemirror/theme-one-dark';
+import { Refresh } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElCard,
   ElCheckbox,
-  ElCol,
   ElDatePicker,
   ElForm,
   ElFormItem,
   ElInputNumber,
-  ElRow,
+  ElOption,
   ElSelect,
   ElSwitch,
   ElTag,
@@ -63,13 +63,12 @@ const formModel = reactive({
   market_type: 'futures',
   ohlcv: true,
   starting_balance: 1000,
-  start_date: '2021-09-30',
-  end_date: '2025-09-29',
+  date_range: ['2021-09-30', '2025-09-29'],
   long_enabled: true,
   short_enabled: false,
   preview_grid: false,
-  long_wallet_exposure_limit: 1.0,
-  short_wallet_exposure_limit: 1.0,
+  long_wallet_exposure_limit: 1,
+  short_wallet_exposure_limit: 1,
   config_type: 'None',
   config: '',
   config_converted: '',
@@ -77,7 +76,7 @@ const formModel = reactive({
 
 interface Backtest {
   id: number;
-  status: 'error' | 'complete' | 'running';
+  status: 'complete' | 'error' | 'running';
   user: string;
   symbol: string;
   market: string;
@@ -111,13 +110,56 @@ watch(
   locale,
   () => {
     gridOptions.columns = [
-      { field: 'id', title: 'id', sortable: true, width: 80, align: 'left', headerAlign: 'left'},
-      { field: 'user', title: 'User', sortable: true, align: 'left', headerAlign: 'left' },
-      { field: 'exchange', title: 'Exchange', sortable: true, align: 'left', headerAlign: 'left' },
-      { field: 'symbol', title: 'Symbol', sortable: true, align: 'left', headerAlign: 'left' },      
-      { field: 'start', title: 'Start', sortable: true, align: 'left', headerAlign: 'left' },
-      { field: 'end', title: 'End', sortable: true, align: 'left', headerAlign: 'left' },
-      { field: 'balance', title: 'Balance', sortable: true, align: 'left', headerAlign: 'left' },
+      {
+        field: 'id',
+        title: 'id',
+        sortable: true,
+        width: 80,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'user',
+        title: 'User',
+        sortable: true,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'exchange',
+        title: 'Exchange',
+        sortable: true,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'symbol',
+        title: 'Symbol',
+        sortable: true,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'start',
+        title: 'Start',
+        sortable: true,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'end',
+        title: 'End',
+        sortable: true,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'balance',
+        title: 'Balance',
+        sortable: true,
+        align: 'left',
+        headerAlign: 'left',
+      },
       {
         field: 'status',
         title: 'Status',
@@ -189,121 +231,168 @@ const [Grid] = useVbenVxeGrid({
       </template>
     </ElCard>
     <Drawer class="w-1/2">
-      <ElForm :model="formModel" label-position="top">
-        <ElRow :gutter="20">
-          <ElCol :span="8">
-            <ElFormItem label="User">
-              <ElSelect v-model="formModel.user" class="w-full" />
-            </ElFormItem>
-          </ElCol>
-          <ElCol :span="8">
-            <ElFormItem label="Symbol">
+      <ElForm :model="formModel" label-width="200px" label-position="right">
+        <ElCard class="mb-5">
+          <template #header>
+            <div class="font-bold">
+              {{ t('page.passivbot.v6single.backtestPage.form.basicSettings') }}
+            </div>
+          </template>
+          <ElFormItem
+            :label="t('page.passivbot.v6single.backtestPage.form.user')"
+          >
+            <ElSelect v-model="formModel.user" class="w-full" />
+          </ElFormItem>
+          <ElFormItem
+            :label="t('page.passivbot.v6single.backtestPage.form.symbol')"
+          >
+            <div class="flex w-full items-center">
               <ElSelect
                 v-model="formModel.symbol"
-                class="w-full"
+                class="flex-grow"
                 placeholder="Select Symbol"
               />
-            </ElFormItem>
-            <ElButton class="w-full mt-2">
-              Update Symbols from Exchange
+              <ElButton :icon="Refresh" class="ml-2" />
+            </div>
+          </ElFormItem>
+          <ElFormItem
+            :label="t('page.passivbot.v6single.backtestPage.form.dateRange')"
+          >
+            <ElDatePicker
+              v-model="formModel.date_range"
+              class="w-full"
+              end-placeholder="End Date"
+              start-placeholder="Start Date"
+              type="daterange"
+            />
+          </ElFormItem>
+          <ElFormItem
+            :label="
+              t('page.passivbot.v6single.backtestPage.form.startingBalance')
+            "
+          >
+            <ElInputNumber
+              v-model="formModel.starting_balance"
+              class="w-full"
+            />
+          </ElFormItem>
+        </ElCard>
+
+        <ElCard class="mb-5">
+          <template #header>
+            <div class="font-bold">
+              {{
+                t('page.passivbot.v6single.backtestPage.form.strategyParams')
+              }}
+            </div>
+          </template>
+          <ElFormItem
+            :label="t('page.passivbot.v6single.backtestPage.form.marketType')"
+          >
+            <div class="flex w-full items-center">
+              <ElSelect v-model="formModel.market_type" class="flex-grow">
+                <ElOption label="Futures" value="futures" />
+                <ElOption label="Spot" value="spot" />
+              </ElSelect>
+              <ElCheckbox
+                v-model="formModel.ohlcv"
+                label="OHLCV"
+                class="ml-4"
+              />
+            </div>
+          </ElFormItem>
+          <ElFormItem
+            :label="t('page.passivbot.v6single.backtestPage.form.configType')"
+          >
+            <ElSelect v-model="formModel.config_type" class="w-full" />
+          </ElFormItem>
+          <ElFormItem
+            :label="t('page.passivbot.v6single.backtestPage.form.longEnabled')"
+          >
+            <ElSwitch v-model="formModel.long_enabled" />
+          </ElFormItem>
+          <ElFormItem
+            :label="
+              t(
+                'page.passivbot.v6single.backtestPage.form.longWalletExposureLimit',
+              )
+            "
+          >
+            <ElInputNumber
+              v-model="formModel.long_wallet_exposure_limit"
+              :disabled="!formModel.long_enabled"
+              class="w-full"
+            />
+          </ElFormItem>
+          <ElFormItem
+            :label="t('page.passivbot.v6single.backtestPage.form.shortEnabled')"
+          >
+            <ElSwitch v-model="formModel.short_enabled" />
+          </ElFormItem>
+          <ElFormItem
+            :label="
+              t(
+                'page.passivbot.v6single.backtestPage.form.shortWalletExposureLimit',
+              )
+            "
+          >
+            <ElInputNumber
+              v-model="formModel.short_wallet_exposure_limit"
+              :disabled="!formModel.short_enabled"
+              class="w-full"
+            />
+          </ElFormItem>
+        </ElCard>
+
+        <ElCard>
+          <template #header>
+            <div class="flex items-center justify-between">
+              <span class="font-bold">{{
+                t(
+                  'page.passivbot.v6single.backtestPage.form.strategyConfigCode',
+                )
+              }}</span>
+              <div class="flex items-center">
+                <span class="mr-2 text-sm">{{
+                  t(
+                    'page.passivbot.v6single.backtestPage.form.previewGridParams',
+                  )
+                }}</span>
+                <ElSwitch v-model="formModel.preview_grid" />
+              </div>
+            </div>
+          </template>
+          <ElFormItem
+            :label="t('page.passivbot.v6single.backtestPage.form.pasteConfig')"
+            label-position="top"
+          >
+            <Codemirror
+              v-model="formModel.config"
+              :extensions="cmExtensions"
+              :style="{ height: '200px', width: '100%' }"
+              @ready="handleReady"
+            />
+          </ElFormItem>
+          <div class="my-4 flex justify-center">
+            <ElButton type="primary">
+              {{ t('page.passivbot.v6single.backtestPage.form.convertToV7') }}
             </ElButton>
-          </ElCol>
-          <ElCol :span="8">
-            <ElFormItem label="Market Type">
-              <ElCheckbox v-model="formModel.market_type" label="futures">
-                futures
-              </ElCheckbox>
-            </ElFormItem>
-            <ElFormItem  class="mt-2">
-              <ElCheckbox v-model="formModel.ohlcv" label="OHLCV" />
-            </ElFormItem>
-          </ElCol>
-        </ElRow>
-        <ElRow :gutter="20">
-          <ElCol :span="8">
-            <ElFormItem label="Starting Balance">
-              <ElInputNumber
-                v-model="formModel.starting_balance"
-                class="w-full"
-              />
-            </ElFormItem>
-          </ElCol>
-          <ElCol :span="8">
-            <ElFormItem label="Start Date">
-              <ElDatePicker v-model="formModel.start_date" class="w-full" />
-            </ElFormItem>
-          </ElCol>
-          <ElCol :span="8">
-            <ElFormItem label="End Date">
-              <ElDatePicker v-model="formModel.end_date" class="w-full" />
-            </ElFormItem>
-          </ElCol>
-        </ElRow>
-        <ElRow :gutter="20" class="py-2.5">
-          <ElCol :span="8">
-            <div class="flex items-center">
-              <ElSwitch v-model="formModel.long_enabled" />
-              <span class="ml-2 text-sm">Long enabled</span>
-            </div>
-          </ElCol>
-          <ElCol :span="8">
-            <div class="flex items-center">
-              <ElSwitch v-model="formModel.short_enabled" />
-              <span class="ml-2 text-sm">Short enabled</span>
-            </div>
-          </ElCol>
-          <ElCol :span="8">
-            <div class="flex items-center">
-              <ElSwitch v-model="formModel.preview_grid" />
-              <span class="ml-2 text-sm">Preview Grid</span>
-            </div>
-          </ElCol>
-        </ElRow>
-        <ElRow :gutter="20">
-          <ElCol :span="8">
-            <ElFormItem label="Long Wallet Exposure Limit">
-              <ElInputNumber
-                v-model="formModel.long_wallet_exposure_limit"
-                class="w-full"
-              />
-            </ElFormItem>
-          </ElCol>
-          <ElCol :span="8">
-            <ElFormItem label="Short Wallet Exposure Limit">
-              <ElInputNumber
-                v-model="formModel.short_wallet_exposure_limit"
-                class="w-full"
-              />
-            </ElFormItem>
-          </ElCol>
-          <ElCol :span="8">
-            <ElFormItem label="Config Type">
-              <ElSelect v-model="formModel.config_type" class="w-full" />
-            </ElFormItem>
-          </ElCol>
-        </ElRow>
-        <ElRow :gutter="20">
-          <ElCol :span="12">
-            <ElFormItem label="config">
-              <Codemirror
-                v-model="formModel.config"
-                :extensions="cmExtensions"
-                :style="{ height: '400px', width: '100%' }"
-                @ready="handleReady"
-              />
-            </ElFormItem>
-          </ElCol>
-          <ElCol :span="12">
-            <ElFormItem label="config converted to v7">
-              <Codemirror
-                v-model="formModel.config_converted"
-                :extensions="cmExtensions"
-                :style="{ height: '400px', width: '100%' }"
-                @ready="handleReady"
-              />
-            </ElFormItem>
-          </ElCol>
-        </ElRow>
+          </div>
+          <ElFormItem
+            :label="
+              t('page.passivbot.v6single.backtestPage.form.v7CompatibleConfig')
+            "
+            label-position="top"
+          >
+            <Codemirror
+              v-model="formModel.config_converted"
+              :disabled="true"
+              :extensions="cmExtensions"
+              :style="{ height: '200px', width: '100%' }"
+              @ready="handleReady"
+            />
+          </ElFormItem>
+        </ElCard>
       </ElForm>
     </Drawer>
   </Page>

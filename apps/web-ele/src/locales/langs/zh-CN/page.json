@@ -283,6 +283,27 @@
       "backtest": "回测",
       "optimize": "优化",
       "spotView": "现货视图",
+      "backtestPage": {
+        "form": {
+          "basicSettings": "基础设置",
+          "user": "用户",
+          "symbol": "交易对",
+          "dateRange": "日期范围",
+          "startingBalance": "起始余额",
+          "strategyParams": "策略参数",
+          "marketType": "市场类型",
+          "configType": "配置类型",
+          "longEnabled": "允许做多",
+          "longWalletExposureLimit": "多头钱包风险暴露限制",
+          "shortEnabled": "允许做空",
+          "shortWalletExposureLimit": "空头钱包风险暴露限制",
+          "strategyConfigCode": "策略配置代码",
+          "previewGridParams": "预览网格参数",
+          "pasteConfig": "策略配置 (粘贴于此)",
+          "convertToV7": "转换为 v7",
+          "v7CompatibleConfig": "v7 兼容配置 (自动生成)"
+        }
+      },
       "optimizePage": {
         "listTitle": "优化列表",
         "listDescription": "查看和管理所有优化任务",
