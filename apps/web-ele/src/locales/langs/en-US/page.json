@@ -283,7 +283,7 @@
       "backtestPage": {
         "table": {
           "id": "ID",
-          "user": "User",
+          "accountName": "Account Name",
           "exchange": "Exchange",
           "passivbotMode": "Mode",
           "symbol": "Symbol",
@@ -293,8 +293,9 @@
           "status": "Status"
         },
         "form": {
+          "backtestName": "Backtest Name",
           "basicSettings": "Basic Settings",
-          "user": "User",
+          "accountName": "Account Name",
           "symbol": "Symbol",
           "dateRange": "Date Range",
           "startingBalance": "Starting Balance",
@@ -319,7 +320,7 @@
         "newOptimize": "New Optimize",
         "title": "Create/Edit",
         "form": {
-          "user": "User",
+          "accountName": "Account Name",
           "symbol": "Symbol",
           "marketType": "Market Type",
           "startingBalance": "Starting Balance",

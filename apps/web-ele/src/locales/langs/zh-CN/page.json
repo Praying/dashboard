@@ -50,7 +50,6 @@
       "protocolVersion": "协议版本",
       "exchange": "交易所",
       "accountType": "账户类型",
-      "accountName": "账户名称",
       "apiKey": "API密钥",
       "apiSecret": "API 秘钥",
       "passphrase": "Passphrase",
@@ -71,6 +70,7 @@
       "manageApiCredentials": "管理您的交易所 API 凭据",
       "name": "名称",
       "apiName": "API Name",
+      "accountName": "账户名称",
       "exchangeName": "交易所名称",
       "date": "日期",
       "operation": "操作项",
@@ -286,7 +286,7 @@
       "backtestPage": {
         "table": {
           "id": "ID",
-          "user": "用户",
+          "accountName": "账户名称",
           "exchange": "交易所",
           "symbol": "交易对",
           "passivbotMode": "模式",
@@ -296,8 +296,9 @@
           "status": "状态"
         },
         "form": {
+          "backtestName": "回测名称",
           "basicSettings": "基础设置",
-          "user": "用户",
+          "accountName": "账户名称",
           "symbol": "交易对",
           "dateRange": "日期范围",
           "startingBalance": "起始余额",
@@ -322,7 +323,7 @@
         "newOptimize": "新建优化",
         "title": "创建/编辑",
         "form": {
-          "user": "用户",
+          "accountName": "账户名称",
           "symbol": "交易对",
           "marketType": "市场类型",
           "startingBalance": "起始余额",

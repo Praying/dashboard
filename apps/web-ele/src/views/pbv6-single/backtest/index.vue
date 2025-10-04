@@ -18,6 +18,7 @@ import {
   ElDatePicker,
   ElForm,
   ElFormItem,
+  ElInput,
   ElInputNumber,
   ElOption,
   ElSelect,
@@ -58,7 +59,8 @@ function handleNewBacktest() {
 }
 
 const formModel = reactive({
-  user: 'bitget-bot-doge',
+  backtest_name: '',
+  accountName: 'bitget-bot-doge',
   symbol: '',
   market_type: 'futures',
   ohlcv: true,
@@ -78,7 +80,7 @@ const formModel = reactive({
 interface Backtest {
   id: number;
   status: 'complete' | 'error' | 'running';
-  user: string;
+  accountName: string;
   symbol: string;
   market: string;
   model: string;
@@ -92,7 +94,7 @@ const tableData = reactive<Backtest[]>([
   {
     id: 0,
     status: 'error',
-    user: 'bitget-bot-doge',
+    accountName: 'bitget-bot-doge',
     symbol: 'BNBUSDT',
     market: 'futures',
     model: 'clock',
@@ -122,8 +124,8 @@ watch(
         headerAlign: 'left',
       },
       {
-        field: 'user',
-        title: t('page.passivbot.v6single.backtestPage.table.user'),
+        field: 'accountName',
+        title: t('page.passivbot.v6single.backtestPage.table.accountName'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
@@ -250,9 +252,14 @@ const [Grid] = useVbenVxeGrid({
             </div>
           </template>
           <ElFormItem
-            :label="t('page.passivbot.v6single.backtestPage.form.user')"
+            :label="t('page.passivbot.v6single.backtestPage.form.backtestName')"
           >
-            <ElSelect v-model="formModel.user" class="w-full" />
+            <ElInput v-model="formModel.backtest_name" />
+          </ElFormItem>
+          <ElFormItem
+            :label="t('page.passivbot.v6single.backtestPage.form.accountName')"
+          >
+            <ElSelect v-model="formModel.accountName" class="w-full" />
           </ElFormItem>
           <ElFormItem
             :label="t('page.passivbot.v6single.backtestPage.form.symbol')"

@@ -260,10 +260,10 @@ const formSchemas: VbenFormSchema[] = [
   {
     component: 'Input',
     fieldName: 'accountName',
-    label: t('page.system.exchange.label'),
+    label: t('page.system.exchange.accountName'),
     labelWidth: 100,
     componentProps: {
-      placeholder: t('page.system.exchange.binanceFutures'),
+      placeholder: t('page.system.exchange.accountName'),
     },
     rules: 'required',
     labelClass: 'required-label',
@@ -360,7 +360,7 @@ const gridOptions: VxeGridProps<ApiKey> = {
   columns: [
     {
       field: 'accountName',
-      title: t('page.system.exchange.apiName'),
+      title: t('page.system.exchange.accountName'),
       align: 'left',
       headerAlign: 'left',
       sortable: true,
