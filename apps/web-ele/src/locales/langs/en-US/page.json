@@ -281,6 +281,17 @@
       "optimize": "Optimize",
       "spotView": "Spot View",
       "backtestPage": {
+        "table": {
+          "id": "ID",
+          "user": "User",
+          "exchange": "Exchange",
+          "passivbotMode": "Mode",
+          "symbol": "Symbol",
+          "start": "Start",
+          "end": "End",
+          "initialCapital": "Initial Capital",
+          "status": "Status"
+        },
         "form": {
           "basicSettings": "Basic Settings",
           "user": "User",
@@ -294,6 +305,7 @@
           "longWalletExposureLimit": "Long Wallet Exposure Limit",
           "shortEnabled": "Short Enabled",
           "shortWalletExposureLimit": "Short Wallet Exposure Limit",
+          "passivbotMode": "Passivbot Mode",
           "strategyConfigCode": "Strategy Configuration Code",
           "previewGridParams": "Preview Grid Parameters",
           "pasteConfig": "Strategy Configuration (Paste here)",

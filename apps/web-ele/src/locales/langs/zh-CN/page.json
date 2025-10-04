@@ -284,6 +284,17 @@
       "optimize": "优化",
       "spotView": "现货视图",
       "backtestPage": {
+        "table": {
+          "id": "ID",
+          "user": "用户",
+          "exchange": "交易所",
+          "symbol": "交易对",
+          "passivbotMode": "模式",
+          "start": "开始时间",
+          "end": "结束时间",
+          "initialCapital": "初始资金",
+          "status": "状态"
+        },
         "form": {
           "basicSettings": "基础设置",
           "user": "用户",
@@ -297,6 +308,7 @@
           "longWalletExposureLimit": "多头钱包风险暴露限制",
           "shortEnabled": "允许做空",
           "shortWalletExposureLimit": "空头钱包风险暴露限制",
+          "passivbotMode": "Passivbot 模式",
           "strategyConfigCode": "策略配置代码",
           "previewGridParams": "预览网格参数",
           "pasteConfig": "策略配置 (粘贴于此)",

@@ -62,13 +62,14 @@ const formModel = reactive({
   symbol: '',
   market_type: 'futures',
   ohlcv: true,
-  starting_balance: 1000,
+  initial_capital: 1000,
   date_range: ['2021-09-30', '2025-09-29'],
   long_enabled: true,
   short_enabled: false,
   preview_grid: false,
   long_wallet_exposure_limit: 1,
   short_wallet_exposure_limit: 1,
+  passivbot_mode: 'recursive_grid',
   config_type: 'None',
   config: '',
   config_converted: '',
@@ -80,10 +81,11 @@ interface Backtest {
   user: string;
   symbol: string;
   market: string;
+  model: string;
   exchange: string;
   start: string;
   end: string;
-  balance: number;
+  initial_capital: number;
 }
 
 const tableData = reactive<Backtest[]>([
@@ -93,10 +95,11 @@ const tableData = reactive<Backtest[]>([
     user: 'bitget-bot-doge',
     symbol: 'BNBUSDT',
     market: 'futures',
+    model: 'clock',
     exchange: 'bitget',
     start: '2021-08-18',
     end: '2025-08-17',
-    balance: 250,
+    initial_capital: 250,
   },
 ]);
 
@@ -112,7 +115,7 @@ watch(
     gridOptions.columns = [
       {
         field: 'id',
-        title: 'id',
+        title: t('page.passivbot.v6single.backtestPage.table.id'),
         sortable: true,
         width: 80,
         align: 'left',
@@ -120,49 +123,57 @@ watch(
       },
       {
         field: 'user',
-        title: 'User',
+        title: t('page.passivbot.v6single.backtestPage.table.user'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'exchange',
-        title: 'Exchange',
+        title: t('page.passivbot.v6single.backtestPage.table.exchange'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'symbol',
-        title: 'Symbol',
+        title: t('page.passivbot.v6single.backtestPage.table.symbol'),
+        sortable: true,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'model',
+        title: t('page.passivbot.v6single.backtestPage.table.passivbotMode'),
+        width: 100,
+        sortable: true,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'initial_capital',
+        title: t('page.passivbot.v6single.backtestPage.table.initialCapital'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'start',
-        title: 'Start',
+        title: t('page.passivbot.v6single.backtestPage.table.start'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'end',
-        title: 'End',
-        sortable: true,
-        align: 'left',
-        headerAlign: 'left',
-      },
-      {
-        field: 'balance',
-        title: 'Balance',
+        title: t('page.passivbot.v6single.backtestPage.table.end'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'status',
-        title: 'Status',
+        title: t('page.passivbot.v6single.backtestPage.table.status'),
         slots: { default: 'col-status' },
         sortable: true,
         align: 'left',
@@ -271,10 +282,7 @@ const [Grid] = useVbenVxeGrid({
               t('page.passivbot.v6single.backtestPage.form.startingBalance')
             "
           >
-            <ElInputNumber
-              v-model="formModel.starting_balance"
-              class="w-full"
-            />
+            <ElInputNumber v-model="formModel.initial_capital" class="w-full" />
           </ElFormItem>
         </ElCard>
 
@@ -291,8 +299,8 @@ const [Grid] = useVbenVxeGrid({
           >
             <div class="flex w-full items-center">
               <ElSelect v-model="formModel.market_type" class="flex-grow">
-                <ElOption label="Futures" value="futures" />
-                <ElOption label="Spot" value="spot" />
+                <ElOption label="futures" value="futures" />
+                <ElOption label="spot" value="spot" />
               </ElSelect>
               <ElCheckbox
                 v-model="formModel.ohlcv"
@@ -305,6 +313,17 @@ const [Grid] = useVbenVxeGrid({
             :label="t('page.passivbot.v6single.backtestPage.form.configType')"
           >
             <ElSelect v-model="formModel.config_type" class="w-full" />
+          </ElFormItem>
+          <ElFormItem
+            :label="
+              t('page.passivbot.v6single.backtestPage.form.passivbotMode')
+            "
+          >
+            <ElSelect v-model="formModel.passivbot_mode" class="w-full">
+              <ElOption label="recursive_grid" value="recursive_grid" />
+              <ElOption label="neat_grid" value="neat_grid" />
+              <ElOption label="clock" value="clock" />
+            </ElSelect>
           </ElFormItem>
           <ElFormItem
             :label="t('page.passivbot.v6single.backtestPage.form.longEnabled')"
