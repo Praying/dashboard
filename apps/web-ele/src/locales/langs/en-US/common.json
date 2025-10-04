@@ -12,6 +12,7 @@
   "loading": "Loading...",
   "success": "Success",
   "error": "Error",
+  "formValidationError": "Form validation failed, please check your input",
   "warning": "Warning",
   "info": "Info",
   "table": {

@@ -12,6 +12,7 @@
   "loading": "加载中...",
   "success": "成功",
   "error": "错误",
+  "formValidationError": "表单验证失败，请检查输入",
   "warning": "警告",
   "info": "信息",
   "table": {

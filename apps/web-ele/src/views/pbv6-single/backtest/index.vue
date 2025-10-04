@@ -254,12 +254,27 @@ const [Grid] = useVbenVxeGrid({
           <ElFormItem
             :label="t('page.passivbot.v6single.backtestPage.form.backtestName')"
           >
-            <ElInput v-model="formModel.backtest_name" />
+            <ElInput
+              v-model="formModel.backtest_name"
+              :placeholder="
+                t(
+                  'page.passivbot.v6single.backtestPage.form.backtestNamePlaceholder',
+                )
+              "
+            />
           </ElFormItem>
           <ElFormItem
             :label="t('page.passivbot.v6single.backtestPage.form.accountName')"
           >
-            <ElSelect v-model="formModel.accountName" class="w-full" />
+            <ElSelect
+              v-model="formModel.accountName"
+              class="w-full"
+              :placeholder="
+                t(
+                  'page.passivbot.v6single.backtestPage.form.accountNamePlaceholder',
+                )
+              "
+            />
           </ElFormItem>
           <ElFormItem
             :label="t('page.passivbot.v6single.backtestPage.form.symbol')"
@@ -268,7 +283,11 @@ const [Grid] = useVbenVxeGrid({
               <ElSelect
                 v-model="formModel.symbol"
                 class="flex-grow"
-                placeholder="Select Symbol"
+                :placeholder="
+                  t(
+                    'page.passivbot.v6single.backtestPage.form.symbolPlaceholder',
+                  )
+                "
               />
               <ElButton :icon="Refresh" class="ml-2" />
             </div>
@@ -279,8 +298,16 @@ const [Grid] = useVbenVxeGrid({
             <ElDatePicker
               v-model="formModel.date_range"
               class="w-full"
-              end-placeholder="End Date"
-              start-placeholder="Start Date"
+              :end-placeholder="
+                t(
+                  'page.passivbot.v6single.backtestPage.form.endDatePlaceholder',
+                )
+              "
+              :start-placeholder="
+                t(
+                  'page.passivbot.v6single.backtestPage.form.startDatePlaceholder',
+                )
+              "
               type="daterange"
             />
           </ElFormItem>
@@ -305,7 +332,15 @@ const [Grid] = useVbenVxeGrid({
             :label="t('page.passivbot.v6single.backtestPage.form.marketType')"
           >
             <div class="flex w-full items-center">
-              <ElSelect v-model="formModel.market_type" class="flex-grow">
+              <ElSelect
+                v-model="formModel.market_type"
+                class="flex-grow"
+                :placeholder="
+                  t(
+                    'page.passivbot.v6single.backtestPage.form.marketTypePlaceholder',
+                  )
+                "
+              >
                 <ElOption label="futures" value="futures" />
                 <ElOption label="spot" value="spot" />
               </ElSelect>
@@ -319,14 +354,30 @@ const [Grid] = useVbenVxeGrid({
           <ElFormItem
             :label="t('page.passivbot.v6single.backtestPage.form.configType')"
           >
-            <ElSelect v-model="formModel.config_type" class="w-full" />
+            <ElSelect
+              v-model="formModel.config_type"
+              class="w-full"
+              :placeholder="
+                t(
+                  'page.passivbot.v6single.backtestPage.form.configTypePlaceholder',
+                )
+              "
+            />
           </ElFormItem>
           <ElFormItem
             :label="
               t('page.passivbot.v6single.backtestPage.form.passivbotMode')
             "
           >
-            <ElSelect v-model="formModel.passivbot_mode" class="w-full">
+            <ElSelect
+              v-model="formModel.passivbot_mode"
+              class="w-full"
+              :placeholder="
+                t(
+                  'page.passivbot.v6single.backtestPage.form.passivbotModePlaceholder',
+                )
+              "
+            >
               <ElOption label="recursive_grid" value="recursive_grid" />
               <ElOption label="neat_grid" value="neat_grid" />
               <ElOption label="clock" value="clock" />

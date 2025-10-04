@@ -43,6 +43,17 @@ const modalTitle = ref('');
 const { t } = useI18n();
 const editingId = ref<null | number>(null);
 
+function generateRandomString(length: number): string {
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 // 交易所数据
 const exchangeCategories = {
   crypto: {
@@ -150,7 +161,7 @@ const formSchemas: VbenFormSchema[] = [
 
         formApi.setValues({
           exchange: defaultExchange,
-          accountName: selectedOption?.label,
+          accountName: `${selectedOption?.label}-${generateRandomString(6)}`,
         });
         formApi.updateSchema([
           {
@@ -182,7 +193,9 @@ const formSchemas: VbenFormSchema[] = [
         const options = category ? exchangeCategories[category].exchanges : [];
         const selectedOption = options.find((o) => o.value === value);
         if (selectedOption) {
-          formApi.setValues({ accountName: selectedOption.label });
+          formApi.setValues({
+            accountName: `${selectedOption.label}-${generateRandomString(6)}`,
+          });
         }
 
         const showPassphrase = [
@@ -263,7 +276,7 @@ const formSchemas: VbenFormSchema[] = [
     label: t('page.system.exchange.accountName'),
     labelWidth: 100,
     componentProps: {
-      placeholder: t('page.system.exchange.accountName'),
+      placeholder: t('page.system.exchange.enterAccountName'),
     },
     rules: 'required',
     labelClass: 'required-label',
@@ -284,6 +297,10 @@ formApi = formApiInstance;
 const [Drawer, drawerApi] = useVbenDrawer({
   onConfirm: async () => {
     try {
+      const { valid } = await formApi.validate();
+      if (!valid) {
+        return;
+      }
       const values = await formApi.getValues();
       await (editingId.value
         ? updateApiKeyApi(editingId.value, values)
@@ -309,7 +326,7 @@ function handleAdd() {
   formApi.setValues({
     exchangeCategory: 'crypto',
     exchange: 'binance_futures',
-    accountName: t('page.system.exchange.binanceFutures'),
+    accountName: `${t('page.system.exchange.binanceFutures')}-${generateRandomString(6)}`,
   });
   formApi.updateSchema([
     {
