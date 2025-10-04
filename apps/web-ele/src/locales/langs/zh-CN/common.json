@@ -27,7 +27,8 @@
     "start": "开始",
     "viewResults": "查看结果",
     "viewLog": "查看日志",
-    "delete": "删除"
+    "delete": "删除",
+    "generate": "生成"
   },
   "status": {
     "complete": "完成",

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { ApiKey } from '#/api/system/exchange';
 
-import { computed, reactive, shallowRef, watch } from 'vue';
+import { computed, onMounted, reactive, ref, shallowRef, watch } from 'vue';
 import { Codemirror } from 'vue-codemirror';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
@@ -27,6 +28,8 @@ import {
 } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getApiKeysApi } from '#/api/system/exchange';
+import { getTradingPairsApi } from '#/api/trading-pairs';
 
 const { t, locale } = useI18n();
 const { isDark } = usePreferences();
@@ -58,9 +61,23 @@ function handleNewBacktest() {
   drawerApi.open();
 }
 
+function generateBacktestName() {
+  const randomStr = Math.random().toString(36).slice(2, 8);
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const day = now.getDate().toString().padStart(2, '0');
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const seconds = now.getSeconds().toString().padStart(2, '0');
+  const timestamp = `${year}${month}${day}${hours}${minutes}${seconds}`;
+  formModel.backtest_name = `btv6-${randomStr}-${timestamp}`;
+}
+
 const formModel = reactive({
   backtest_name: '',
-  accountName: 'bitget-bot-doge',
+  accountName: '',
+  exchange: '',
   symbol: '',
   market_type: 'futures',
   ohlcv: true,
@@ -76,6 +93,32 @@ const formModel = reactive({
   config: '',
   config_converted: '',
 });
+
+interface AccountInfo {
+  accountName: string;
+  exchange: string;
+}
+const accounts = ref<AccountInfo[]>([]);
+onMounted(async () => {
+  const apiKeys = await getApiKeysApi();
+  accounts.value = apiKeys.map((key: ApiKey) => ({
+    accountName: key.accountName,
+    exchange: key.exchange,
+  }));
+});
+
+const symbols = ref<string[]>([]);
+
+async function handleAccountChange(selectedAccountName: string) {
+  const account = accounts.value.find(
+    (acc) => acc.accountName === selectedAccountName,
+  );
+  if (account) {
+    formModel.exchange = account.exchange;
+    formModel.symbol = ''; // Reset symbol when account changes
+    symbols.value = await getTradingPairsApi(account.exchange);
+  }
+}
 
 interface Backtest {
   id: number;
@@ -254,14 +297,20 @@ const [Grid] = useVbenVxeGrid({
           <ElFormItem
             :label="t('page.passivbot.v6single.backtestPage.form.backtestName')"
           >
-            <ElInput
-              v-model="formModel.backtest_name"
-              :placeholder="
-                t(
-                  'page.passivbot.v6single.backtestPage.form.backtestNamePlaceholder',
-                )
-              "
-            />
+            <div class="flex w-full items-center gap-2">
+              <ElInput
+                v-model="formModel.backtest_name"
+                class="flex-grow"
+                :placeholder="
+                  t(
+                    'page.passivbot.v6single.backtestPage.form.backtestNamePlaceholder',
+                  )
+                "
+              />
+              <ElButton @click="generateBacktestName">
+                {{ t('common.actions.generate') }}
+              </ElButton>
+            </div>
           </ElFormItem>
           <ElFormItem
             :label="t('page.passivbot.v6single.backtestPage.form.accountName')"
@@ -274,7 +323,15 @@ const [Grid] = useVbenVxeGrid({
                   'page.passivbot.v6single.backtestPage.form.accountNamePlaceholder',
                 )
               "
-            />
+              @change="handleAccountChange"
+            >
+              <ElOption
+                v-for="item in accounts"
+                :key="item.accountName"
+                :label="item.accountName"
+                :value="item.accountName"
+              />
+            </ElSelect>
           </ElFormItem>
           <ElFormItem
             :label="t('page.passivbot.v6single.backtestPage.form.symbol')"
@@ -288,7 +345,14 @@ const [Grid] = useVbenVxeGrid({
                     'page.passivbot.v6single.backtestPage.form.symbolPlaceholder',
                   )
                 "
-              />
+              >
+                <ElOption
+                  v-for="item in symbols"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </ElSelect>
               <ElButton :icon="Refresh" class="ml-2" />
             </div>
           </ElFormItem>

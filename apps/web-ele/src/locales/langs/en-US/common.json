@@ -27,7 +27,8 @@
     "start": "Start",
     "viewResults": "View Results",
     "viewLog": "View Log",
-    "delete": "Delete"
+    "delete": "Delete",
+    "generate": "Generate"
   },
   "status": {
     "complete": "Complete",
