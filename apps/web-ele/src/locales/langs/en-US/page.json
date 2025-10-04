@@ -126,7 +126,21 @@
       "category": "Category"
     },
     "pbgui-services": "PBGUI Services",
-    "vps-manager": "VPS Manager"
+    "vps-manager": "VPS Manager",
+    "preferences": "Preferences",
+    "preferencesPage": {
+      "v6Settings": "Passivbot V6 Settings",
+      "v7Settings": "Passivbot V7 Settings",
+      "appPath": "Application Path",
+      "pythonInterpreterPath": "Python Interpreter Path",
+      "saveChanges": "Save Changes",
+      "reset": "Reset",
+      "resetConfirmTitle": "Confirm Reset",
+      "resetConfirmMessage": "Are you sure you want to discard all unsaved changes?",
+      "resetSuccessMessage": "Changes have been reset",
+      "saveSuccessMessage": "Settings saved successfully",
+      "saveErrorMessage": "Failed to save settings, please try again"
+    }
   },
   "information": {
     "title": "Information",

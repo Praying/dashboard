@@ -129,7 +129,21 @@
       "category": "协议"
     },
     "pbgui-services": "PBGUI服务",
-    "vps-manager": "VPS管理器"
+    "vps-manager": "VPS管理器",
+    "preferences": "基础设置",
+    "preferencesPage": {
+      "v6Settings": "Passivbot V6 设置",
+      "v7Settings": "Passivbot V7 设置",
+      "appPath": "应用路径",
+      "pythonInterpreterPath": "Python 解释器路径",
+      "saveChanges": "保存更改",
+      "reset": "重置",
+      "resetConfirmTitle": "确认重置",
+      "resetConfirmMessage": "您确定要撤销所有未保存的更改吗？",
+      "resetSuccessMessage": "已重置更改",
+      "saveSuccessMessage": "设置已成功保存",
+      "saveErrorMessage": "保存失败，请重试"
+    }
   },
   "information": {
     "title": "信息",

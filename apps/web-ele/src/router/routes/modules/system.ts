@@ -49,6 +49,15 @@ const routes: RouteRecordRaw[] = [
           title: $t('page.system.vps-manager'),
         },
       },
+      {
+        name: 'Preferences',
+        path: 'preferences',
+        component: () => import('#/views/system/preferences/index.vue'),
+        meta: {
+          icon: 'lucide:settings',
+          title: $t('page.system.preferences'),
+        },
+      },
     ],
   },
   {
