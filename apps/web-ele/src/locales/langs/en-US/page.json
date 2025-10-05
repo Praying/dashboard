@@ -297,6 +297,7 @@
       "backtestPage": {
         "table": {
           "id": "ID",
+          "name": "Name",
           "accountName": "Account Name",
           "exchange": "Exchange",
           "passivbotMode": "Mode",

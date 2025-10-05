@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { ApiKey } from '#/api/system/exchange';
+import type { V6SingleBacktest } from '#/api/v6-single-backtest';
 
 import { computed, onMounted, reactive, ref, shallowRef, watch } from 'vue';
 import { Codemirror } from 'vue-codemirror';
@@ -21,6 +22,7 @@ import {
   ElFormItem,
   ElInput,
   ElInputNumber,
+  ElMessageBox,
   ElOption,
   ElSelect,
   ElSwitch,
@@ -30,6 +32,11 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getApiKeysApi } from '#/api/system/exchange';
 import { getTradingPairsApi } from '#/api/trading-pairs';
+import {
+  createV6SingleBacktestApi,
+  deleteV6SingleBacktestApi,
+  getV6SingleBacktestsApi,
+} from '#/api/v6-single-backtest';
 
 const { t, locale } = useI18n();
 const { isDark } = usePreferences();
@@ -48,8 +55,27 @@ const cmExtensions = computed(() => {
 });
 
 const [Drawer, drawerApi] = useVbenDrawer({
-  onConfirm: () => {
-    // TODO: Add submit logic
+  onConfirm: async () => {
+    if (
+      !formModel.date_range ||
+      !formModel.date_range[0] ||
+      !formModel.date_range[1]
+    ) {
+      // TODO: Handle error case, maybe show a message to the user
+      return;
+    }
+    await createV6SingleBacktestApi({
+      name: formModel.backtest_name,
+      account_name: formModel.accountName,
+      exchange: formModel.exchange,
+      symbol: formModel.symbol,
+      market_type: formModel.market_type,
+      model: formModel.passivbot_mode,
+      start_date: formModel.date_range[0],
+      end_date: formModel.date_range[1],
+      initial_capital: formModel.initial_capital,
+    });
+    await fetchBacktests();
     drawerApi.close();
   },
 });
@@ -120,37 +146,38 @@ async function handleAccountChange(selectedAccountName: string) {
   }
 }
 
-interface Backtest {
-  id: number;
-  status: 'complete' | 'error' | 'running';
-  accountName: string;
-  symbol: string;
-  market: string;
-  model: string;
-  exchange: string;
-  start: string;
-  end: string;
-  initial_capital: number;
+const tableData = ref<V6SingleBacktest[]>([]);
+
+async function fetchBacktests() {
+  const backtests = await getV6SingleBacktestsApi();
+  tableData.value.splice(0, tableData.value.length, ...backtests);
 }
 
-const tableData = reactive<Backtest[]>([
-  {
-    id: 0,
-    status: 'error',
-    accountName: 'bitget-bot-doge',
-    symbol: 'BNBUSDT',
-    market: 'futures',
-    model: 'clock',
-    exchange: 'bitget',
-    start: '2021-08-18',
-    end: '2025-08-17',
-    initial_capital: 250,
-  },
-]);
+onMounted(async () => {
+  await fetchBacktests();
+});
 
-const gridOptions = reactive<VxeGridProps<Backtest>>({
+async function handleDelete(row: V6SingleBacktest) {
+  try {
+    await ElMessageBox.confirm(
+      t('common.prompts.deleteConfirm'),
+      t('common.prompts.deleteTitle'),
+      {
+        confirmButtonText: t('common.actions.confirm'),
+        cancelButtonText: t('common.actions.cancel'),
+        type: 'warning',
+      },
+    );
+    await deleteV6SingleBacktestApi(row.id);
+    await fetchBacktests();
+  } catch {
+    // catch error
+  }
+}
+
+const gridOptions = reactive<VxeGridProps<V6SingleBacktest>>({
   columns: [],
-  data: tableData,
+  data: tableData.value,
   sortConfig: {},
 });
 
@@ -162,12 +189,20 @@ watch(
         field: 'id',
         title: t('page.passivbot.v6single.backtestPage.table.id'),
         sortable: true,
-        width: 80,
+        width: 50,
         align: 'left',
         headerAlign: 'left',
       },
       {
-        field: 'accountName',
+        field: 'name',
+        title: t('page.passivbot.v6single.backtestPage.table.name'),
+        sortable: true,
+        width: 100,
+        align: 'left',
+        headerAlign: 'left',
+      },
+      {
+        field: 'account_name',
         title: t('page.passivbot.v6single.backtestPage.table.accountName'),
         sortable: true,
         align: 'left',
@@ -184,6 +219,7 @@ watch(
         field: 'symbol',
         title: t('page.passivbot.v6single.backtestPage.table.symbol'),
         sortable: true,
+        width: 80,
         align: 'left',
         headerAlign: 'left',
       },
@@ -199,18 +235,19 @@ watch(
         field: 'initial_capital',
         title: t('page.passivbot.v6single.backtestPage.table.initialCapital'),
         sortable: true,
+        width: 90,
         align: 'left',
         headerAlign: 'left',
       },
       {
-        field: 'start',
+        field: 'start_date',
         title: t('page.passivbot.v6single.backtestPage.table.start'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
-        field: 'end',
+        field: 'end_date',
         title: t('page.passivbot.v6single.backtestPage.table.end'),
         sortable: true,
         align: 'left',
@@ -221,6 +258,7 @@ watch(
         title: t('page.passivbot.v6single.backtestPage.table.status'),
         slots: { default: 'col-status' },
         sortable: true,
+        width: 80,
         align: 'left',
         headerAlign: 'left',
       },
@@ -267,7 +305,7 @@ const [Grid] = useVbenVxeGrid({
               {{ row.status }}
             </ElTag>
           </template>
-          <template #col-action>
+          <template #col-action="{ row }">
             <div class="flex items-center justify-center gap-2 text-base">
               <ElButton link type="primary">
                 {{ t('common.actions.start') }}
@@ -278,7 +316,7 @@ const [Grid] = useVbenVxeGrid({
               <ElButton link type="info">
                 {{ t('common.actions.viewLog') }}
               </ElButton>
-              <ElButton link type="danger">
+              <ElButton link type="danger" @click="handleDelete(row)">
                 {{ t('common.actions.delete') }}
               </ElButton>
             </div>

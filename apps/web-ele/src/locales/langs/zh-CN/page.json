@@ -300,6 +300,7 @@
       "backtestPage": {
         "table": {
           "id": "ID",
+          "name": "回测名称",
           "accountName": "账户名称",
           "exchange": "交易所",
           "symbol": "交易对",
