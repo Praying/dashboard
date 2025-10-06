@@ -36,6 +36,7 @@ import {
   createV6SingleBacktestApi,
   deleteV6SingleBacktestApi,
   getV6SingleBacktestsApi,
+  startV6SingleBacktestApi,
 } from '#/api/v6-single-backtest';
 
 const { t, locale } = useI18n();
@@ -64,6 +65,15 @@ const [Drawer, drawerApi] = useVbenDrawer({
       // TODO: Handle error case, maybe show a message to the user
       return;
     }
+
+    const config = (() => {
+      try {
+        return JSON.parse(formModel.config);
+      } catch {
+        return undefined;
+      }
+    })();
+
     await createV6SingleBacktestApi({
       name: formModel.backtest_name,
       account_name: formModel.accountName,
@@ -74,6 +84,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
       start_date: formModel.date_range[0],
       end_date: formModel.date_range[1],
       initial_capital: formModel.initial_capital,
+      config,
     });
     await fetchBacktests();
     drawerApi.close();
@@ -173,6 +184,11 @@ async function handleDelete(row: V6SingleBacktest) {
   } catch {
     // catch error
   }
+}
+
+async function handleStart(row: V6SingleBacktest) {
+  await startV6SingleBacktestApi(row.id);
+  await fetchBacktests();
 }
 
 const gridOptions = reactive<VxeGridProps<V6SingleBacktest>>({
@@ -307,7 +323,7 @@ const [Grid] = useVbenVxeGrid({
           </template>
           <template #col-action="{ row }">
             <div class="flex items-center justify-center gap-2 text-base">
-              <ElButton link type="primary">
+              <ElButton link type="primary" @click="handleStart(row)">
                 {{ t('common.actions.start') }}
               </ElButton>
               <ElButton link type="success">

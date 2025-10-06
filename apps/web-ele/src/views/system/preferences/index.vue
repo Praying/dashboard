@@ -13,14 +13,15 @@ import {
   ElMessageBox,
 } from 'element-plus';
 
+import { getPreferencesApi, updatePreferencesApi } from '#/api/preferences';
 import { $t } from '#/locales';
 
 // Form data model
 const formData = reactive({
-  v6Path: '',
-  v6Interpreter: '',
-  v7Path: '',
-  v7Interpreter: '',
+  pbv6_path: '',
+  pbv6_interpreter_path: '',
+  pbv7_path: '',
+  pbv7_interpreter_path: '',
 });
 
 // To store the initial state of the form data
@@ -40,12 +41,12 @@ const setPristine = () => {
 };
 
 // Load initial data and set the pristine state when the component is mounted
-onMounted(() => {
-  // In a real app, you would fetch this data from an API
-  formData.v6Path = '/tmp/pb6';
-  formData.v6Interpreter = '/tmp/pb6/.venv/bin/python3';
-  formData.v7Path = '/tmp/pb7';
-  formData.v7Interpreter = '/tmp/pb7/.venv/bin/python3';
+onMounted(async () => {
+  const data = await getPreferencesApi();
+  formData.pbv6_path = data.pbv6_path;
+  formData.pbv6_interpreter_path = data.pbv6_interpreter_path;
+  formData.pbv7_path = data.pbv7_path;
+  formData.pbv7_interpreter_path = data.pbv7_interpreter_path;
 
   setPristine();
 });
@@ -64,10 +65,10 @@ const handleReset = () => {
     .then(() => {
       // Restore form data from the pristine state
       const originalData = JSON.parse(pristineData.value);
-      formData.v6Path = originalData.v6Path;
-      formData.v6Interpreter = originalData.v6Interpreter;
-      formData.v7Path = originalData.v7Path;
-      formData.v7Interpreter = originalData.v7Interpreter;
+      formData.pbv6_path = originalData.pbv6_path;
+      formData.pbv6_interpreter_path = originalData.pbv6_interpreter_path;
+      formData.pbv7_path = originalData.pbv7_path;
+      formData.pbv7_interpreter_path = originalData.pbv7_interpreter_path;
       ElMessage({
         type: 'info',
         message: $t('page.system.preferencesPage.resetSuccessMessage'),
@@ -82,8 +83,7 @@ const handleReset = () => {
 const handleSave = async () => {
   isLoading.value = true;
   try {
-    // Simulate an API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await updatePreferencesApi(formData);
 
     // On success, update the pristine state
     setPristine();
@@ -119,7 +119,7 @@ const handleSave = async () => {
             <span>{{ $t('page.system.preferencesPage.appPath') }}</span>
             <ElIcon color="green" class="ml-1"><Check /></ElIcon>
           </template>
-          <ElInput v-model="formData.v6Path" :disabled="isLoading" />
+          <ElInput v-model="formData.pbv6_path" :disabled="isLoading" />
         </ElFormItem>
         <ElFormItem>
           <template #label>
@@ -128,7 +128,10 @@ const handleSave = async () => {
             }}</span>
             <ElIcon color="green" class="ml-1"><Check /></ElIcon>
           </template>
-          <ElInput v-model="formData.v6Interpreter" :disabled="isLoading" />
+          <ElInput
+            v-model="formData.pbv6_interpreter_path"
+            :disabled="isLoading"
+          />
         </ElFormItem>
       </ElForm>
     </ElCard>
@@ -147,7 +150,7 @@ const handleSave = async () => {
             <span>{{ $t('page.system.preferencesPage.appPath') }}</span>
             <ElIcon color="green" class="ml-1"><Check /></ElIcon>
           </template>
-          <ElInput v-model="formData.v7Path" :disabled="isLoading" />
+          <ElInput v-model="formData.pbv7_path" :disabled="isLoading" />
         </ElFormItem>
         <ElFormItem>
           <template #label>
@@ -156,7 +159,10 @@ const handleSave = async () => {
             }}</span>
             <ElIcon color="green" class="ml-1"><Check /></ElIcon>
           </template>
-          <ElInput v-model="formData.v7Interpreter" :disabled="isLoading" />
+          <ElInput
+            v-model="formData.pbv7_interpreter_path"
+            :disabled="isLoading"
+          />
         </ElFormItem>
       </ElForm>
     </ElCard>

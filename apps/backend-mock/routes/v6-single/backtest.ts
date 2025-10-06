@@ -1,7 +1,7 @@
 import { defineEventHandler } from 'h3';
+import { success } from '~/utils/response';
 
 import { V6SingleBacktest } from '#/api/v6-single-backtest';
-import { success } from '~/utils/response';
 
 const MOCK_BACKTESTS: V6SingleBacktest[] = [
   {

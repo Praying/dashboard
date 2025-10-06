@@ -12,6 +12,7 @@ export interface V6SingleBacktest {
   end_date: string;
   initial_capital: number;
   status: string;
+  config?: any;
 }
 
 export interface V6SingleBacktestCreate {
@@ -24,6 +25,7 @@ export interface V6SingleBacktestCreate {
   start_date: string;
   end_date: string;
   initial_capital: number;
+  config?: any;
 }
 
 export function getV6SingleBacktestsApi() {
@@ -36,4 +38,10 @@ export function createV6SingleBacktestApi(data: V6SingleBacktestCreate) {
 
 export function deleteV6SingleBacktestApi(backtestId: number) {
   return requestClient.delete(`/v6-single/backtest/${backtestId}`);
+}
+
+export function startV6SingleBacktestApi(backtestId: number) {
+  return requestClient.post<V6SingleBacktest>(
+    `/v6-single/backtest/${backtestId}/start`,
+  );
 }
