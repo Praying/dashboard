@@ -18,12 +18,14 @@ import {
   ElCard,
   ElCheckbox,
   ElDatePicker,
+  ElDialog,
   ElForm,
   ElFormItem,
   ElInput,
   ElInputNumber,
   ElMessageBox,
   ElOption,
+  ElScrollbar,
   ElSelect,
   ElSwitch,
   ElTag,
@@ -41,6 +43,10 @@ import {
 
 const { t, locale } = useI18n();
 const { isDark } = usePreferences();
+
+const logDialogVisible = ref(false);
+const logContent = ref('');
+const logDialogTitle = ref('');
 
 const view = shallowRef();
 const handleReady = (payload: { view: any }) => {
@@ -191,6 +197,38 @@ async function handleStart(row: V6SingleBacktest) {
   await fetchBacktests();
 }
 
+async function handleViewLog(row: V6SingleBacktest) {
+  logContent.value = '';
+  logDialogTitle.value = `${t('common.actions.viewLog')} - ${row.name}`;
+  logDialogVisible.value = true;
+
+  try {
+    const response = await fetch(`/api/v6-single/backtest/${row.id}/log`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('Failed to get response reader');
+    }
+
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        break;
+      }
+      logContent.value += decoder.decode(value, { stream: true });
+    }
+  } catch (error) {
+    console.error('Failed to fetch log:', error);
+    logContent.value += `\n\n--- ${t('common.errors.failedToFetchLog')} ---`;
+  }
+}
+
 const gridOptions = reactive<VxeGridProps<V6SingleBacktest>>({
   columns: [],
   data: tableData.value,
@@ -329,7 +367,7 @@ const [Grid] = useVbenVxeGrid({
               <ElButton link type="success">
                 {{ t('common.actions.viewResults') }}
               </ElButton>
-              <ElButton link type="info">
+              <ElButton link type="info" @click="handleViewLog(row)">
                 {{ t('common.actions.viewLog') }}
               </ElButton>
               <ElButton link type="danger" @click="handleDelete(row)">
@@ -590,5 +628,15 @@ const [Grid] = useVbenVxeGrid({
         </ElCard>
       </ElForm>
     </Drawer>
+    <ElDialog
+      v-model="logDialogVisible"
+      :title="logDialogTitle"
+      width="70%"
+      top="5vh"
+    >
+      <ElScrollbar height="70vh">
+        <pre class="p-4">{{ logContent }}</pre>
+      </ElScrollbar>
+    </ElDialog>
   </Page>
 </template>
