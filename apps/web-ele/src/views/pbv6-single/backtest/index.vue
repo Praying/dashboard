@@ -363,12 +363,12 @@ function generateChartOptions(statsData: any[], side: 'long' | 'short') {
     },
     grid: [
       {
-        left: '10%',
+        left: '15%',
         right: '8%',
         height: '50%',
       },
       {
-        left: '10%',
+        left: '15%',
         right: '8%',
         top: '65%',
         height: '20%',
