@@ -3,8 +3,17 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { ApiKey } from '#/api/system/exchange';
 import type { V6SingleBacktest } from '#/api/v6-single-backtest';
 
-import { computed, onMounted, reactive, ref, shallowRef, watch } from 'vue';
+import {
+  computed,
+  nextTick,
+  onMounted,
+  reactive,
+  ref,
+  shallowRef,
+  watch,
+} from 'vue';
 import { Codemirror } from 'vue-codemirror';
+import VChart from 'vue-echarts';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { useI18n } from '@vben/locales';
@@ -12,7 +21,18 @@ import { usePreferences } from '@vben/preferences';
 
 import { json } from '@codemirror/lang-json';
 import { oneDark } from '@codemirror/theme-one-dark';
-import { Refresh } from '@element-plus/icons-vue';
+import { CopyDocument, Refresh } from '@element-plus/icons-vue';
+import { LineChart } from 'echarts/charts';
+import {
+  DataZoomComponent,
+  GridComponent,
+  LegendComponent,
+  TitleComponent,
+  TooltipComponent,
+} from 'echarts/components';
+import { use } from 'echarts/core';
+import { UniversalTransition } from 'echarts/features';
+import { CanvasRenderer } from 'echarts/renderers';
 import {
   ElButton,
   ElCard,
@@ -23,6 +43,7 @@ import {
   ElFormItem,
   ElInput,
   ElInputNumber,
+  ElMessage,
   ElMessageBox,
   ElOption,
   ElScrollbar,
@@ -37,9 +58,23 @@ import { getTradingPairsApi } from '#/api/trading-pairs';
 import {
   createV6SingleBacktestApi,
   deleteV6SingleBacktestApi,
+  getV6SingleBacktestConfigApi,
+  getV6SingleBacktestResultApi,
   getV6SingleBacktestsApi,
+  getV6SingleBacktestStatsApi,
   startV6SingleBacktestApi,
 } from '#/api/v6-single-backtest';
+
+use([
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent,
+  DataZoomComponent,
+  LineChart,
+  CanvasRenderer,
+  UniversalTransition,
+]);
 
 const { t, locale } = useI18n();
 const { isDark } = usePreferences();
@@ -47,6 +82,11 @@ const { isDark } = usePreferences();
 const logDialogVisible = ref(false);
 const logContent = ref('');
 const logDialogTitle = ref('');
+
+const resultDialogVisible = ref(false);
+const currentBacktestResult = ref<null | V6SingleBacktest>(null);
+const backtestResultText = ref('');
+const backtestConfig = ref<null | object>(null);
 
 const view = shallowRef();
 const handleReady = (payload: { view: any }) => {
@@ -92,7 +132,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
       initial_capital: formModel.initial_capital,
       config,
     });
-    await fetchBacktests();
+    gridApi.query();
     drawerApi.close();
   },
 });
@@ -163,16 +203,71 @@ async function handleAccountChange(selectedAccountName: string) {
   }
 }
 
-const tableData = ref<V6SingleBacktest[]>([]);
+watch(
+  () => formModel.config,
+  (newConfig) => {
+    try {
+      const config = JSON.parse(newConfig);
+      if (config.long && config.long.enabled !== undefined) {
+        formModel.long_enabled = config.long.enabled;
+      }
+      if (config.short && config.short.enabled !== undefined) {
+        formModel.short_enabled = config.short.enabled;
+      }
+      if (config.long && config.long.wallet_exposure_limit !== undefined) {
+        formModel.long_wallet_exposure_limit =
+          config.long.wallet_exposure_limit;
+      }
+      if (config.short && config.short.wallet_exposure_limit !== undefined) {
+        formModel.short_wallet_exposure_limit =
+          config.short.wallet_exposure_limit;
+      }
+    } catch {
+      // ignore
+    }
+  },
+);
 
-async function fetchBacktests() {
-  const backtests = await getV6SingleBacktestsApi();
-  tableData.value.splice(0, tableData.value.length, ...backtests);
-}
+watch(
+  [
+    () => formModel.long_enabled,
+    () => formModel.short_enabled,
+    () => formModel.long_wallet_exposure_limit,
+    () => formModel.short_wallet_exposure_limit,
+  ],
+  () => {
+    try {
+      const config = JSON.parse(formModel.config || '{}');
+      if (!config.long) {
+        config.long = {};
+      }
+      if (!config.short) {
+        config.short = {};
+      }
+      config.long.enabled = formModel.long_enabled;
+      config.short.enabled = formModel.short_enabled;
+      config.long.wallet_exposure_limit = formModel.long_wallet_exposure_limit;
+      config.short.wallet_exposure_limit =
+        formModel.short_wallet_exposure_limit;
+      formModel.config = JSON.stringify(config, null, 2);
+    } catch {
+      const config: any = {
+        long: {},
+        short: {},
+      };
+      config.long.enabled = formModel.long_enabled;
+      config.short.enabled = formModel.short_enabled;
+      config.long.wallet_exposure_limit = formModel.long_wallet_exposure_limit;
+      config.short.wallet_exposure_limit =
+        formModel.short_wallet_exposure_limit;
+      formModel.config = JSON.stringify(config, null, 2);
+    }
+  },
+);
 
-onMounted(async () => {
-  await fetchBacktests();
-});
+// The local `tableData` ref is no longer needed as data is managed by the grid's proxy.
+
+// Data fetching is now handled by proxyConfig, so fetchBacktests and its onMounted call are no longer needed.
 
 async function handleDelete(row: V6SingleBacktest) {
   try {
@@ -186,7 +281,7 @@ async function handleDelete(row: V6SingleBacktest) {
       },
     );
     await deleteV6SingleBacktestApi(row.id);
-    await fetchBacktests();
+    gridApi.query();
   } catch {
     // catch error
   }
@@ -194,7 +289,7 @@ async function handleDelete(row: V6SingleBacktest) {
 
 async function handleStart(row: V6SingleBacktest) {
   await startV6SingleBacktestApi(row.id);
-  await fetchBacktests();
+  gridApi.query();
 }
 
 async function handleViewLog(row: V6SingleBacktest) {
@@ -229,9 +324,198 @@ async function handleViewLog(row: V6SingleBacktest) {
   }
 }
 
+const longChartOptions = ref({});
+const shortChartOptions = ref({});
+const chartLoading = ref(false);
+const rawStatsData = ref<any[]>([]);
+
+function generateChartOptions(statsData: any[], side: 'long' | 'short') {
+  const timestamps = statsData.map((item) =>
+    new Date(item.timestamp).toLocaleString(),
+  );
+  const balance = statsData.map((item) => item[`balance_${side}`]);
+  const equity = statsData.map((item) => item[`equity_${side}`]);
+  const walletExposure = statsData.map(
+    (item) => item[`wallet_exposure_${side}`],
+  );
+
+  return {
+    title: {
+      text: side.toUpperCase(),
+      left: 'center',
+    },
+    axisPointer: {
+      link: [{ xAxisIndex: 'all' }],
+      label: {
+        backgroundColor: '#777',
+      },
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+      },
+    },
+    legend: {
+      data: [`${side}_balance`, `${side}_equity`, `wallet_exposure_${side}`],
+      top: 'bottom',
+      left: 'center',
+    },
+    grid: [
+      {
+        left: '10%',
+        right: '8%',
+        height: '50%',
+      },
+      {
+        left: '10%',
+        right: '8%',
+        top: '65%',
+        height: '20%',
+      },
+    ],
+    xAxis: [
+      {
+        type: 'category',
+        data: timestamps,
+        axisLine: { onZero: false },
+        splitLine: { show: false },
+        axisLabel: { show: false },
+      },
+      {
+        gridIndex: 1,
+        type: 'category',
+        data: timestamps,
+        axisLine: { onZero: false },
+      },
+    ],
+    yAxis: [
+      {
+        type: 'value',
+        scale: true,
+        splitArea: {
+          show: true,
+        },
+        axisLabel: {
+          formatter: (value: number) => `$${value}`,
+        },
+      },
+      {
+        gridIndex: 1,
+        type: 'value',
+        scale: true,
+        axisLabel: {
+          formatter: (value: number) => `${(value * 100).toFixed(2)}%`,
+        },
+      },
+    ],
+    dataZoom: [
+      {
+        type: 'inside',
+        xAxisIndex: [0, 1],
+        start: 0,
+        end: 100,
+      },
+      {
+        show: true,
+        xAxisIndex: [0, 1],
+        type: 'slider',
+        top: '90%',
+        start: 0,
+        end: 100,
+      },
+    ],
+    series: [
+      {
+        name: `${side}_balance`,
+        type: 'line',
+        data: balance,
+        lineStyle: { width: 2 },
+        xAxisIndex: 0,
+        yAxisIndex: 0,
+      },
+      {
+        name: `${side}_equity`,
+        type: 'line',
+        data: equity,
+        lineStyle: { width: 1 },
+        xAxisIndex: 0,
+        yAxisIndex: 0,
+      },
+      {
+        name: `wallet_exposure_${side}`,
+        type: 'line',
+        data: walletExposure,
+        lineStyle: { width: 1 },
+        xAxisIndex: 1,
+        yAxisIndex: 1,
+      },
+    ],
+  };
+}
+
+async function renderBacktestChart(backtestId: number) {
+  chartLoading.value = true;
+  try {
+    const statsData = await getV6SingleBacktestStatsApi(backtestId);
+    rawStatsData.value = statsData;
+    longChartOptions.value = generateChartOptions(statsData, 'long');
+    shortChartOptions.value = generateChartOptions(statsData, 'short');
+  } catch (error) {
+    console.error('Failed to render chart:', error);
+    longChartOptions.value = {};
+    shortChartOptions.value = {};
+    rawStatsData.value = [];
+  } finally {
+    chartLoading.value = false;
+  }
+}
+
+async function handleViewResults(row: V6SingleBacktest) {
+  currentBacktestResult.value = row;
+  resultDialogVisible.value = true;
+  rawStatsData.value = []; // Clear previous data
+  backtestResultText.value = ''; // Clear previous data
+  backtestConfig.value = null; // Clear previous data
+  await nextTick();
+  if (currentBacktestResult.value) {
+    await renderBacktestChart(currentBacktestResult.value.id);
+    backtestResultText.value = await getV6SingleBacktestResultApi(
+      currentBacktestResult.value.id,
+    );
+    backtestConfig.value = await getV6SingleBacktestConfigApi(
+      currentBacktestResult.value.id,
+    );
+  }
+}
+
+function copyConfig() {
+  const configStr = JSON.stringify(backtestConfig.value, null, 2);
+  navigator.clipboard.writeText(configStr);
+  ElMessage.success(t('common.actions.copySuccess'));
+}
+
 const gridOptions = reactive<VxeGridProps<V6SingleBacktest>>({
   columns: [],
-  data: tableData.value,
+  pagerConfig: {
+    pageSize: 20,
+    pageSizes: [5, 10, 20, 50, 100],
+  },
+  proxyConfig: {
+    ajax: {
+      query: async () => {
+        const backtests = await getV6SingleBacktestsApi();
+        return {
+          items: backtests,
+          total: backtests.length,
+        };
+      },
+    },
+    response: {
+      result: 'items', // Should match the global config
+      total: 'total',
+    },
+  },
   sortConfig: {},
 });
 
@@ -329,7 +613,7 @@ watch(
   { immediate: true },
 );
 
-const [Grid] = useVbenVxeGrid({
+const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 </script>
@@ -364,7 +648,12 @@ const [Grid] = useVbenVxeGrid({
               <ElButton link type="primary" @click="handleStart(row)">
                 {{ t('common.actions.start') }}
               </ElButton>
-              <ElButton link type="success">
+              <ElButton
+                link
+                type="success"
+                :disabled="row.status !== 'finished'"
+                @click="handleViewResults(row)"
+              >
                 {{ t('common.actions.viewResults') }}
               </ElButton>
               <ElButton link type="info" @click="handleViewLog(row)">
@@ -636,6 +925,71 @@ const [Grid] = useVbenVxeGrid({
     >
       <ElScrollbar height="70vh">
         <pre class="p-4">{{ logContent }}</pre>
+      </ElScrollbar>
+    </ElDialog>
+    <ElDialog
+      v-if="currentBacktestResult"
+      v-model="resultDialogVisible"
+      :title="`${t('common.actions.viewResults')} - ${currentBacktestResult.name}`"
+      width="80%"
+      top="5vh"
+    >
+      <ElScrollbar height="80vh">
+        <div class="p-4">
+          <ElCard class="mb-4">
+            <template #header>
+              <div class="font-bold">
+                {{
+                  t('page.passivbot.v6single.backtestPage.results.chartInfo')
+                }}
+              </div>
+            </template>
+            <div class="flex w-full">
+              <VChart
+                v-loading="chartLoading"
+                :option="longChartOptions"
+                class="h-[600px] flex-1"
+                autoresize
+              />
+              <VChart
+                v-loading="chartLoading"
+                :option="shortChartOptions"
+                class="h-[600px] flex-1"
+                autoresize
+              />
+            </div>
+          </ElCard>
+
+          <ElCard class="mb-4">
+            <template #header>
+              <div class="font-bold">
+                {{
+                  t('page.passivbot.v6single.backtestPage.results.resultText')
+                }}
+              </div>
+            </template>
+            <pre>{{ backtestResultText }}</pre>
+          </ElCard>
+
+          <ElCard>
+            <template #header>
+              <div class="flex items-center justify-between">
+                <div class="font-bold">
+                  {{
+                    t('page.passivbot.v6single.backtestPage.results.configInfo')
+                  }}
+                </div>
+                <ElButton
+                  :icon="CopyDocument"
+                  circle
+                  class="ml-2"
+                  @click="copyConfig"
+                />
+              </div>
+            </template>
+            <pre>{{ JSON.stringify(backtestConfig, null, 2) }}</pre>
+          </ElCard>
+        </div>
       </ElScrollbar>
     </ElDialog>
   </Page>

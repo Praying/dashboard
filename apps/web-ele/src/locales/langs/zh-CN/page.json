@@ -338,6 +338,12 @@
           "pasteConfig": "策略配置 (粘贴于此)",
           "convertToV7": "转换为 v7",
           "v7CompatibleConfig": "v7 兼容配置 (自动生成)"
+        },
+        "results": {
+          "chartInfo": "图表信息",
+          "resultText": "结果文本",
+          "configInfo": "配置信息",
+          "chartPlaceholder": "图表正在加载中..."
         }
       },
       "optimizePage": {
@@ -365,6 +371,11 @@
           "selectSymbolPlaceholder": "选择交易对"
         }
       }
+    }
+  },
+  "common": {
+    "errors": {
+      "failedToFetchLog": "获取日志失败"
     }
   }
 }

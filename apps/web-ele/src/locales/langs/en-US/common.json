@@ -30,7 +30,8 @@
     "delete": "Delete",
     "generate": "Generate",
     "cancel": "Cancel",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "copySuccess": "Copied successfully"
   },
   "prompts": {
     "deleteTitle": "Confirm Deletion",

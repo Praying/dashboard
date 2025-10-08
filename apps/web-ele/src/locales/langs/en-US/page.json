@@ -335,6 +335,12 @@
           "pasteConfig": "Strategy Configuration (Paste here)",
           "convertToV7": "Convert to v7",
           "v7CompatibleConfig": "v7 Compatible Configuration (Auto-generated)"
+        },
+        "results": {
+          "chartInfo": "Chart Information",
+          "resultText": "Result Text",
+          "configInfo": "Configuration Information",
+          "chartPlaceholder": "Chart is loading..."
         }
       },
       "optimizePage": {
@@ -362,6 +368,11 @@
           "selectSymbolPlaceholder": "Select Symbol"
         }
       }
+    }
+  },
+  "common": {
+    "errors": {
+      "failedToFetchLog": "Failed to fetch log"
     }
   }
 }

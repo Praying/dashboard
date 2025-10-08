@@ -45,3 +45,15 @@ export function startV6SingleBacktestApi(backtestId: number) {
     `/v6-single/backtest/${backtestId}/start`,
   );
 }
+
+export function getV6SingleBacktestStatsApi(backtestId: number) {
+  return requestClient.get<any[]>(`/v6-single/backtest/${backtestId}/stats`);
+}
+
+export function getV6SingleBacktestResultApi(backtestId: number) {
+  return requestClient.get<string>(`/v6-single/backtest/${backtestId}/result`);
+}
+
+export function getV6SingleBacktestConfigApi(backtestId: number) {
+  return requestClient.get<object>(`/v6-single/backtest/${backtestId}/config`);
+}
