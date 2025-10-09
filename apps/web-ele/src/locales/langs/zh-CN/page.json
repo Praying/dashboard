@@ -143,6 +143,19 @@
       "resetSuccessMessage": "已重置更改",
       "saveSuccessMessage": "设置已成功保存",
       "saveErrorMessage": "保存失败，请重试"
+    },
+    "coinmarket": "CoinMarket API",
+    "coinmarketPage": {
+      "title": "CoinMarket API",
+      "api_key": "CoinMarketCap API 密钥",
+      "api_key_help": "您的 CoinMarketCap API 密钥",
+      "fetch_limit": "获取限制",
+      "fetch_limit_help": "要获取的最大币种数量。",
+      "fetch_interval": "获取间隔",
+      "fetch_interval_help": "获取币种数据的频率（以小时为单位）。",
+      "metadata_interval": "元数据间隔",
+      "metadata_interval_help": "获取币种元数据的频率（以天为单位）。",
+      "save_changes": "保存更改"
     }
   },
   "information": {
@@ -165,6 +178,7 @@
         "listDescription": "查看和管理所有回测任务",
         "newBacktest": "新建回测",
         "form": {
+          "dateRange": "日期范围",
           "basicSettings": "基本设置",
           "exchanges": "交易所",
           "backtestName": "回测名称",

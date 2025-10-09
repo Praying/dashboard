@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { computed, reactive, ref, shallowRef, watch } from 'vue';
+import { computed, reactive, shallowRef, watch } from 'vue';
 import { Codemirror } from 'vue-codemirror';
 
-import { Page } from '@vben/common-ui';
+import { Page, useVbenDrawer } from '@vben/common-ui';
 import { useI18n } from '@vben/locales';
 import { usePreferences } from '@vben/preferences';
 
@@ -19,7 +19,6 @@ import {
   ElCollapse,
   ElCollapseItem,
   ElDatePicker,
-  ElDrawer,
   ElForm,
   ElFormItem,
   ElInput,
@@ -163,8 +162,7 @@ const [Grid] = useVbenVxeGrid({
 const formModel = reactive({
   exchanges: 'binance',
   backtest_name: 'rank8-last-3-month',
-  start_date: dayjs('2025-06-06').toDate(),
-  end_date: dayjs('2025-09-05').toDate(),
+  date_range: ['2025-06-06', '2025-09-05'],
   starting_balance: 1000,
   minimum_coin_age_days: 30,
   gap_tolerance_ohlcvs_minutes: 120,
@@ -251,7 +249,19 @@ const formModel = reactive({
   ),
 });
 
-const drawer = ref(false);
+const [Drawer, drawerApi] = useVbenDrawer({
+  onConfirm: () => {
+    handleSubmit();
+    drawerApi.close();
+  },
+});
+
+function handleNewBacktest() {
+  drawerApi.setState({
+    title: t('page.passivbot.v7.backtestPage.newBacktest'),
+  });
+  drawerApi.open();
+}
 
 const allSymbols = computed(() => {
   const symbols = new Set([
@@ -274,6 +284,12 @@ function removeOverride(index: number) {
 function handleSubmit() {
   console.warn('Form Submitted:', formModel);
 }
+
+function generateBacktestName() {
+  const randomStr = Math.random().toString(36).slice(2, 8);
+  const timestamp = dayjs().format('YYYYMMDDHHmmss');
+  formModel.backtest_name = `btv7-${randomStr}-${timestamp}`;
+}
 </script>
 
 <template>
@@ -289,7 +305,7 @@ function handleSubmit() {
               {{ t('page.passivbot.v7.backtestPage.listDescription') }}
             </div>
           </div>
-          <ElButton type="primary" @click="drawer = true">
+          <ElButton type="primary" @click="handleNewBacktest">
             {{ t('page.passivbot.v7.backtestPage.newBacktest') }}
           </ElButton>
         </div>
@@ -337,78 +353,55 @@ function handleSubmit() {
         </Grid>
       </template>
     </ElCard>
-    <ElDrawer
-      v-model="drawer"
-      :title="t('page.passivbot.v7.backtestPage.newBacktest')"
-      size="50%"
-    >
-      <ElForm :model="formModel" label-position="top">
+    <Drawer class="w-1/2">
+      <ElForm :model="formModel" label-position="right" label-width="200px">
         <ElCard class="mb-4">
           <template #header>
             <div class="font-bold">
               {{ t('page.passivbot.v7.backtestPage.form.basicSettings') }}
             </div>
           </template>
-          <ElRow :gutter="20">
-            <ElCol :span="8">
-              <ElFormItem
-                :label="t('page.passivbot.v7.backtestPage.form.exchanges')"
-              >
-                <ElSelect v-model="formModel.exchanges" class="w-full">
-                  <ElOption label="binance" value="binance" />
-                </ElSelect>
-              </ElFormItem>
-            </ElCol>
-            <ElCol :span="8">
-              <ElFormItem
-                :label="t('page.passivbot.v7.backtestPage.form.backtestName')"
-              >
-                <ElInput v-model="formModel.backtest_name" />
-              </ElFormItem>
-            </ElCol>
-            <ElCol :span="8">
-              <ElFormItem
-                :label="
-                  t('page.passivbot.v7.backtestPage.form.startingBalance')
-                "
-              >
-                <ElInputNumber
-                  v-model="formModel.starting_balance"
-                  class="w-full"
-                  :precision="2"
-                />
-              </ElFormItem>
-            </ElCol>
-            <ElCol :span="8">
-              <ElFormItem
-                :label="t('page.passivbot.v7.backtestPage.form.startDate')"
-              >
-                <ElDatePicker
-                  v-model="formModel.start_date"
-                  class="w-full"
-                  type="date"
-                />
-              </ElFormItem>
-            </ElCol>
-            <ElCol :span="8">
-              <ElFormItem
-                :label="t('page.passivbot.v7.backtestPage.form.endDate')"
-              >
-                <ElDatePicker
-                  v-model="formModel.end_date"
-                  class="w-full"
-                  type="date"
-                />
-              </ElFormItem>
-            </ElCol>
-            <ElCol :span="8">
-              <ElFormItem
-                :label="t('page.passivbot.v7.backtestPage.form.marketCap')"
-              >
-                <ElInputNumber v-model="formModel.market_cap" class="w-full" />
-              </ElFormItem>
-            </ElCol>
-          </ElRow>
+          <ElFormItem
+            :label="t('page.passivbot.v7.backtestPage.form.backtestName')"
+          >
+            <div class="flex w-full items-center gap-2">
+              <ElInput v-model="formModel.backtest_name" class="flex-grow" />
+              <ElButton @click="generateBacktestName">
+                {{ t('common.actions.generate') }}
+              </ElButton>
+            </div>
+          </ElFormItem>
+          <ElFormItem
+            :label="t('page.passivbot.v7.backtestPage.form.exchanges')"
+          >
+            <ElSelect v-model="formModel.exchanges" class="w-full">
+              <ElOption label="binance" value="binance" />
+            </ElSelect>
+          </ElFormItem>
+          <ElFormItem
+            :label="t('page.passivbot.v7.backtestPage.form.dateRange')"
+          >
+            <ElDatePicker
+              v-model="formModel.date_range"
+              class="w-full"
+              type="daterange"
+              :end-placeholder="
+                t('page.passivbot.v7.backtestPage.form.endDate')
+              "
+              :start-placeholder="
+                t('page.passivbot.v7.backtestPage.form.startDate')
+              "
+            />
+          </ElFormItem>
+          <ElFormItem
+            :label="t('page.passivbot.v7.backtestPage.form.startingBalance')"
+          >
+            <ElInputNumber
+              v-model="formModel.starting_balance"
+              class="w-full"
+              :precision="2"
+            />
+          </ElFormItem>
         </ElCard>
 
         <ElCard class="mb-4">
@@ -418,7 +411,14 @@ function handleSubmit() {
             </div>
           </template>
           <ElRow :gutter="20">
-            <ElCol :span="8">
+            <ElCol :span="12">
+              <ElFormItem
+                :label="t('page.passivbot.v7.backtestPage.form.marketCap')"
+              >
+                <ElInputNumber v-model="formModel.market_cap" class="w-full" />
+              </ElFormItem>
+            </ElCol>
+            <ElCol :span="12">
               <ElFormItem
                 :label="t('page.passivbot.v7.backtestPage.form.minCoinAge')"
               >
@@ -428,7 +428,7 @@ function handleSubmit() {
                 />
               </ElFormItem>
             </ElCol>
-            <ElCol :span="8">
+            <ElCol :span="12">
               <ElFormItem
                 :label="t('page.passivbot.v7.backtestPage.form.volMcap')"
               >
@@ -439,7 +439,7 @@ function handleSubmit() {
                 />
               </ElFormItem>
             </ElCol>
-            <ElCol :span="8">
+            <ElCol :span="12">
               <ElFormItem
                 :label="t('page.passivbot.v7.backtestPage.form.gapTolerance')"
               >
@@ -685,14 +685,6 @@ function handleSubmit() {
           </ElRow>
         </ElCard>
       </ElForm>
-      <template #footer>
-        <div class="flex justify-end">
-          <ElButton @click="drawer = false">{{ t('common.cancel') }}</ElButton>
-          <ElButton type="primary" @click="handleSubmit">
-            {{ t('common.submit') }}
-          </ElButton>
-        </div>
-      </template>
-    </ElDrawer>
+    </Drawer>
   </Page>
 </template>

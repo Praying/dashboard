@@ -140,6 +140,19 @@
       "resetSuccessMessage": "Changes have been reset",
       "saveSuccessMessage": "Settings saved successfully",
       "saveErrorMessage": "Failed to save settings, please try again"
+    },
+    "coinmarket": "CoinMarket API",
+    "coinmarketPage": {
+      "title": "CoinMarket API",
+      "api_key": "CoinMarketCap API Key",
+      "api_key_help": "Your CoinMarketCap API Key",
+      "fetch_limit": "Fetch Limit",
+      "fetch_limit_help": "The maximum number of coins to fetch.",
+      "fetch_interval": "Fetch Interval",
+      "fetch_interval_help": "How often to fetch coin data (in hours).",
+      "metadata_interval": "Metadata Interval",
+      "metadata_interval_help": "How often to fetch coin metadata (in days).",
+      "save_changes": "Save Changes"
     }
   },
   "information": {
@@ -162,6 +175,7 @@
         "listDescription": "View and manage all backtest tasks",
         "newBacktest": "New Backtest",
         "form": {
+          "dateRange": "Date Range",
           "basicSettings": "Basic Settings",
           "exchanges": "Exchanges",
           "backtestName": "Backtest Name",

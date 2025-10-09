@@ -58,6 +58,15 @@ const routes: RouteRecordRaw[] = [
           title: $t('page.system.preferences'),
         },
       },
+      {
+        name: 'CoinMarket',
+        path: 'coinmarket',
+        component: () => import('#/views/system/coinmarket/index.vue'),
+        meta: {
+          icon: 'lucide:coins',
+          title: $t('page.system.coinmarket'),
+        },
+      },
     ],
   },
   {
