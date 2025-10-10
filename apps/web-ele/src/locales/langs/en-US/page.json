@@ -152,13 +152,57 @@
       "fetch_interval_help": "How often to fetch coin data (in hours).",
       "metadata_interval": "Metadata Interval",
       "metadata_interval_help": "How often to fetch coin metadata (in days).",
-      "save_changes": "Save Changes"
+      "save_changes": "Save Changes",
+      "verify_api_key": "Verify API Key",
+      "api_key_required": "API Key is required"
     }
   },
   "information": {
     "title": "Information",
     "dashboards": "Dashboards",
-    "coin-data": "Coin Data"
+    "coin-data": "CoinData",
+    "coindataPage": {
+      "title": "Coin Data",
+      "exchange": "Exchange",
+      "selectPlaceholder": "Select exchange",
+      "marketCapLabel": "Market Cap",
+      "marketCapTooltip": "Filter coins by market cap",
+      "volMcapLabel": "Volume/Market Cap",
+      "volMcapTooltip": "Filter coins by volume/market cap ratio",
+      "tags": "Tags",
+      "tagsPlaceholder": "Select tags to filter",
+      "table": {
+        "id": "ID",
+        "symbol": "Symbol",
+        "name": "Name",
+        "tags": "Tags",
+        "price": "Price",
+        "volume24h": "Volume (24h)",
+        "marketCap": "Market Cap",
+        "volMcap": "Vol/Mcap",
+        "copyTrading": "Copy Trading",
+        "notice": "Notice",
+        "link": "Link"
+      },
+      "drawer": {
+        "title": "Settings",
+        "apiKey": "CoinMarketCap API Key",
+        "apiKeyTooltip": "Your CoinMarketCap API Key",
+        "fetchLimit": "Fetch Limit",
+        "fetchLimitTooltip": "The maximum number of coins to fetch.",
+        "fetchInterval": "Fetch Interval",
+        "fetchIntervalTooltip": "How often to fetch coin data (in hours).",
+        "metadataInterval": "Metadata Interval",
+        "metadataIntervalTooltip": "How often to fetch coin metadata (in days).",
+        "apiKeyRequired": "API Key is required",
+        "apiKeyVerified": "API Key is valid",
+        "apiKeyInvalid": "Invalid API Key",
+        "apiKeyVerificationFailed": "API key verification failed",
+        "settingsSaved": "Settings saved successfully",
+        "saveFailed": "Failed to save settings",
+        "verify": "Verify"
+      }
+    }
   },
   "passivbot": {
     "v7": {

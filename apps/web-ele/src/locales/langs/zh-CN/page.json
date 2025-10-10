@@ -155,13 +155,57 @@
       "fetch_interval_help": "获取币种数据的频率（以小时为单位）。",
       "metadata_interval": "元数据间隔",
       "metadata_interval_help": "获取币种元数据的频率（以天为单位）。",
-      "save_changes": "保存更改"
+      "save_changes": "保存更改",
+      "verify_api_key": "验证API密钥",
+      "api_key_required": "API密钥是必需的"
     }
   },
   "information": {
     "title": "信息",
     "dashboards": "仪表盘",
-    "coin-data": "货币数据"
+    "coin-data": "CoinData",
+    "coindataPage": {
+      "title": "货币数据",
+      "exchange": "交易所",
+      "selectPlaceholder": "请选择交易所",
+      "marketCapLabel": "市值",
+      "marketCapTooltip": "按市值筛选币种",
+      "volMcapLabel": "成交量/市值",
+      "volMcapTooltip": "按成交量/市值比率筛选币种",
+      "tags": "标签",
+      "tagsPlaceholder": "请选择标签进行筛选",
+      "table": {
+        "id": "ID",
+        "symbol": "代码",
+        "name": "名称",
+        "tags": "标签",
+        "price": "价格",
+        "volume24h": "成交量 (24小时)",
+        "marketCap": "市值",
+        "volMcap": "成交量/市值",
+        "copyTrading": "跟单交易",
+        "notice": "公告",
+        "link": "链接"
+      },
+      "drawer": {
+        "title": "设置",
+        "apiKey": "CoinMarketCap API 密钥",
+        "apiKeyTooltip": "您的 CoinMarketCap API 密钥",
+        "fetchLimit": "获取限制",
+        "fetchLimitTooltip": "要获取的最大币种数量。",
+        "fetchInterval": "获取间隔",
+        "fetchIntervalTooltip": "获取币种数据的频率（以小时为单位）。",
+        "metadataInterval": "元数据间隔",
+        "metadataIntervalTooltip": "获取币种元数据的频率（以天为单位）。",
+        "apiKeyRequired": "API密钥是必需的",
+        "apiKeyVerified": "API密钥有效",
+        "apiKeyInvalid": "无效的API密钥",
+        "apiKeyVerificationFailed": "API密钥验证失败",
+        "settingsSaved": "设置已成功保存",
+        "saveFailed": "保存设置失败",
+        "verify": "验证"
+      }
+    }
   },
   "passivbot": {
     "v7": {

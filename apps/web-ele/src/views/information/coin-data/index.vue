@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { reactive, ref, watch } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { useI18n } from '@vben/locales';
@@ -18,6 +18,7 @@ import {
   ElInput,
   ElInputNumber,
   ElLink,
+  ElMessage,
   ElOption,
   ElRow,
   ElSelect,
@@ -26,21 +27,98 @@ import {
 } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { requestClient } from '#/api/request';
+
+interface CoinMarketCap {
+  coin_market_cap_api_key: string;
+  fetch_limit: number;
+  fetch_interval: number;
+  metadata_interval: number;
+}
+
+function getCoinMarketCapConfig() {
+  return requestClient.get<CoinMarketCap>('/information/coin-data/key');
+}
+
+function saveCoinMarketCapConfig(data: CoinMarketCap) {
+  return requestClient.post('/information/coin-data/key', data);
+}
+
+function verifyCoinMarketCapApiKey(apiKey: string) {
+  return requestClient.post('/information/coin-data/key/verify', {
+    coin_market_cap_api_key: apiKey,
+  });
+}
 
 const { t, locale } = useI18n();
 
-const [Drawer, drawerApi] = useVbenDrawer({});
+const [Drawer, drawerApi] = useVbenDrawer({
+  onConfirm: handleSave,
+});
 
 function openSettingsDrawer() {
   drawerApi.open();
-  drawerApi.setState({ title: t('coin-data.drawer.title') });
+  drawerApi.setState({
+    title: t('page.information.coindataPage.drawer.title'),
+  });
 }
 
-const config = reactive({
-  apiKey: '****************',
-  fetchLimit: 5000,
-  fetchInterval: 24,
-  metadataInterval: 1,
+const config = reactive<Partial<CoinMarketCap>>({
+  coin_market_cap_api_key: '',
+  fetch_limit: 5000,
+  fetch_interval: 24,
+  metadata_interval: 1,
+});
+
+const isVerifying = ref(false);
+
+async function handleVerifyApiKey() {
+  const apiKey = config.coin_market_cap_api_key;
+  if (!apiKey) {
+    ElMessage.error(t('page.information.coindataPage.drawer.apiKeyRequired'));
+    return;
+  }
+
+  isVerifying.value = true;
+
+  try {
+    const coinMarketData = await verifyCoinMarketCapApiKey(apiKey);
+
+    if (coinMarketData.status?.error_code === 0) {
+      ElMessage.success(
+        t('page.information.coindataPage.drawer.apiKeyVerified'),
+      );
+    } else {
+      const message = coinMarketData.status?.error_message || 'Unknown error';
+      ElMessage.error(
+        t('page.information.coindataPage.drawer.apiKeyInvalid', { message }),
+      );
+    }
+  } catch (error: any) {
+    console.error('API key verification failed:', error);
+    ElMessage.error(
+      t('page.information.coindataPage.drawer.apiKeyVerificationFailed'),
+    );
+  } finally {
+    isVerifying.value = false;
+  }
+}
+
+async function handleSave() {
+  try {
+    await saveCoinMarketCapConfig(config as CoinMarketCap);
+    ElMessage.success(t('page.information.coindataPage.drawer.settingsSaved'));
+    drawerApi.close();
+  } catch {
+    ElMessage.error(t('page.information.coindataPage.drawer.saveFailed'));
+  }
+}
+
+onMounted(async () => {
+  const remoteConfig = await getCoinMarketCapConfig();
+  if (remoteConfig) {
+    Object.assign(config, remoteConfig);
+  }
 });
 
 const filters = reactive({
@@ -199,7 +277,7 @@ watch(
     gridOptions.columns = [
       {
         field: 'id',
-        title: t('coin-data.table.id'),
+        title: t('page.information.coindataPage.table.id'),
         width: 80,
         sortable: true,
         align: 'left',
@@ -207,21 +285,21 @@ watch(
       },
       {
         field: 'symbol',
-        title: t('coin-data.table.symbol'),
+        title: t('page.information.coindataPage.table.symbol'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'name',
-        title: t('coin-data.table.name'),
+        title: t('page.information.coindataPage.table.name'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'tags',
-        title: t('coin-data.table.tags'),
+        title: t('page.information.coindataPage.table.tags'),
         width: 350,
         slots: { default: 'col-tags' },
         align: 'left',
@@ -229,48 +307,48 @@ watch(
       },
       {
         field: 'price',
-        title: t('coin-data.table.price'),
+        title: t('page.information.coindataPage.table.price'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'volume_24h',
-        title: t('coin-data.table.volume24h'),
+        title: t('page.information.coindataPage.table.volume24h'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'market_cap',
-        title: t('coin-data.table.marketCap'),
+        title: t('page.information.coindataPage.table.marketCap'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'vol_mcap',
-        title: t('coin-data.table.volMcap'),
+        title: t('page.information.coindataPage.table.volMcap'),
         sortable: true,
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'copy_trading',
-        title: t('coin-data.table.copyTrading'),
+        title: t('page.information.coindataPage.table.copyTrading'),
         slots: { default: 'col-copy_trading' },
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'notice',
-        title: t('coin-data.table.notice'),
+        title: t('page.information.coindataPage.table.notice'),
         align: 'left',
         headerAlign: 'left',
       },
       {
         field: 'link',
-        title: t('coin-data.table.link'),
+        title: t('page.information.coindataPage.table.link'),
         slots: { default: 'col-link' },
         align: 'left',
         headerAlign: 'left',
@@ -291,7 +369,7 @@ const [Grid] = useVbenVxeGrid({
       <ElCard shadow="never" class="mb-4">
         <div class="mb-4 flex items-center justify-between">
           <h1 class="text-2xl font-bold">
-            {{ t('coin-data.title') }}
+            {{ t('page.information.coindataPage.title') }}
           </h1>
           <ElButton
             :icon="ElementPlusIconsVue.Setting"
@@ -303,10 +381,12 @@ const [Grid] = useVbenVxeGrid({
         <ElForm :model="filters" label-position="top">
           <ElRow :gutter="20">
             <ElCol :span="4">
-              <ElFormItem :label="t('coin-data.exchange')">
+              <ElFormItem :label="t('page.information.coindataPage.exchange')">
                 <ElSelect
                   v-model="filters.exchange"
-                  :placeholder="t('coin-data.selectPlaceholder')"
+                  :placeholder="
+                    t('page.information.coindataPage.selectPlaceholder')
+                  "
                   class="w-full"
                 >
                   <ElOption
@@ -322,9 +402,13 @@ const [Grid] = useVbenVxeGrid({
               <ElFormItem>
                 <template #label>
                   <div class="flex items-center">
-                    <span>{{ t('coin-data.marketCapLabel') }}</span>
+                    <span>{{
+                      t('page.information.coindataPage.marketCapLabel')
+                    }}</span>
                     <ElTooltip
-                      :content="t('coin-data.marketCapTooltip')"
+                      :content="
+                        t('page.information.coindataPage.marketCapTooltip')
+                      "
                       placement="top"
                     >
                       <ElIcon class="ml-1 cursor-pointer">
@@ -344,9 +428,13 @@ const [Grid] = useVbenVxeGrid({
               <ElFormItem>
                 <template #label>
                   <div class="flex items-center">
-                    <span>{{ t('coin-data.volMcapLabel') }}</span>
+                    <span>{{
+                      t('page.information.coindataPage.volMcapLabel')
+                    }}</span>
                     <ElTooltip
-                      :content="t('coin-data.volMcapTooltip')"
+                      :content="
+                        t('page.information.coindataPage.volMcapTooltip')
+                      "
                       placement="top"
                     >
                       <ElIcon class="ml-1 cursor-pointer">
@@ -364,11 +452,13 @@ const [Grid] = useVbenVxeGrid({
               </ElFormItem>
             </ElCol>
             <ElCol :span="12">
-              <ElFormItem :label="t('coin-data.tags')">
+              <ElFormItem :label="t('page.information.coindataPage.tags')">
                 <ElSelect
                   v-model="filters.tags"
                   multiple
-                  :placeholder="t('coin-data.tagsPlaceholder')"
+                  :placeholder="
+                    t('page.information.coindataPage.tagsPlaceholder')
+                  "
                   class="w-full"
                 >
                   <ElOption
@@ -412,14 +502,18 @@ const [Grid] = useVbenVxeGrid({
         </Grid>
       </ElCard>
     </div>
-    <Drawer class="w-1/2">
-      <ElForm :model="config" label-position="top">
+    <Drawer class="w-1/2" :show-footer="true">
+      <ElForm :model="config" label-position="right" label-width="200px">
         <ElFormItem>
           <template #label>
-            <div class="flex items-center">
-              <span>{{ $t('coin-data.drawer.apiKey') }}</span>
+            <div class="flex items-center justify-end">
+              <span>{{
+                $t('page.information.coindataPage.drawer.apiKey')
+              }}</span>
               <ElTooltip
-                :content="$t('coin-data.drawer.apiKeyTooltip')"
+                :content="
+                  $t('page.information.coindataPage.drawer.apiKeyTooltip')
+                "
                 placement="top"
               >
                 <ElIcon class="ml-1 cursor-pointer">
@@ -428,15 +522,32 @@ const [Grid] = useVbenVxeGrid({
               </ElTooltip>
             </div>
           </template>
-          <ElInput v-model="config.apiKey" type="password" show-password />
+          <div class="flex w-full items-center">
+            <ElInput
+              v-model="config.coin_market_cap_api_key"
+              show-password
+              type="password"
+            />
+            <ElButton
+              :loading="isVerifying"
+              class="ml-2"
+              @click="handleVerifyApiKey"
+            >
+              {{ $t('page.information.coindataPage.drawer.verify') }}
+            </ElButton>
+          </div>
         </ElFormItem>
 
         <ElFormItem>
           <template #label>
-            <div class="flex items-center">
-              <span>{{ $t('coin-data.drawer.fetchLimit') }}</span>
+            <div class="flex items-center justify-end">
+              <span>{{
+                $t('page.information.coindataPage.drawer.fetchLimit')
+              }}</span>
               <ElTooltip
-                :content="$t('coin-data.drawer.fetchLimitTooltip')"
+                :content="
+                  $t('page.information.coindataPage.drawer.fetchLimitTooltip')
+                "
                 placement="top"
               >
                 <ElIcon class="ml-1 cursor-pointer">
@@ -445,15 +556,21 @@ const [Grid] = useVbenVxeGrid({
               </ElTooltip>
             </div>
           </template>
-          <ElInputNumber v-model="config.fetchLimit" class="w-full" />
+          <ElInputNumber v-model="config.fetch_limit" class="w-full" />
         </ElFormItem>
 
         <ElFormItem>
           <template #label>
-            <div class="flex items-center">
-              <span>{{ $t('coin-data.drawer.fetchInterval') }}</span>
+            <div class="flex items-center justify-end">
+              <span>{{
+                $t('page.information.coindataPage.drawer.fetchInterval')
+              }}</span>
               <ElTooltip
-                :content="$t('coin-data.drawer.fetchIntervalTooltip')"
+                :content="
+                  $t(
+                    'page.information.coindataPage.drawer.fetchIntervalTooltip',
+                  )
+                "
                 placement="top"
               >
                 <ElIcon class="ml-1 cursor-pointer">
@@ -462,15 +579,21 @@ const [Grid] = useVbenVxeGrid({
               </ElTooltip>
             </div>
           </template>
-          <ElInputNumber v-model="config.fetchInterval" class="w-full" />
+          <ElInputNumber v-model="config.fetch_interval" class="w-full" />
         </ElFormItem>
 
         <ElFormItem>
           <template #label>
-            <div class="flex items-center">
-              <span>{{ $t('coin-data.drawer.metadataInterval') }}</span>
+            <div class="flex items-center justify-end">
+              <span>{{
+                $t('page.information.coindataPage.drawer.metadataInterval')
+              }}</span>
               <ElTooltip
-                :content="$t('coin-data.drawer.metadataIntervalTooltip')"
+                :content="
+                  $t(
+                    'page.information.coindataPage.drawer.metadataIntervalTooltip',
+                  )
+                "
                 placement="top"
               >
                 <ElIcon class="ml-1 cursor-pointer">
@@ -479,7 +602,7 @@ const [Grid] = useVbenVxeGrid({
               </ElTooltip>
             </div>
           </template>
-          <ElInputNumber v-model="config.metadataInterval" class="w-full" />
+          <ElInputNumber v-model="config.metadata_interval" class="w-full" />
         </ElFormItem>
       </ElForm>
     </Drawer>
