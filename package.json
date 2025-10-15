@@ -64,7 +64,7 @@
     "codemirror": "^6.0.2",
     "echarts": "catalog:",
     "vue-codemirror": "^6.1.1",
-    "vue-echarts": "^8.0.0"
+    "vue-echarts": "^8.0.1"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",
