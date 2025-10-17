@@ -26,7 +26,7 @@ catalog:
   '@ctrl/tinycolor': ^4.2.0
   '@eslint/js': ^9.37.0
   '@faker-js/faker': ^9.9.0
-  '@iconify/json': ^2.2.395
+  '@iconify/json': ^2.2.396
   '@iconify-json/logos': ^1.2.9
   '@iconify/tailwind': ^1.2.0
   '@iconify/vue': ^5.0.0
@@ -40,7 +40,7 @@ catalog:
   '@stylistic/stylelint-plugin': ^3.1.3
   '@tailwindcss/nesting': 0.0.0-insiders.565cd3e
   '@tailwindcss/typography': ^0.5.19
-  '@tanstack/vue-query': ^5.90.3
+  '@tanstack/vue-query': ^5.90.5
   '@tanstack/vue-store': ^0.8.0
   '@types/archiver': ^6.0.3
   '@types/eslint': ^9.6.1
@@ -125,7 +125,7 @@ catalog:
   lodash.get: ^4.4.2
   lodash.isequal: ^4.5.0
   lodash.set: ^4.3.2
-  lucide-vue-next: ^0.545.0
+  lucide-vue-next: ^0.546.0
   medium-zoom: ^1.1.0
   naive-ui: ^2.42.0
   nitropack: ^2.12.7
@@ -189,10 +189,10 @@ catalog:
   vue-eslint-parser: ^10.2.0
   vue-i18n: ^11.1.12
   vue-json-viewer: ^3.0.4
-  vue-router: ^4.6.2
+  vue-router: ^4.6.3
   vue-tippy: ^6.7.1
   vue-tsc: 2.2.10
-  vxe-pc-ui: ^4.9.44
+  vxe-pc-ui: ^4.10.0
   vxe-table: ^4.16.21
   watermark-js-plus: ^1.6.3
   zod: ^3.25.67
